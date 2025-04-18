@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchProductById, selectSelectedProduct, selectProductLoading, selectProductError } from "../../reducers/products";
 import { fetchCategories, selectFilteredCategories } from "../../reducers/categories";
 import { addToCart } from "../../reducers/cartSlice";
 import { ROUTES } from "../../constants/routes";
 import { categoryService } from "../../services/categoryService";
+import { Breadcrumbs } from "../../components";
 import styles from "./ProductDetail.module.css";
 import { scrollToTop } from "../../utils/scroll";
 
@@ -79,23 +80,26 @@ const ProductDetail: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.product}>
-        <div className={styles.breadcrumbs}>
-          <Link to={ROUTES.CATALOG}>Каталог</Link>
-          {categoryPath.map((category, index) => {
-            const isLast = index === categoryPath.length - 1;
-            return isLast ? (
-              <span key={category._id}>{category.name}</span>
-            ) : (
-              <Link
-                key={category._id}
-                to={`${ROUTES.CATEGORY.replace(":categoryId", category._id)}`}
-              >
-                {category.name}
-              </Link>
-            );
-          })}
-          <span>{product.name}</span>
-        </div>
+        <Breadcrumbs 
+          items={[
+            {
+              _id: "catalog",
+              name: "Каталог",
+              url: ROUTES.CATALOG
+            },
+            ...categoryPath.map(category => ({
+              _id: category._id,
+              name: category.name,
+              url: ROUTES.CATEGORY.replace(":categoryId", category._id)
+            })),
+            {
+              _id: product._id,
+              name: product.name,
+              url: ""
+            }
+          ]}
+          className={styles.breadcrumbs}
+        />
 
         <div className={styles.content}>
           <div className={styles.imageContainer}>

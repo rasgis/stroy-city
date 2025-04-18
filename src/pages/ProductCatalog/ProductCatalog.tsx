@@ -3,9 +3,10 @@ import { Container, Typography, Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchCategories, selectFilteredCategories } from "../../reducers/categories";
 import CategoryGrid from "../../components/CategoryGrid/CategoryGrid";
-import { Loader } from "../../components";
+import { Loader, Breadcrumbs } from "../../components";
 import { categoryService } from "../../services/categoryService";
 import styles from "./ProductCatalog.module.css";
+import { ROUTES } from "../../constants/routes";
 import { scrollToTop } from "../../utils/scroll";
 
 const ProductCatalog: React.FC = () => {
@@ -40,6 +41,17 @@ const ProductCatalog: React.FC = () => {
   return (
     <Container className={styles.container}>
       <Box className={styles.content}>
+        <Breadcrumbs 
+          items={[
+            {
+              _id: "catalog",
+              name: "Каталог товаров",
+              url: ROUTES.CATALOG
+            }
+          ]}
+          className={styles.breadcrumbs}
+        />
+        
         <Typography
           variant="h4"
           component="h1"

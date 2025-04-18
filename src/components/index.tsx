@@ -9,3 +9,4 @@ export * from "./SearchBar/SearchBar";
 export * from "./Slider/Slider";
 export * from "./WeatherWidget/WeatherWidget";
 export * from "./EntityForm/EntityForm";
+export * from "./Breadcrumbs/Breadcrumbs";

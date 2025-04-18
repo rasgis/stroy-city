@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Container, Typography, Box, Grid, Pagination } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchProducts, selectFilteredProducts } from "../../reducers/products";
-import { SearchBar, Loader, ProductCard } from "../../components";
+import { SearchBar, Loader, ProductCard, Breadcrumbs } from "../../components";
 import { scrollToTop } from "../../utils/scroll";
+import { ROUTES } from "../../constants/routes";
 import styles from "./AllProducts.module.css";
 
 const ITEMS_PER_PAGE = 12; // Количество товаров на странице
@@ -72,6 +73,17 @@ const AllProducts: React.FC = () => {
   return (
     <Container className={styles.container}>
       <Box className={styles.content}>
+        <Breadcrumbs 
+          items={[
+            {
+              _id: "products",
+              name: "Все товары",
+              url: ROUTES.ALL_PRODUCTS
+            }
+          ]}
+          className={styles.breadcrumbs}
+        />
+      
         <Typography
           variant="h4"
           component="h1"
@@ -81,7 +93,10 @@ const AllProducts: React.FC = () => {
           Поиск товара
         </Typography>
 
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar 
+          onSearch={handleSearch} 
+          loading={productsLoading}
+        />
 
         {currentProducts.length === 0 ? (
           <Typography style={{ marginTop: "2rem", color: "#d4ffea" }}>

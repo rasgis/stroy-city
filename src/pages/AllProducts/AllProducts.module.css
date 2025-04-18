@@ -23,6 +23,11 @@
   max-width: 1200px;
 }
 
+.breadcrumbs {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
 .title {
   color: #d4ffea;
   font-weight: 700;

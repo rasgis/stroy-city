@@ -22,6 +22,11 @@
   margin-top: 0;
 }
 
+.breadcrumbs {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
 .title {
   font-size: 3rem;
   color: #d4ffea;

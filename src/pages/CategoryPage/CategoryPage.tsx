@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Container,
   Typography,
   Box,
-  Breadcrumbs,
-  Link as MuiLink,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchCategories, selectFilteredCategories } from "../../reducers/categories";
 import { fetchProducts, selectFilteredProducts } from "../../reducers/products";
 import CategoryGrid from "../../components/CategoryGrid/CategoryGrid";
-import { Loader, ProductCard, SearchBar } from "../../components";
+import { Loader, ProductCard, SearchBar, Breadcrumbs } from "../../components";
 import { ROUTES } from "../../constants/routes";
 import { Category, Product } from "../../types";
 import { categoryService } from "../../services/categoryService";
 import styles from "./CategoryPage.module.css";
-import HomeIcon from "@mui/icons-material/Home";
-import CategoryIcon from "@mui/icons-material/Category";
 import { scrollToTop } from "../../utils/scroll";
 
 const CategoryPage: React.FC = () => {
@@ -117,44 +113,21 @@ const CategoryPage: React.FC = () => {
   return (
     <Container className={styles.container}>
       <Box className={styles.content}>
-        <Breadcrumbs aria-label="breadcrumb" className={styles.breadcrumbs}>
-          <MuiLink
-            component={Link}
-            to={ROUTES.HOME}
-            className={styles.breadcrumbLink}
-          >
-            <HomeIcon style={{ marginRight: "4px", fontSize: 18 }} />
-            Главная
-          </MuiLink>
-          <MuiLink
-            component={Link}
-            to={ROUTES.CATALOG}
-            className={styles.breadcrumbLink}
-          >
-            <CategoryIcon style={{ marginRight: "4px", fontSize: 18 }} />
-            Каталог
-          </MuiLink>
-          {categoryPath.map((category, index) => {
-            const isLast = index === categoryPath.length - 1;
-            return isLast ? (
-              <Typography
-                key={category._id}
-                className={styles.breadcrumbActive}
-              >
-                {category.name}
-              </Typography>
-            ) : (
-              <MuiLink
-                key={category._id}
-                component={Link}
-                to={`${ROUTES.CATEGORY.replace(":categoryId", category._id)}`}
-                className={styles.breadcrumbLink}
-              >
-                {category.name}
-              </MuiLink>
-            );
-          })}
-        </Breadcrumbs>
+        <Breadcrumbs 
+          items={[
+            {
+              _id: "catalog",
+              name: "Каталог",
+              url: ROUTES.CATALOG
+            },
+            ...categoryPath.map(category => ({
+              _id: category._id,
+              name: category.name,
+              url: ROUTES.CATEGORY.replace(":categoryId", category._id)
+            }))
+          ]}
+          className={styles.breadcrumbs}
+        />
 
         {currentCategory && currentCategory.description && (
           <Box className={styles.description}>
@@ -192,6 +165,7 @@ const CategoryPage: React.FC = () => {
               <SearchBar
                 onSearch={handleSearch}
                 placeholder="Поиск товаров в этой категории..."
+                loading={productsLoading}
               />
             </Box>
             <div className={styles.productGrid}>

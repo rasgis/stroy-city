@@ -3,8 +3,9 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { clearCart } from "../../reducers/cartSlice";
-import { CartItem } from "../../components";
+import { CartItem, Breadcrumbs } from "../../components";
 import { Modal } from "../../components/Modal/Modal";
+import { ROUTES } from "../../constants/routes";
 import { scrollToTop } from "../../utils/scroll";
 import styles from "./Cart.module.css";
 
@@ -26,6 +27,17 @@ const Cart: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
+        <Breadcrumbs 
+          items={[
+            {
+              _id: "cart",
+              name: "Корзина",
+              url: ROUTES.CART
+            }
+          ]}
+          className={styles.breadcrumbs}
+        />
+        
         <div className={styles.cart}>
           <h1 className={styles.title}>Корзина</h1>
           {cartItems.length === 0 ? (
@@ -36,11 +48,14 @@ const Cart: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className={styles.cartItems}>
+              <div className={styles.cartGrid}>
                 {cartItems.map((item) => (
-                  <CartItem key={item._id} item={item} />
+                  <div key={item._id} className={styles.cartItem}>
+                    <CartItem item={item} />
+                  </div>
                 ))}
               </div>
+              
               <div className={styles.cartSummary}>
                 <div className={styles.total}>
                   <span>Итого:</span>

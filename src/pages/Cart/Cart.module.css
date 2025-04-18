@@ -1,5 +1,5 @@
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 72px 2rem 0;
   min-height: calc(100vh - 72px);
@@ -21,27 +21,75 @@
   margin-top: 0;
 }
 
+.breadcrumbs {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
 .cart {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
 }
 
 .title {
   color: #d4ffea;
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
   text-align: center;
+  position: relative;
+  padding-bottom: 1rem;
 }
 
-.quantityButton:hover {
-  background: rgba(11, 224, 184, 0.2);
-  border-color: rgba(11, 224, 184, 0.3);
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(to right, transparent, #0be0b8, transparent);
+  border-radius: 3px;
+}
+
+.cartGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.cartItem {
+  height: 100%;
+  min-width: 0;
+  min-height: 260px;
+}
+
+.emptyCart {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(29, 30, 36, 0.7) 0%,
+    rgba(42, 43, 50, 0.7) 100%
+  );
+  border-radius: 12px;
+  border: 1px solid rgba(11, 224, 184, 0.2);
+  margin-bottom: 2rem;
+}
+
+.emptyCart h2 {
+  color: #d4ffea;
+  font-size: 1.5rem;
+  margin: 1rem 0;
+}
+
+.emptyCart p {
+  color: rgba(212, 255, 234, 0.7);
+  margin-bottom: 2rem;
 }
 
 .cartSummary {
@@ -53,6 +101,8 @@
   padding: 2rem;
   border-radius: 12px;
   border: 1px solid rgba(11, 224, 184, 0.2);
+  box-shadow: 0 8px 20px rgba(11, 224, 184, 0.1);
+  animation: fadeIn 0.5s ease forwards;
 }
 
 .total {
@@ -65,8 +115,14 @@
 }
 
 .total span {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: #d4ffea;
+}
+
+.totalAmount {
+  font-weight: 700;
+  color: #0be0b8 !important;
+  font-size: 1.8rem !important;
 }
 
 .actions {
@@ -77,17 +133,17 @@
 .clearButton,
 .checkoutButton {
   flex: 1;
-  padding: 0.5rem;
+  padding: 1rem;
   border: none;
   border-radius: 8px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .clearButton {
@@ -103,15 +159,15 @@
 }
 
 .checkoutButton {
-  background: rgba(71, 255, 200, 0.1);
-  color: #47ffe0;
-  border: 1px solid rgba(86, 252, 188, 0.2);
+  background: linear-gradient(135deg, #0be0b8 0%, #00d4b8 100%);
+  color: #1d1e24;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
 }
 
 .checkoutButton:hover {
-  background: rgba(71, 255, 200, 0.2);
-  border-color: #47ffe0;
+  background: linear-gradient(135deg, #00d4b8 0%, #0be0b8 100%);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(11, 224, 184, 0.3);
 }
 
 .emptyIcon {
@@ -120,15 +176,68 @@
   margin-bottom: 1rem;
 }
 
-@media (max-width: 800px) {
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .cartGrid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.6rem;
+  }
+  
   .title {
-    font-size: 1rem;
-    margin-bottom: 0.3rem;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .total span {
+    font-size: 1.3rem;
+  }
+  
+  .totalAmount {
+    font-size: 1.6rem !important;
+  }
+  
+  .cartItem {
+    min-height: 240px;
   }
 }
 
 @media (max-width: 480px) {
+  .cartGrid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.5rem;
+  }
+  
   .title {
-    font-size: 0.9rem;
+    font-size: 1.8rem;
+  }
+  
+  .container {
+    padding: 72px 1rem 0;
+  }
+  
+  .cart {
+    padding: 0.5rem;
+  }
+  
+  .cartSummary {
+    padding: 1.5rem;
+  }
+  
+  .cartItem {
+    min-height: 220px;
   }
 }
