@@ -1,0 +1,234 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modalContent {
+  background: linear-gradient(135deg, #1d1e24 0%, #2a2b33 100%);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(11, 224, 184, 0.2);
+  animation: slideIn 0.3s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(11, 224, 184, 0.2);
+}
+
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0be0b8;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #d4ffea;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 50%;
+}
+
+.closeButton:hover {
+  color: #0be0b8;
+  background: rgba(11, 224, 184, 0.1);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  color: #d4ffea;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
+  padding: 0.75rem;
+  background-color: rgba(29, 30, 36, 0.7);
+  border: 1px solid rgba(11, 224, 184, 0.3);
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.formGroup textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus {
+  outline: none;
+  border-color: #0be0b8;
+  box-shadow: 0 0 0 2px rgba(11, 224, 184, 0.2);
+}
+
+.formGroup input.error,
+.formGroup textarea.error,
+.formGroup select.error {
+  border-color: #ff4757;
+}
+
+.errorMessage {
+  color: #ff4757;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.formError {
+  background-color: rgba(255, 71, 87, 0.1);
+  color: #ff4757;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  margin-bottom: 1rem;
+}
+
+.imagePreview {
+  margin-top: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(11, 224, 184, 0.3);
+}
+
+.imagePreview img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 200px;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(11, 224, 184, 0.2);
+}
+
+.cancelButton,
+.submitButton {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.submitButton {
+  background: rgba(11, 224, 184, 0.1);
+  color: #0be0b8;
+  border: 1px solid rgba(11, 224, 184, 0.3);
+}
+
+.submitButton:hover:not(:disabled) {
+  background: rgba(11, 224, 184, 0.2);
+  border-color: #0be0b8;
+  transform: translateY(-1px);
+}
+
+.cancelButton {
+  background: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+  border: 1px solid rgba(255, 82, 82, 0.3);
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: rgba(255, 82, 82, 0.2);
+  border-color: #ff5252;
+  transform: translateY(-1px);
+}
+
+.cancelButton:disabled,
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .modalContent {
+    width: 95%;
+    padding: 1.5rem;
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

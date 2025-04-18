@@ -1,0 +1,217 @@
+/* Основной контейнер */
+.container {
+  padding: 92px 2rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Навигация */
+.breadcrumbs {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(29, 30, 36, 0.7) 0%,
+    rgba(42, 43, 50, 0.7) 100%
+  );
+  border-radius: 12px;
+  border: 1px solid rgba(11, 224, 184, 0.2);
+  box-shadow: 0 8px 24px rgba(11, 224, 184, 0.1);
+  color: #d4ffea;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.breadcrumbLink {
+  color: rgba(11, 224, 184, 0.8) !important;
+  transition: color 0.3s ease, transform 0.2s ease;
+  text-decoration: none !important;
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.breadcrumbLink:hover {
+  color: #0be0b8 !important;
+  transform: translateY(-1px);
+}
+
+.breadcrumbActive {
+  color: #d4ffea !important;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Заголовки */
+.sectionTitle {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  color: #d4ffea;
+  text-align: center;
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(11, 224, 184, 0.2);
+}
+
+/* Описание категории */
+.description {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(11, 224, 184, 0.2);
+}
+
+.descriptionText {
+  color: #d4ffea;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Подкатегории */
+.subcategoriesContainer {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Товары */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+/* Сообщение при отсутствии товаров */
+.emptyMessage {
+  text-align: center;
+  color: #d4ffea;
+  padding: 3rem 2rem;
+  font-size: 1.1rem;
+  background: linear-gradient(
+    135deg,
+    rgba(29, 30, 36, 0.7) 0%,
+    rgba(42, 43, 50, 0.7) 100%
+  );
+  border-radius: 12px;
+  border: 1px solid rgba(11, 224, 184, 0.2);
+  box-shadow: 0 8px 24px rgba(11, 224, 184, 0.1);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ссылка возврата */
+.returnLink {
+  margin-top: 2.5rem;
+  color: #0be0b8 !important;
+  text-decoration: none !important;
+  font-weight: 500;
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background: rgba(11, 224, 184, 0.1);
+  border: 1px solid rgba(11, 224, 184, 0.2);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.returnLink:hover {
+  background: rgba(11, 224, 184, 0.15);
+  border-color: rgba(11, 224, 184, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Поиск */
+.searchBarContainer {
+  margin: 2rem auto 3rem;
+  max-width: 600px;
+  width: 100%;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.noResults {
+  text-align: center;
+  color: #666;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section,
+.title,
+.breadcrumbs,
+.emptyMessage {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Медиа-запросы */
+@media (max-width: 768px) {
+  .container {
+    padding: 72px 1rem 0;
+  }
+
+  .breadcrumbs {
+    padding: 0.8rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .breadcrumbLink,
+  .breadcrumbActive {
+    font-size: 0.9rem;
+  }
+
+  .title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    padding: 0.8rem;
+  }
+
+  .productGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+
+  .returnLink {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}

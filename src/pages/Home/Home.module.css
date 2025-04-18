@@ -1,0 +1,619 @@
+@keyframes pulsePercent {
+  0% {
+    transform: rotate(15deg) scale(1);
+    color: rgba(63, 81, 181, 0.3);
+  }
+  50% {
+    transform: rotate(15deg) scale(1.1);
+    color: rgba(63, 81, 181, 0.8);
+  }
+  100% {
+    transform: rotate(15deg) scale(1);
+    color: rgba(63, 81, 181, 0.3);
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  font-family: "Roboto", sans-serif;
+}
+
+.hero {
+  width: 100%;
+  text-align: center;
+  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: #1d1e24;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+}
+
+.logo {
+  max-width: 300px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: #d4ffea;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 400;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #097c73;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  transition: all 0.3s;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(9, 202, 160, 0.856),
+    transparent
+  );
+  transition: all 0.5s;
+}
+
+.ctaButton:hover::before {
+  left: 100%;
+}
+
+.features {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  margin: 2rem 0;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 32px rgba(11, 224, 184, 0.15);
+  border: 1px solid #074b5f;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(11, 224, 184, 0.1),
+    rgba(29, 30, 36, 0.1)
+  );
+}
+
+.feature {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #1d2344, #334d4d);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 300px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(11, 224, 184, 0.2);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.feature::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(11, 224, 184, 0.1) 50%,
+    transparent 100%
+  );
+  z-index: -1;
+}
+
+.feature:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+.feature h3 {
+  color: #d4ffea;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+.feature p {
+  color: #d4ffea;
+  line-height: 1.6;
+  font-size: 1.1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.about {
+  width: 100%;
+  padding: 2rem 1rem;
+  text-align: center;
+  background: linear-gradient(135deg, #097c73, #074b5f);
+  border-radius: 8px;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(90, 29, 231, 0.4);
+  transform-origin: center;
+  will-change: transform;
+  border: 1px solid rgba(11, 224, 184, 0.2);
+}
+
+.about h2 {
+  color: #d4ffea;
+  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+  transform-origin: center;
+  will-change: transform;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
+}
+
+.about p {
+  color: #d4ffea;
+  line-height: 1.9;
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+
+.discountBanner {
+  width: 100%;
+  padding: 2rem;
+  margin: 2rem 0;
+  background: linear-gradient(135deg, #1d2344, #334d4d);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(90, 29, 231, 0.2);
+  transition: all 0.3s ease;
+  transform-origin: center;
+  will-change: transform;
+  border: 1px solid rgba(85, 11, 224, 0.3);
+}
+
+.discountBanner:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(85, 11, 224, 0.6);
+  border: 2px solid rgba(85, 11, 224, 0.4);
+}
+
+.discountBanner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  border-radius: 8px;
+}
+
+.discountBanner::after {
+  content: "5%";
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  font-size: 120px;
+  font-weight: 900;
+  color: rgba(11, 188, 156, 0.2);
+  z-index: -1;
+  animation: pulsePercent 2s ease-in-out infinite;
+  will-change: transform, color;
+}
+
+.discountTitle {
+  font-size: 2rem;
+  color: #d4ffea;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: float 3s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+  min-height: 2.5rem;
+}
+
+.discountText {
+  font-size: 1.3rem;
+  color: #d4ffea;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+  line-height: 1.6;
+  min-height: 3.2rem;
+  font-weight: 400;
+}
+
+.discountButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  background-color: #097c73;
+  color: #d4ffea;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  transition: all 0.3s;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  min-height: 3.5rem;
+  min-width: 300px;
+}
+
+.discountButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(11, 188, 156, 0.5),
+    transparent
+  );
+  transition: all 0.5s;
+}
+
+.discountButton:hover::before {
+  left: 100%;
+}
+
+.discountIcon {
+  font-size: 1.8rem;
+  margin-right: 0.8rem;
+  vertical-align: middle;
+  color: #d4ffea;
+}
+
+.discountFeatures {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  min-height: 3rem;
+}
+
+.discountFeature {
+  display: flex;
+  align-items: center;
+  background-color: rgba(85, 11, 224, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(85, 11, 224, 0.2);
+  transition: all 0.3s ease;
+  min-height: 2.5rem;
+  min-width: 200px;
+  border: 1px solid rgba(85, 11, 224, 0.2);
+}
+
+.discountFeature:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgbargba(85, 11, 224, 0.6);
+  background-color: rgba(85, 11, 224, 0.5);
+}
+
+.discountFeatureIcon {
+  color: #d4ffea;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.discountFeature span {
+  font-weight: 500;
+  color: #d4ffea;
+  font-size: 1rem;
+}
+
+.materialsStore,
+.qualityAssurance,
+.trustAndExperience {
+  width: 100%;
+  padding: 2rem;
+  margin: 2rem 0;
+  background: linear-gradient(135deg, #1d2344, #334d4d);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(90, 29, 231, 0.2);
+  transition: all 0.3s ease;
+  transform-origin: center;
+  will-change: transform;
+  border: 1px solid rgba(11, 188, 156, 0.3);
+}
+
+.materialsStore h3,
+.qualityAssurance h3,
+.trustAndExperience h3 {
+  font-size: 2rem;
+  color: #d4ffea;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.materialsStore p,
+.qualityAssurance p,
+.trustAndExperience p {
+  font-size: 1.3rem;
+  color: #d4ffea;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.partners {
+  width: 100%;
+  padding: 4rem 1rem;
+  text-align: center;
+  background-color: #1d1e24;
+  border-radius: 8px;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+}
+
+.partners h2 {
+  color: #d4ffea;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+}
+
+.partners p {
+  color: #d4ffea;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.partnersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.partnerLogoContainer {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(85, 11, 224, 0.2);
+}
+
+.partnerLogoContainer:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(85, 11, 224, 0.6);
+  border-color: rgba(85, 11, 224, 0.6);
+}
+
+.partnerLogoContainer:hover .partnerLogo {
+  filter: grayscale(0%) brightness(1);
+}
+
+.partnerLogo {
+  width: 100%;
+  height: auto;
+  max-width: 120px;
+  transition: all 0.3s ease;
+  filter: grayscale(100%) brightness(0.8);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+
+  .feature {
+    max-width: 100%;
+  }
+
+  .logo {
+    max-width: 200px;
+  }
+
+  .discountTitle {
+    font-size: 1.6rem;
+    min-height: 2rem;
+  }
+
+  .discountText {
+    font-size: 1.1rem;
+    min-height: 2.8rem;
+  }
+
+  .discountButton {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    min-height: 3rem;
+    min-width: 250px;
+  }
+
+  .discountIcon {
+    font-size: 1.5rem;
+  }
+
+  .discountBanner::after {
+    font-size: 80px;
+  }
+
+  .discountFeatures {
+    gap: 1rem;
+    min-height: 2.5rem;
+  }
+
+  .discountFeature {
+    padding: 0.4rem 0.8rem;
+    min-height: 2rem;
+    min-width: 150px;
+  }
+
+  .discountFeatureIcon {
+    font-size: 1rem;
+  }
+
+  .discountFeature span {
+    font-size: 0.9rem;
+  }
+
+  .partnersGrid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .partnerLogoContainer {
+    padding: 0.8rem;
+  }
+
+  .partnerLogo {
+    max-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .discountTitle {
+    font-size: 1.4rem;
+    min-height: 1.8rem;
+  }
+
+  .discountText {
+    font-size: 1rem;
+    min-height: 2.5rem;
+  }
+
+  .discountButton {
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    min-height: 2.5rem;
+    min-width: 200px;
+  }
+
+  .discountFeatures {
+    gap: 0.8rem;
+    min-height: 2rem;
+  }
+
+  .discountFeature {
+    padding: 0.3rem 0.6rem;
+    min-height: 1.8rem;
+    min-width: 120px;
+  }
+
+  .partnersGrid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .partnerLogoContainer {
+    padding: 0.6rem;
+  }
+
+  .partnerLogo {
+    max-width: 80px;
+  }
+}

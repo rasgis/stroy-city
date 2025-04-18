@@ -1,0 +1,173 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: calc(100vh - 72px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  background-color: transparent;
+}
+
+.product {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(212, 255, 234, 0.7);
+  margin-bottom: 1rem;
+}
+
+.breadcrumbs a {
+  color: #0be0b8;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumbs a:hover {
+  color: #0acda3;
+}
+
+.breadcrumbs span {
+  color: #d4ffea;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border: 1px solid rgba(11, 224, 184, 0.3);
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.title {
+  font-size: 2rem;
+  color: #d4ffea;
+  margin: 0;
+  font-weight: 600;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: rgba(212, 255, 234, 0.7);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.price {
+  font-size: 1.8rem;
+  color: #0be0b8;
+  font-weight: bold;
+}
+
+.stock {
+  font-size: 1.1rem;
+  color: #28a745;
+}
+
+.category {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.addToCartButton {
+  background-color: #0be0b8;
+  color: #1a1a1f;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  align-self: flex-start;
+}
+
+.addToCartButton:hover {
+  background-color: #0acda3;
+  box-shadow: 0 4px 8px rgba(10, 205, 163, 0.3);
+}
+
+.snackbar {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #0be0b8;
+  color: #1a1a1f;
+  padding: 12px 24px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.snackbarContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #1a1a1f;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: rgba(212, 255, 234, 0.7);
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #dc3545;
+}
+
+.notFound {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: rgba(212, 255, 234, 0.7);
+}

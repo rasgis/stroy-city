@@ -1,0 +1,56 @@
+/* Глобальные стили для Material-UI компонентов */
+
+/* Стили для MuiBox с классом css-19kzrtu */
+.MuiBox-root.css-19kzrtu {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.MuiBox-root.css-19kzrtu:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для кнопок */
+.MuiButton-root {
+  border-radius: 4px;
+  text-transform: none;
+  font-weight: 500;
+}
+
+.MuiButton-contained {
+  box-shadow: none;
+}
+
+.MuiButton-contained:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для карточек */
+.MuiCard-root {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.MuiCard-root:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для текстовых полей */
+.MuiOutlinedInput-root {
+  border-radius: 4px;
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #0be0b8;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #0be0b8;
+  border-width: 2px;
+}

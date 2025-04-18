@@ -1,0 +1,397 @@
+.header {
+  background-color: #202026;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  width: 100%;
+  height: 72px;
+  transform: translateZ(0);
+}
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  height: 72px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+  gap: 1rem;
+}
+
+/* Общие стили для секций */
+.leftSection,
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 100%;
+}
+
+.leftSection {
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+
+.rightSection {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Логотип */
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0be0b8;
+}
+
+/* Навигация */
+.nav,
+.adminNav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.nav::-webkit-scrollbar,
+.adminNav::-webkit-scrollbar {
+  display: none;
+}
+
+/* Общие стили для ссылок */
+.navLink,
+.adminLink,
+.cartLink,
+.authLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  position: relative;
+}
+
+.navLink,
+.cartLink,
+.authLink {
+  color: #0be0b8;
+}
+
+.adminLink {
+  color: #9f5bdf;
+  font-size: 0.85rem;
+}
+
+/* Подчеркивание при наведении */
+.navLink::after,
+.adminLink::after,
+.cartLink::after,
+.authLink::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.navLink::after,
+.cartLink::after,
+.authLink::after {
+  background-color: #0be0b8;
+}
+
+.adminLink::after {
+  background-color: #9f5bdf;
+}
+
+/* Эффекты при наведении */
+.navLink:hover,
+.cartLink:hover,
+.authLink:hover {
+  color: #42ffdc;
+}
+
+.adminLink:hover {
+  color: #be78ff;
+}
+
+.navLink:hover::after,
+.adminLink:hover::after,
+.cartLink:hover::after,
+.authLink:hover::after {
+  width: 80%;
+}
+
+/* Иконки */
+.navIcon,
+.adminIcon,
+.cartIcon,
+.userIcon {
+  margin-right: 4px;
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+/* Мобильное меню */
+.mobileMenuButton {
+  display: none;
+  background: none;
+  border: none;
+  color: #0be0b8;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.mobileMenuButton:hover {
+  background-color: rgba(11, 224, 184, 0.1);
+}
+
+.mobileActions {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Аутентификация */
+.auth {
+  display: flex;
+  align-items: center;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: #0bb999;
+  font-weight: 500;
+  position: relative;
+}
+
+.logoutButton {
+  background: none;
+  border: none;
+  color: #0bb999;
+  cursor: pointer;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+  font-weight: 500;
+  border-radius: 4px;
+  position: relative;
+}
+
+.logoutButton:hover {
+  color: #42ffdc;
+}
+
+/* Медиа-запросы */
+@media (min-width: 765px) and (max-width: 1169px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+
+  .rightSection {
+    flex: 1;
+    gap: 0.5rem;
+  }
+
+  .nav,
+  .adminNav {
+    gap: 0.25rem;
+  }
+
+  .navLink,
+  .adminLink,
+  .cartLink,
+  .authLink {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+
+  .navIcon,
+  .adminIcon,
+  .cartIcon,
+  .userIcon {
+    font-size: 16px;
+    margin-right: 3px;
+  }
+
+  .adminLinkText {
+    display: none;
+  }
+
+  .adminLink {
+    padding: 6px;
+  }
+
+  .adminIcon {
+    margin-right: 0;
+  }
+
+  .userInfo {
+    padding: 6px 8px;
+    gap: 0.25rem;
+  }
+
+  .userName {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    height: auto;
+    min-height: 72px;
+  }
+
+  .container {
+    flex-direction: column;
+    padding: 0.5rem;
+    gap: 0.5rem;
+    height: auto;
+  }
+
+  .leftSection {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+  }
+
+  .mobileMenuButton {
+    display: flex;
+  }
+
+  .mobileActions {
+    display: flex;
+  }
+
+  .rightSection {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    padding: 0.5rem;
+    background: rgba(32, 32, 38, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease-out;
+  }
+
+  .mobileMenuOpen {
+    display: flex;
+  }
+
+  .nav,
+  .adminNav {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .navLink,
+  .adminLink,
+  .cartLink,
+  .authLink {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    justify-content: flex-start;
+  }
+
+  .adminNav {
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+    border-top: 1px solid rgba(11, 224, 184, 0.1);
+    border-bottom: 1px solid rgba(11, 224, 184, 0.1);
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .logoText {
+    font-size: 1rem;
+  }
+
+  .navLink,
+  .adminLink,
+  .cartLink,
+  .authLink {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .navIcon,
+  .adminIcon,
+  .cartIcon,
+  .userIcon {
+    font-size: 16px;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.desktopActions {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+@media (max-width: 767px) {
+  .desktopActions {
+    display: none;
+  }
+}

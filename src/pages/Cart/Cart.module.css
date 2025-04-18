@@ -1,0 +1,134 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 72px 2rem 0;
+  min-height: calc(100vh - 72px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  margin-top: 0;
+}
+
+.cart {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.title {
+  color: #d4ffea;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.quantityButton:hover {
+  background: rgba(11, 224, 184, 0.2);
+  border-color: rgba(11, 224, 184, 0.3);
+}
+
+.cartSummary {
+  background: linear-gradient(
+    135deg,
+    rgba(29, 30, 36, 0.7) 0%,
+    rgba(42, 43, 50, 0.7) 100%
+  );
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(11, 224, 184, 0.2);
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(11, 224, 184, 0.2);
+}
+
+.total span {
+  font-size: 1.3rem;
+  color: #d4ffea;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.clearButton,
+.checkoutButton {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.clearButton {
+  background: rgba(255, 71, 87, 0.1);
+  color: #ff4757;
+  border: 1px solid rgba(255, 71, 87, 0.2);
+}
+
+.clearButton:hover {
+  background: rgba(255, 71, 87, 0.2);
+  border-color: #ff4757;
+  transform: translateY(-2px);
+}
+
+.checkoutButton {
+  background: rgba(71, 255, 200, 0.1);
+  color: #47ffe0;
+  border: 1px solid rgba(86, 252, 188, 0.2);
+}
+
+.checkoutButton:hover {
+  background: rgba(71, 255, 200, 0.2);
+  border-color: #47ffe0;
+  transform: translateY(-2px);
+}
+
+.emptyIcon {
+  font-size: 4rem !important;
+  color: rgba(11, 224, 184, 0.3);
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 800px) {
+  .title {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 0.9rem;
+  }
+}

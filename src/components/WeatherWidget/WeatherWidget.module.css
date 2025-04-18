@@ -1,0 +1,574 @@
+.weatherWidgetContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.toggleButton {
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: 10px;
+  background: radial-gradient(
+    circle,
+    rgba(11, 188, 156, 0.7) 20%,
+    rgba(11, 224, 184, 0) 100%
+  );
+  border: 2px solid rgba(11, 188, 156, 0.7);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  animation: pulse 2s infinite;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.3);
+  color: #0bbc9c;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(11, 188, 156, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(11, 188, 156, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(11, 188, 156, 0);
+  }
+}
+
+.toggleButton:hover {
+  border-color: rgba(11, 188, 156, 0.2);
+  box-shadow: 0 0 30px 10px rgba(11, 188, 156, 0.7);
+  transform: scale(1.05);
+}
+
+.weatherWidget {
+  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(11, 224, 184, 0.3);
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.5s ease;
+  width: 280px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(11, 224, 184, 0.3);
+  z-index: 10;
+  position: relative;
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+.weatherWidget::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(11, 224, 184, 0.1),
+    transparent 70%
+  );
+  z-index: -1;
+}
+
+.weatherWidget::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(11, 224, 184, 0.1) 50%,
+    transparent 100%
+  );
+  animation: shine 8s infinite;
+  z-index: -1;
+}
+
+.weatherWidget.visible {
+  transform: translateY(0);
+  opacity: 1;
+  box-shadow: 0 8px 30px rgba(11, 224, 184, 0.4);
+}
+
+.location h2 {
+  margin: 0 0 15px 0;
+  font-size: 1.3rem;
+  text-align: left;
+  color: #0be0b8;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding-left: 0;
+}
+
+.weatherInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mainInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.weatherIcon {
+  font-size: 2.5rem !important;
+  color: #0be0b8 !important;
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.temperature {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #0be0b8;
+}
+
+.condition {
+  text-align: center;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: capitalize;
+}
+
+.details {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(11, 188, 156, 0.2);
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  animation: fadeIn 0.3s ease;
+  pointer-events: auto;
+}
+
+.modal {
+  background: #1d1e24;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(11, 188, 156, 0.3);
+  width: 90%;
+  max-width: 400px;
+  animation: slideUp 0.3s ease;
+  border: 1px solid rgba(11, 188, 156, 0.2);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal h3 {
+  margin: 0 0 1rem 0;
+  color: #0be0b8;
+  text-align: center;
+}
+
+.input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid rgba(11, 188, 156, 0.3);
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(29, 30, 36, 0.8);
+  color: white;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #0be0b8;
+  box-shadow: 0 0 0 2px rgba(11, 188, 156, 0.2);
+}
+
+.error {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+.modalButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.submitButton,
+.cancelButton {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submitButton {
+  background: #0bbc9c;
+  color: white;
+}
+
+.submitButton:hover {
+  background: #0a9e84;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(11, 188, 156, 0.3);
+}
+
+.cancelButton {
+  background: rgba(29, 30, 36, 0.8);
+  color: white;
+  border: 1px solid rgba(11, 188, 156, 0.3);
+}
+
+.cancelButton:hover {
+  background: rgba(42, 43, 51, 0.8);
+  border-color: rgba(11, 188, 156, 0.5);
+}
+
+@media (max-width: 768px) {
+  .weatherWidgetContainer {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .weatherWidget {
+    width: 220px;
+    padding: 12px;
+  }
+
+  .weatherIcon {
+    font-size: 2rem !important;
+  }
+
+  .temperature {
+    font-size: 1.5rem;
+  }
+}
+
+.currentCity {
+  margin: 10px 0;
+  font-size: 0.9rem;
+  color: rgba(212, 255, 234, 0.7);
+  text-align: center;
+}
+
+.refreshButton {
+  background: transparent;
+  border: none;
+  color: #0be0b8;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: 1px solid rgba(11, 188, 156, 0.3);
+  width: 32px;
+  height: 32px;
+  z-index: 20;
+  overflow: visible;
+}
+
+.refreshButton::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  z-index: -1;
+  cursor: pointer;
+}
+
+.refreshButton:hover {
+  color: #0be0b8;
+  transform: rotate(180deg);
+  background: rgba(11, 188, 156, 0.1);
+}
+
+.refreshButton:active {
+  transform: scale(0.95);
+  background: rgba(11, 188, 156, 0.2);
+}
+
+/* Отменяем поворот при активном состоянии, чтобы он не конфликтовал с масштабированием */
+.refreshButton:hover:active {
+  transform: scale(0.95);
+}
+
+.cityEditForm {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.cityInput {
+  width: 100%;
+  padding: 8px 35px 8px 12px;
+  border: 1px solid rgba(11, 188, 156, 0.3);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: rgba(29, 30, 36, 0.8);
+  color: white;
+}
+
+.cityInput:focus {
+  outline: none;
+  border-color: #0be0b8;
+  box-shadow: 0 0 0 2px rgba(11, 188, 156, 0.2);
+}
+
+.searchButton {
+  position: absolute;
+  right: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #0be0b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.searchButton:hover {
+  transform: scale(1.1);
+  color: #0be0b8;
+}
+
+.cityDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  width: 100%;
+  padding-left: 55px;
+}
+
+.editCityButton {
+  position: absolute;
+  left: 30px;
+  top: 5%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(11, 188, 156, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  padding: 3px;
+}
+
+.editCityButton:hover {
+  transform: scale(1.1);
+  color: #0be0b8;
+}
+
+.forecastButton {
+  position: absolute;
+  left: 5px;
+  top: 5%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(11, 188, 156, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  padding: 3px;
+}
+
+.forecastButton:hover {
+  transform: scale(1.1);
+  color: #0be0b8;
+}
+
+.forecastContainer {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(11, 188, 156, 0.2);
+  width: 100%;
+  animation: fadeIn 0.5s ease;
+}
+
+.forecastHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.forecastHeader h3 {
+  margin: 0;
+  color: #0be0b8;
+  font-size: 1rem;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  color: #0be0b8;
+}
+
+.forecastList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(11, 188, 156, 0.5) rgba(29, 30, 36, 0.8);
+}
+
+.forecastList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.forecastList::-webkit-scrollbar-track {
+  background: rgba(29, 30, 36, 0.8);
+  border-radius: 3px;
+}
+
+.forecastList::-webkit-scrollbar-thumb {
+  background: rgba(11, 188, 156, 0.5);
+  border-radius: 3px;
+}
+
+.forecastDay {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  align-items: center;
+  padding: 6px 8px;
+  background: rgba(42, 43, 51, 0.5);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.forecastDay:hover {
+  background: rgba(11, 188, 156, 0.1);
+}
+
+.forecastDate {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.forecastTemp {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #0be0b8;
+}
+
+.forecastCondition {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: right;
+}

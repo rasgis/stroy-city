@@ -1,0 +1,54 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+main {
+  flex: 1;
+  padding-top: 72px; /* Высота хедера */
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  overflow-x: hidden;
+}
+
+.pageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  min-height: calc(100vh - 72px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.pageContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  margin-top: 0;
+  overflow-x: hidden;
+}

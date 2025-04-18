@@ -1,0 +1,86 @@
+.gridContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  background: #1d1e24;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  position: relative;
+  width: 100%;
+}
+
+.gridContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.gridItem {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.emptyMessage {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  padding: 2rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+@media (max-width: 1200px) {
+  .categoryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .categoryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .gridContainer {
+    padding: 3rem 1rem;
+  }
+
+  .categoryGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .gridItem {
+    padding: 0.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .categoryGrid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .emptyMessage {
+    font-size: 1rem;
+    padding: 1.5rem;
+  }
+}

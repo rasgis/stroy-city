@@ -1,0 +1,17 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #26282e;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+.main {
+  flex: 1;
+  padding: 20px;
+  padding-top: 92px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
