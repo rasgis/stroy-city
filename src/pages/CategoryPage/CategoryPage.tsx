@@ -8,13 +8,12 @@ import {
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchCategories, selectFilteredCategories } from "../../reducers/categories";
 import { fetchProducts, selectFilteredProducts } from "../../reducers/products";
-import CategoryGrid from "../../components/CategoryGrid/CategoryGrid";
-import { Loader, ProductCard, SearchBar, Breadcrumbs } from "../../components";
+import { Loader, ProductCard, SearchBar, Breadcrumbs, CategoryGrid } from "../../components";
 import { ROUTES } from "../../constants/routes";
 import { Category, Product } from "../../types";
 import { categoryService } from "../../services/categoryService";
-import styles from "./CategoryPage.module.css";
 import { scrollToTop } from "../../utils/scroll";
+import styles from "./CategoryPage.module.css";
 
 const CategoryPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();

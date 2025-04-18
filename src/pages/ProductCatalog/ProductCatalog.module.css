@@ -116,6 +116,30 @@
   width: 100%;
 }
 
+.errorMessage {
+  text-align: center;
+  color: #f8c06d;
+  padding: 2rem;
+  background: #1d1e24;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  width: 100%;
+  font-size: 1.1rem;
+  margin: 2rem 0;
+}
+
+.emptyMessage {
+  text-align: center;
+  color: #d4ffea;
+  padding: 2rem;
+  font-size: 1.1rem;
+  background: #1d1e24;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  width: 100%;
+  margin: 1rem 0;
+}
+
 .empty {
   text-align: center;
   color: #d4ffea;

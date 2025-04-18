@@ -29,6 +29,8 @@ import {
   UserFormValues,
 } from "./types";
 import { userService } from "../../services/userService";
+import { ImageSelector } from "../ImageSelector/ImageSelector";
+import { imageService } from "../../services/imageService";
 
 interface EntityFormProps {
   isOpen: boolean;
@@ -312,6 +314,111 @@ export const EntityForm: React.FC<EntityFormProps> = ({
 
   if (!isOpen) return null;
 
+  const renderField = (field: FormField) => {
+    const fieldValue = formik.values[field.name as keyof FormValues];
+    const fieldError = formik.touched[field.name as keyof FormValues] && formik.errors[field.name as keyof FormValues];
+
+    switch (field.type) {
+      case "image":
+        return (
+          <ImageSelector
+            key={field.name}
+            value={fieldValue as string}
+            onChange={(value: string) => {
+              formik.setFieldValue(field.name, value);
+            }}
+            onFileChange={async (file: File) => {
+              try {
+                setLoading(true);
+                // Определяем тип изображения на основе типа сущности
+                const imageType = entityType === 'product' ? 'product' : 
+                                entityType === 'category' ? 'category' : 'other';
+                
+                // Загружаем изображение на сервер
+                const imageUrl = await imageService.uploadImage(file, imageType);
+                
+                // Устанавливаем URL в поле формы
+                formik.setFieldValue(field.name, imageUrl);
+                setLoading(false);
+              } catch (error) {
+                console.error('Ошибка при загрузке изображения:', error);
+                setError('Не удалось загрузить изображение');
+                setLoading(false);
+              }
+            }}
+            label={field.label}
+            error={!!fieldError}
+            helperText={fieldError as string}
+          />
+        );
+      default:
+        return (
+          <div key={field.name} className={styles.formGroup}>
+            <label htmlFor={field.name}>{field.label}</label>
+            {field.type === "textarea" ? (
+              <textarea
+                id={field.name}
+                name={field.name}
+                value={String(fieldValue)}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={
+                  fieldError ? styles.error : ""
+                }
+              />
+            ) : field.type === "select" ? (
+              <select
+                id={field.name}
+                name={field.name}
+                value={String(fieldValue)}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={
+                  fieldError ? styles.error : ""
+                }
+              >
+                {field.options?.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                id={field.name}
+                name={field.name}
+                type={field.type}
+                value={String(fieldValue)}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={
+                  fieldError ? styles.error : ""
+                }
+              />
+            )}
+            {fieldError && (
+              <div className={styles.errorMessage}>
+                {fieldError as string}
+              </div>
+            )}
+            {field.type === "url" &&
+              fieldValue && (
+                <div className={styles.imagePreview}>
+                  <img
+                    src={String(fieldValue)}
+                    alt="Предпросмотр"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/placeholder-image.png";
+                    }}
+                  />
+                </div>
+              )}
+          </div>
+        );
+    }
+  };
+
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
@@ -327,82 +434,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({
         {error && <div className={styles.formError}>{error}</div>}
 
         <form onSubmit={formik.handleSubmit} className={styles.form}>
-          {ENTITY_FIELDS[entityType].map((field) => (
-            <div key={field.name} className={styles.formGroup}>
-              <label htmlFor={field.name}>{field.label}</label>
-              {field.type === "textarea" ? (
-                <textarea
-                  id={field.name}
-                  name={field.name}
-                  value={String(formik.values[field.name as keyof FormValues])}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={
-                    formik.touched[field.name as keyof FormValues] &&
-                    formik.errors[field.name as keyof FormValues]
-                      ? styles.error
-                      : ""
-                  }
-                />
-              ) : field.type === "select" ? (
-                <select
-                  id={field.name}
-                  name={field.name}
-                  value={String(formik.values[field.name as keyof FormValues])}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={
-                    formik.touched[field.name as keyof FormValues] &&
-                    formik.errors[field.name as keyof FormValues]
-                      ? styles.error
-                      : ""
-                  }
-                >
-                  {field.options?.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  id={field.name}
-                  name={field.name}
-                  type={field.type}
-                  value={String(formik.values[field.name as keyof FormValues])}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={
-                    formik.touched[field.name as keyof FormValues] &&
-                    formik.errors[field.name as keyof FormValues]
-                      ? styles.error
-                      : ""
-                  }
-                />
-              )}
-              {formik.touched[field.name as keyof FormValues] &&
-                formik.errors[field.name as keyof FormValues] && (
-                  <div className={styles.errorMessage}>
-                    {formik.errors[field.name as keyof FormValues] as string}
-                  </div>
-                )}
-              {field.type === "url" &&
-                formik.values[field.name as keyof FormValues] && (
-                  <div className={styles.imagePreview}>
-                    <img
-                      src={String(
-                        formik.values[field.name as keyof FormValues]
-                      )}
-                      alt="Предпросмотр"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/placeholder-image.png";
-                      }}
-                    />
-                  </div>
-                )}
-            </div>
-          ))}
+          {ENTITY_FIELDS[entityType].map((field) => renderField(field))}
 
           <div className={styles.formActions}>
             <button

@@ -1,12 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  Breadcrumbs as MuiBreadcrumbs,
-  Typography,
-  Link as MuiLink,
-} from "@mui/material";
-import HomeIcon from "@mui/icons-material/Home";
 import { ROUTES } from "../../constants/routes";
+import { FaHome, FaChevronRight } from "react-icons/fa";
 import styles from "./Breadcrumbs.module.css";
 
 interface BreadcrumbItem {
@@ -27,42 +22,39 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
   className,
 }) => {
   return (
-    <MuiBreadcrumbs 
-      aria-label="breadcrumb" 
-      className={`${styles.breadcrumbs} ${className || ""}`}
-    >
-      {showHome && (
-        <MuiLink
-          component={Link}
-          to={ROUTES.HOME}
-          className={styles.breadcrumbLink}
-        >
-          <HomeIcon style={{ marginRight: "4px", fontSize: 18 }} />
-          Главная
-        </MuiLink>
-      )}
-      
-      {items.map((item, index) => {
-        const isLast = index === items.length - 1;
+    <nav aria-label="Навигационная цепочка" className={`${styles.breadcrumbs} ${className || ""}`}>
+      <ul className={styles.breadcrumbsList}>
+        {showHome && (
+          <li className={styles.breadcrumbItem}>
+            <Link to={ROUTES.HOME} className={styles.breadcrumbLink}>
+              <FaHome className={styles.homeIcon} />
+              <span>Главная</span>
+            </Link>
+            <FaChevronRight className={styles.separator} aria-hidden="true" />
+          </li>
+        )}
         
-        return isLast ? (
-          <Typography
-            key={item._id}
-            className={styles.breadcrumbActive}
-          >
-            {item.name}
-          </Typography>
-        ) : (
-          <MuiLink
-            key={item._id}
-            component={Link}
-            to={item.url}
-            className={styles.breadcrumbLink}
-          >
-            {item.name}
-          </MuiLink>
-        );
-      })}
-    </MuiBreadcrumbs>
+        {items.map((item, index) => {
+          const isLast = index === items.length - 1;
+          
+          return (
+            <li key={item._id} className={styles.breadcrumbItem}>
+              {isLast ? (
+                <span className={styles.breadcrumbActive}>
+                  {item.name}
+                </span>
+              ) : (
+                <>
+                  <Link to={item.url} className={styles.breadcrumbLink}>
+                    {item.name}
+                  </Link>
+                  <FaChevronRight className={styles.separator} aria-hidden="true" />
+                </>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 }; 

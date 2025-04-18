@@ -12,7 +12,8 @@ export interface FormField {
     | "number"
     | "email"
     | "password"
-    | "url";
+    | "url"
+    | "image";
   label: string;
   required: boolean;
   options?: FieldOption[];

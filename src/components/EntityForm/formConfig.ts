@@ -12,7 +12,7 @@ export const ENTITY_FIELDS: Record<EntityType, FormField[]> = {
       required: true,
     },
     { name: "price", type: "number", label: "Цена", required: true },
-    { name: "image", type: "url", label: "URL изображения", required: true },
+    { name: "image", type: "image", label: "Изображение", required: true },
     {
       name: "categoryId",
       type: "select",
@@ -36,7 +36,7 @@ export const ENTITY_FIELDS: Record<EntityType, FormField[]> = {
       label: "Описание",
       required: false,
     },
-    { name: "image", type: "url", label: "URL изображения", required: true },
+    { name: "image", type: "image", label: "Изображение", required: true },
     {
       name: "parentId",
       type: "select",

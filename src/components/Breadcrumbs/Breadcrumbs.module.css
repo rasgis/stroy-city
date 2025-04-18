@@ -12,40 +12,68 @@
   box-shadow: 0 8px 24px rgba(11, 224, 184, 0.1);
   color: #d4ffea;
   transition: all 0.3s ease;
+}
+
+.breadcrumbsList {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
 }
 
 .breadcrumbLink {
-  color: rgba(11, 224, 184, 0.8) !important;
+  color: rgba(11, 224, 184, 0.8);
   transition: color 0.3s ease, transform 0.2s ease;
-  text-decoration: none !important;
+  text-decoration: none;
   display: flex;
   align-items: center;
   font-size: 0.95rem;
+  white-space: nowrap;
 }
 
 .breadcrumbLink:hover {
-  color: #0be0b8 !important;
+  color: #0be0b8;
   transform: translateY(-1px);
 }
 
 .breadcrumbActive {
-  color: #d4ffea !important;
+  color: #d4ffea;
   font-weight: 500;
   font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.separator {
+  margin: 0 0.5rem;
+  color: rgba(212, 255, 234, 0.4);
+  font-size: 0.8rem;
+}
+
+.homeIcon {
+  margin-right: 0.3rem;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {
   .breadcrumbs {
     padding: 0.8rem;
     margin-bottom: 1.5rem;
-    font-size: 0.9rem;
   }
 
   .breadcrumbLink,
   .breadcrumbActive {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+  }
+  
+  .separator {
+    margin: 0 0.3rem;
+    font-size: 0.7rem;
   }
 } 

@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Modal.module.css";
-import CloseIcon from "@mui/icons-material/Close";
+import { Button } from "../";
+import { FaTimes } from "react-icons/fa";
 
 interface ModalProps {
   isOpen: boolean;
@@ -30,24 +31,31 @@ export const Modal: React.FC<ModalProps> = ({
       <div className={styles.modalBody}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>{title}</h2>
-          <button onClick={onClose} className={styles.modalClose}>
-            <CloseIcon fontSize="small" />
-          </button>
+          <Button 
+            onClick={onClose} 
+            className={styles.modalClose}
+            variant="text"
+            startIcon={<FaTimes size={16} />}
+            title="Закрыть"
+          />
         </div>
         <div className={styles.modalContent}>{children}</div>
         {onConfirm && (
           <div className={styles.modalFooter}>
-            <button onClick={onClose} className={styles.cancelButton}>
+            <Button 
+              onClick={onClose} 
+              className={styles.cancelButton}
+              variant="secondary"
+            >
               {cancelText}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={onConfirm}
-              className={`${styles.confirmButton} ${
-                type === "delete" ? styles.deleteButton : ""
-              }`}
+              className={styles.confirmButton}
+              variant={type === "delete" ? "danger" : "primary"}
             >
               {confirmText}
-            </button>
+            </Button>
           </div>
         )}
       </div>

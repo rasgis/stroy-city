@@ -17,6 +17,37 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Chrome, Safari, Edge */
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+/* Firefox */
+*::-moz-focus-inner {
+  border: 0 !important;
+}
+
+/* Удаление синей рамки во всех браузерах */
+*:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+/* Удаление стилей при наведении для всех интерактивных элементов */
+button:hover, 
+a:hover, 
+input:hover, 
+select:hover, 
+textarea:hover {
+  outline: none !important;
 }
 
 body {
@@ -27,6 +58,32 @@ body {
 button {
   font-family: inherit;
   cursor: pointer;
+  outline: none;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus, 
+button:focus-visible,
+button:active,
+button:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+/* Удаление синей обводки в Chrome, Safari и Edge */
+input:focus, 
+textarea:focus, 
+select:focus, 
+button:focus, 
+div[role="button"]:focus {
+  outline: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
 }
 
 a {
@@ -44,21 +101,15 @@ h1 {
   line-height: 1.1;
 }
 
+/* Сброс стилей для всех кнопок */
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   background-color: #1a1a1a;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all 0.25s;
+  border: 1px solid transparent;
 }
 
 @media (prefers-color-scheme: light) {

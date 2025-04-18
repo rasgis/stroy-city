@@ -8,7 +8,7 @@ interface CategoryGridProps {
   onCategoryClick?: (category: Category) => void;
 }
 
-const CategoryGrid: React.FC<CategoryGridProps> = ({
+export const CategoryGrid: React.FC<CategoryGridProps> = ({
   categories,
   onCategoryClick,
 }) => {
@@ -35,5 +35,3 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
     </div>
   );
 };
-
-export default CategoryGrid;

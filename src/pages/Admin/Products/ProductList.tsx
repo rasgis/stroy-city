@@ -3,8 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { fetchProducts, deleteProduct, selectFilteredProducts } from "../../../reducers/products";
 import { fetchCategories, selectActiveCategoriesForDropdown } from "../../../reducers/categories";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
-import { Modal } from "../../../components/Modal/Modal";
-import { Loader, EntityForm, WeatherWidget, SearchBar } from "../../../components";
+import { Modal, Button, Loader, EntityForm, WeatherWidget, SearchBar } from "../../../components";
 import { Product } from "../../../types";
 import styles from "./Admin.module.css";
 
@@ -57,16 +56,12 @@ const ProductList: React.FC = () => {
     setIsFormModalOpen(true);
   };
 
-  const handleEditClick = (product: Product, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleEditClick = (product: Product) => {
     setSelectedProduct(product);
     setIsFormModalOpen(true);
   };
 
-  const handleDeleteClick = (productId: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleDeleteClick = (productId: string) => {
     setDeleteProductId(productId);
     setIsDeleteModalOpen(true);
   };
@@ -109,10 +104,14 @@ const ProductList: React.FC = () => {
       <div className={styles.header}>
         <h2>Управление товарами</h2>
         <div className={styles.actions}>
-          <button onClick={handleAddClick} className={styles.addButton}>
-            <FaPlus className={styles.addIcon} />
+          <Button 
+            variant="primary" 
+            startIcon={<FaPlus className={styles.addIcon} />}
+            onClick={handleAddClick} 
+            className={styles.addButton}
+          >
             Добавить товар
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -157,18 +156,22 @@ const ProductList: React.FC = () => {
                     {product.price} ₽ / {product.unitOfMeasure}
                   </div>
                   <div className={styles.cardActions}>
-                    <button
-                      onClick={(e) => handleEditClick(product, e)}
+                    <Button
+                      variant="warning"
+                      startIcon={<FaEdit />}
+                      onClick={() => handleEditClick(product)}
                       className={styles.editButton}
                     >
-                      <FaEdit /> Изменить
-                    </button>
-                    <button
-                      onClick={(e) => handleDeleteClick(product._id, e)}
+                      Изменить
+                    </Button>
+                    <Button
+                      variant="danger" 
+                      startIcon={<FaTrash />}
+                      onClick={() => handleDeleteClick(product._id)}
                       className={styles.deleteButton}
                     >
-                      <FaTrash /> Удалить
-                    </button>
+                      Удалить
+                    </Button>
                   </div>
                 </div>
               </div>

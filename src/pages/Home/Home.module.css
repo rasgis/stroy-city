@@ -469,14 +469,14 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 2px solid rgba(85, 11, 224, 0.2);
+  border: 2px solid rgba(11, 188, 156, 0.5);
 }
 
 .partnerLogoContainer:hover {
   transform: translateY(-5px);
   background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(85, 11, 224, 0.6);
-  border-color: rgba(85, 11, 224, 0.6);
+  box-shadow: 0 4px 12px rgba(11, 188, 156, 0.6);
+  border-color: rgba(11, 188, 156, 0.9);
 }
 
 .partnerLogoContainer:hover .partnerLogo {

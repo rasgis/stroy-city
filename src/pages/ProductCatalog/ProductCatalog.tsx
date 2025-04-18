@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
-import { Container, Typography, Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchCategories, selectFilteredCategories } from "../../reducers/categories";
-import CategoryGrid from "../../components/CategoryGrid/CategoryGrid";
-import { Loader, Breadcrumbs } from "../../components";
+import { CategoryGrid, Loader, Breadcrumbs } from "../../components";
 import { categoryService } from "../../services/categoryService";
-import styles from "./ProductCatalog.module.css";
 import { ROUTES } from "../../constants/routes";
 import { scrollToTop } from "../../utils/scroll";
+import styles from "./ProductCatalog.module.css";
 
 const ProductCatalog: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,25 +20,25 @@ const ProductCatalog: React.FC = () => {
 
   if (categoriesLoading) {
     return (
-      <Container className={styles.container}>
+      <div className={styles.container}>
         <Loader message="Загрузка категорий..." />
-      </Container>
+      </div>
     );
   }
 
   if (categoriesError) {
     return (
-      <Container className={styles.container}>
-        <Typography color="error">{categoriesError}</Typography>
-      </Container>
+      <div className={styles.container}>
+        <div className={styles.errorMessage}>{categoriesError}</div>
+      </div>
     );
   }
 
   const rootCategories = categoryService.buildFullCategoryTree(categories);
 
   return (
-    <Container className={styles.container}>
-      <Box className={styles.content}>
+    <div className={styles.container}>
+      <div className={styles.content}>
         <Breadcrumbs 
           items={[
             {
@@ -52,24 +50,19 @@ const ProductCatalog: React.FC = () => {
           className={styles.breadcrumbs}
         />
         
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          className={styles.title}
-        >
+        <h1 className={styles.title}>
           Каталог товаров
-        </Typography>
+        </h1>
 
         {rootCategories.length === 0 ? (
-          <Typography>Нет доступных категорий</Typography>
+          <p className={styles.emptyMessage}>Нет доступных категорий</p>
         ) : (
-          <Box className={styles.categoriesContainer}>
+          <div className={styles.categoriesContainer}>
             <CategoryGrid categories={rootCategories} />
-          </Box>
+          </div>
         )}
-      </Box>
-    </Container>
+      </div>
+    </div>
   );
 };
 

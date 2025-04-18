@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { FaShoppingCart, FaTrash, FaShoppingBag } from "react-icons/fa";
 import { useAppSelector, useAppDispatch } from "../../hooks";
-import { clearCart } from "../../reducers/cartSlice";
-import { CartItem, Breadcrumbs } from "../../components";
+import { clearCart, removeFromCart, updateQuantity } from "../../reducers/cartSlice";
+import { CartItem, Button } from "../../components";
+import { Breadcrumbs } from "../../components/Breadcrumbs/Breadcrumbs";
 import { Modal } from "../../components/Modal/Modal";
 import { ROUTES } from "../../constants/routes";
 import { scrollToTop } from "../../utils/scroll";
+import { formatCurrency } from "../../utils/formatCurrency";
 import styles from "./Cart.module.css";
 
 const Cart: React.FC = () => {
@@ -22,6 +23,14 @@ const Cart: React.FC = () => {
   const handleClearCart = () => {
     dispatch(clearCart());
     setIsDeleteModalOpen(false);
+  };
+
+  const handleUpdateQuantity = (id: string, quantity: number) => {
+    dispatch(updateQuantity({ _id: id, quantity }));
+  };
+
+  const handleRemoveItem = (id: string) => {
+    dispatch(removeFromCart(id));
   };
 
   return (
@@ -42,7 +51,7 @@ const Cart: React.FC = () => {
           <h1 className={styles.title}>Корзина</h1>
           {cartItems.length === 0 ? (
             <div className={styles.emptyCart}>
-              <ShoppingCartIcon className={styles.emptyIcon} />
+              <FaShoppingCart className={styles.emptyIcon} />
               <h2>Корзина пуста</h2>
               <p>Добавьте товары в корзину, чтобы оформить заказ</p>
             </div>
@@ -51,7 +60,12 @@ const Cart: React.FC = () => {
               <div className={styles.cartGrid}>
                 {cartItems.map((item) => (
                   <div key={item._id} className={styles.cartItem}>
-                    <CartItem item={item} />
+                    <CartItem 
+                      item={item} 
+                      onUpdateQuantity={handleUpdateQuantity}
+                      onRemove={handleRemoveItem}
+                      maxQuantity={item.stock || 10}
+                    />
                   </div>
                 ))}
               </div>
@@ -59,19 +73,26 @@ const Cart: React.FC = () => {
               <div className={styles.cartSummary}>
                 <div className={styles.total}>
                   <span>Итого:</span>
-                  <span className={styles.totalAmount}>{total} ₽</span>
+                  <span className={styles.totalAmount}>{formatCurrency(total)}</span>
                 </div>
                 <div className={styles.actions}>
-                  <button
-                    className={styles.clearButton}
+                  <Button
+                    type="delete"
+                    icon={<FaTrash />}
                     onClick={() => setIsDeleteModalOpen(true)}
+                    className={styles.clearButton}
+                    title="Очистить корзину"
                   >
-                    <DeleteIcon />
                     Очистить корзину
-                  </button>
-                  <button className={styles.checkoutButton}>
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<FaShoppingBag />}
+                    className={styles.checkoutButton}
+                    title="Оформить заказ"
+                  >
                     Оформить заказ
-                  </button>
+                  </Button>
                 </div>
               </div>
             </>
