@@ -27,10 +27,12 @@ import {
   ProductFormValues,
   CategoryFormValues,
   UserFormValues,
+  FormField,
+  FieldOption
 } from "./types";
 import { userService } from "../../services/userService";
-import { ImageSelector } from "../ImageSelector/ImageSelector";
-import { imageService } from "../../services/imageService";
+import { SimpleImageSelector } from "../ImageSelector/SimpleImageSelector";
+import { handleImageError } from "../../utils/imageUtils";
 
 interface EntityFormProps {
   isOpen: boolean;
@@ -170,7 +172,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                   description: categoryValues.description,
                   image: categoryValues.image,
                   parentId: categoryValues.parentId,
-                  _id: entityData._id || entityData.id || "",
                 },
               })
             ).unwrap();
@@ -197,13 +198,9 @@ export const EntityForm: React.FC<EntityFormProps> = ({
 
               // Добавляем пароль, только если он был изменен (не пустой)
               if (userValues.password && userValues.password.trim() !== "") {
-                console.log("Обновляем пароль пользователя");
                 Object.assign(userData, { password: userValues.password });
-              } else {
-                console.log("Пароль не изменен, не отправляем его на сервер");
               }
 
-              console.log("Данные для обновления пользователя:", userData);
               await userService.updateUser(entityData._id, userData);
               onClose();
             } catch (updateError) {
@@ -247,16 +244,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({
             try {
               const userValues = values as UserFormValues;
 
-              console.log("Получены значения формы пользователя:", userValues);
-
               // Проверяем корректность значения роли пользователя
               let role: "user" | "admin";
               if (userValues.role === "admin") {
                 role = "admin";
-                console.log("Установлена роль администратора");
               } else {
                 role = "user";
-                console.log("Установлена роль пользователя");
               }
 
               // Создаем объект с данными пользователя
@@ -268,11 +261,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                 role: role,
               };
 
-              console.log("Данные пользователя для отправки:", userData);
-
               try {
                 const result = await userService.createUser(userData);
-                console.log("Результат создания пользователя:", result);
                 onClose();
               } catch (error) {
                 console.error("Ошибка при создании пользователя:", error);
@@ -321,30 +311,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({
     switch (field.type) {
       case "image":
         return (
-          <ImageSelector
+          <SimpleImageSelector
             key={field.name}
             value={fieldValue as string}
             onChange={(value: string) => {
               formik.setFieldValue(field.name, value);
-            }}
-            onFileChange={async (file: File) => {
-              try {
-                setLoading(true);
-                // Определяем тип изображения на основе типа сущности
-                const imageType = entityType === 'product' ? 'product' : 
-                                entityType === 'category' ? 'category' : 'other';
-                
-                // Загружаем изображение на сервер
-                const imageUrl = await imageService.uploadImage(file, imageType);
-                
-                // Устанавливаем URL в поле формы
-                formik.setFieldValue(field.name, imageUrl);
-                setLoading(false);
-              } catch (error) {
-                console.error('Ошибка при загрузке изображения:', error);
-                setError('Не удалось загрузить изображение');
-                setLoading(false);
-              }
             }}
             label={field.label}
             error={!!fieldError}
@@ -407,10 +378,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                   <img
                     src={String(fieldValue)}
                     alt="Предпросмотр"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/placeholder-image.png";
-                    }}
+                    onError={(e) => handleImageError(e, "/placeholder-image.png")}
                   />
                 </div>
               )}

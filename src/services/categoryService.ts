@@ -2,6 +2,7 @@ import axios from "axios";
 import { Category, CategoryFormData } from "../types/category";
 import { authService } from "./authService";
 import { fileService } from "./fileService";
+import { prepareDataForApi } from "../utils/apiUtils";
 
 export interface CategoryWithChildren extends Category {
   children?: CategoryWithChildren[];
@@ -37,82 +38,25 @@ class CategoryService {
     return response.data;
   }
 
-  private async processImage(image: string | File | undefined): Promise<string | undefined> {
-    if (!image) return undefined;
-
-    // Если это уже URL (не base64), возвращаем как есть
-    if (typeof image === "string" && !image.startsWith("data:")) {
-      return image;
-    }
-
-    // Если это File или base64, загружаем через fileService
-    try {
-      if (typeof image === "string" && image.startsWith("data:")) {
-        // Конвертируем base64 в File
-        const base64Data = image.split(",")[1];
-        const mimeType = image.split(";")[0].split(":")[1];
-        const byteCharacters = atob(base64Data);
-        const byteArrays = [];
-
-        for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
-          const slice = byteCharacters.slice(offset, offset + 1024);
-          const byteNumbers = new Array(slice.length);
-          for (let i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-          byteArrays.push(byteArray);
-        }
-
-        const blob = new Blob(byteArrays, { type: mimeType });
-        const file = new File([blob], "image.jpg", { type: mimeType });
-        return await fileService.saveImage(file, "category");
-      }
-
-      if (image instanceof File) {
-        return await fileService.saveImage(image, "category");
-      }
-    } catch (error) {
-      console.error("Error processing image:", error);
-      throw new Error("Ошибка при обработке изображения");
-    }
-
-    return undefined;
-  }
-
   async createCategory(
     categoryData: CategoryFormData
   ): Promise<Category> {
     try {
-      const formData = new FormData();
+      // Подготавливаем данные с использованием общей утилиты
+      const data = prepareDataForApi({
+        name: categoryData.name,
+        description: categoryData.description,
+        parentId: categoryData.parentId,
+        isActive: categoryData.isActive,
+        image: categoryData.image
+      });
 
-      // Обрабатываем изображение если есть
-      if (categoryData.image) {
-        const imageUrl = await this.processImage(categoryData.image);
-        if (imageUrl) {
-          formData.append("image", imageUrl);
-        }
-      }
+      console.log("Данные категории для отправки:", data);
 
-      // Добавляем остальные поля
-      formData.append("name", categoryData.name);
-      
-      if (categoryData.description) {
-        formData.append("description", categoryData.description);
-      }
-      
-      if (categoryData.parentId) {
-        formData.append("parentId", categoryData.parentId);
-      }
-      
-      if (categoryData.isActive !== undefined) {
-        formData.append("isActive", String(categoryData.isActive));
-      }
-
-      const response = await axios.post(`${API_URL}/categories`, formData, {
+      const response = await axios.post(`${API_URL}/categories`, data, {
         headers: {
           ...this.getAuthHeaders(),
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
       
@@ -120,11 +64,10 @@ class CategoryService {
     } catch (error) {
       console.error("Error creating category:", error);
       if (axios.isAxiosError(error) && error.response) {
-        throw new Error(
-          error.response.data.message || "Ошибка при создании категории"
-        );
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
       }
-      throw new Error("Ошибка при создании категории");
+      throw error;
     }
   }
 
@@ -133,38 +76,28 @@ class CategoryService {
     categoryData: CategoryFormData
   ): Promise<Category> {
     try {
-      const formData = new FormData();
-
-      // Обрабатываем изображение если есть
-      if (categoryData.image) {
-        const imageUrl = await this.processImage(categoryData.image);
-        if (imageUrl) {
-          formData.append("image", imageUrl);
-        }
-      }
-
-      // Добавляем остальные поля
-      formData.append("name", categoryData.name);
+      // Подготавливаем данные с использованием общей утилиты
+      const data = prepareDataForApi({
+        name: categoryData.name,
+        description: categoryData.description,
+        parentId: categoryData.parentId,
+        isActive: categoryData.isActive,
+        image: categoryData.image
+      });
       
-      if (categoryData.description) {
-        formData.append("description", categoryData.description);
-      }
-      
-      if (categoryData.parentId) {
-        formData.append("parentId", categoryData.parentId);
-      }
-      
-      if (categoryData.isActive !== undefined) {
-        formData.append("isActive", String(categoryData.isActive));
-      }
+      // Добавляем отладочные логи
+      console.log("Отправляем данные категории:", {
+        id,
+        ...data
+      });
       
       const response = await axios.put(
         `${API_URL}/categories/${id}`,
-        formData,
+        data,
         {
           headers: {
             ...this.getAuthHeaders(),
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json',
           },
         }
       );
@@ -173,11 +106,10 @@ class CategoryService {
     } catch (error) {
       console.error("Error updating category:", error);
       if (axios.isAxiosError(error) && error.response) {
-        throw new Error(
-          error.response.data.message || "Ошибка при обновлении категории"
-        );
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
       }
-      throw new Error("Ошибка при обновлении категории");
+      throw error;
     }
   }
 
@@ -189,11 +121,10 @@ class CategoryService {
     } catch (error) {
       console.error("Error deleting category:", error);
       if (axios.isAxiosError(error) && error.response) {
-        throw new Error(
-          error.response.data.message || "Ошибка при удалении категории"
-        );
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
       }
-      throw new Error("Ошибка при удалении категории");
+      throw error;
     }
   }
 

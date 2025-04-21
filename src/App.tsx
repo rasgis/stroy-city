@@ -11,6 +11,7 @@ import { useAppSelector } from "./hooks";
 import { useAuth } from "./hooks/useAuth";
 import { ROUTES } from "./constants/routes";
 import "./styles/global.css";
+import { GlobalNotification } from "./components/GlobalNotification";
 
 // Pages
 import Home from "./pages/Home/Home";
@@ -108,6 +109,7 @@ const App: React.FC = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
+        <GlobalNotification />
       </div>
     </Router>
   );

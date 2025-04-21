@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../../reducers/authSlice";
 import { RootState, AppDispatch } from "../../../store";
@@ -14,6 +14,7 @@ import {
   FaUsers,
   FaListAlt,
   FaBoxes,
+  FaArrowLeft
 } from "react-icons/fa";
 import styles from "./Header.module.css";
 
@@ -28,11 +29,22 @@ const Header: React.FC = () => {
   );
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [showBackButton, setShowBackButton] = useState(false);
+
+  useEffect(() => {
+    // Не показываем кнопку "Назад" на главной странице
+    setShowBackButton(location.pathname !== '/');
+  }, [location.pathname]);
 
   const handleLogout = () => {
     dispatch(logoutUser());
     setMobileMenuOpen(false);
     navigate("/");
+  };
+
+  const handleGoBack = () => {
+    navigate(-1); // Возврат на предыдущую страницу
   };
 
   const toggleMobileMenu = () => {
@@ -160,6 +172,16 @@ const Header: React.FC = () => {
       <div className={styles.headerWrapper}>
         <div className={styles.container}>
           <div className={styles.leftSection}>
+            {showBackButton && (
+              <button 
+                className={styles.backButton} 
+                onClick={handleGoBack}
+                aria-label="Вернуться назад"
+                title="Назад"
+              >
+                <FaArrowLeft />
+              </button>
+            )}
             <Link
               to="/"
               className={styles.logoContainer}

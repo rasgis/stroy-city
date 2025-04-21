@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import {
+  Container,
+  Typography,
+  Box,
+} from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchProductById, selectSelectedProduct, selectProductLoading, selectProductError } from "../../reducers/products";
 import { fetchCategories, selectFilteredCategories } from "../../reducers/categories";
-import { addToCart } from "../../reducers/cartSlice";
+import { addToCartWithNotification } from "../../reducers/cartSlice";
 import { ROUTES } from "../../constants/routes";
 import { categoryService } from "../../services/categoryService";
 import { Breadcrumbs } from "../../components";
 import styles from "./ProductDetail.module.css";
 import { scrollToTop } from "../../utils/scroll";
+import { BsExclamationCircle } from "react-icons/bs";
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,7 +30,6 @@ const ProductDetail: React.FC = () => {
   const categoriesLoading = useAppSelector((state) => state.categoriesList.loading);
   const categoriesError = useAppSelector((state) => state.categoriesList.error);
   
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
@@ -37,13 +42,8 @@ const ProductDetail: React.FC = () => {
 
   const handleAddToCart = () => {
     if (product) {
-      dispatch(addToCart({ ...product, quantity: 1 }));
-      setOpenSnackbar(true);
+      dispatch(addToCartWithNotification({ ...product, quantity: 1 }));
     }
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
   };
 
   if (productLoading || categoriesLoading) {
@@ -126,20 +126,6 @@ const ProductDetail: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {openSnackbar && (
-        <div className={styles.snackbar}>
-          <div className={styles.snackbarContent}>
-            Товар добавлен в корзину
-            <button
-              className={styles.closeButton}
-              onClick={handleCloseSnackbar}
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

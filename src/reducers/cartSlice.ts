@@ -1,6 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { CartItem } from "../types";
 import { authService } from "../services/authService";
+import { showNotification } from "./notificationsSlice";
+import { AppDispatch } from "../store";
 
 interface CartState {
   items: CartItem[];
@@ -10,12 +12,10 @@ interface CartState {
 // Функция для получения ключа корзины в localStorage
 const getCartStorageKey = (): string => {
   const user = authService.getUser();
-  console.log("User for cart key:", user);
 
   // Используем только id пользователя для формирования ключа
   if (user && user.id) {
     const key = `cart_${user.id}`;
-    console.log("Using cart key:", key);
     return key;
   }
 
@@ -39,8 +39,6 @@ export const loadCartFromStorage = (): CartState => {
 const saveCartToStorage = (cart: CartState) => {
   try {
     const key = getCartStorageKey();
-    console.log(`Сохраняю корзину по ключу: ${key}`, cart);
-
     // Очищаем устаревшие ключи для текущего пользователя
     const user = authService.getUser();
     if (user && user.id) {
@@ -48,7 +46,6 @@ const saveCartToStorage = (cart: CartState) => {
       const oldKeys = [`cart_${user._id}`];
       oldKeys.forEach((oldKey) => {
         if (oldKey !== key && localStorage.getItem(oldKey)) {
-          console.log(`Удаляю старый ключ корзины: ${oldKey}`);
           localStorage.removeItem(oldKey);
         }
       });
@@ -111,7 +108,6 @@ const cartSlice = createSlice({
       // Очищаем корзину в localStorage
       const key = getCartStorageKey();
       localStorage.removeItem(key);
-      console.log(`Корзина очищена, ключ: ${key}`);
     },
     loadCart: (state) => {
       // Загружаем корзину из localStorage с текущим ключом
@@ -123,6 +119,17 @@ const cartSlice = createSlice({
     },
   },
 });
+
+export const addToCartWithNotification = (item: CartItem) => (dispatch: AppDispatch) => {
+  // Добавляем товар в корзину
+  dispatch(addToCart(item));
+  
+  // Показываем уведомление
+  dispatch(showNotification({
+    message: "Товар добавлен в корзину",
+    type: "success"
+  }));
+};
 
 export const {
   addToCart,

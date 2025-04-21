@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { Product } from "../../types/product";
 import { ROUTES } from "../../constants/routes";
 import { useAppSelector, useAppDispatch } from "../../hooks/redux";
-import { addToCart } from "../../reducers/cartSlice";
+import { addToCartWithNotification } from "../../reducers/cartSlice";
 import { selectFilteredCategories } from "../../reducers/categories";
-import { Button, Snackbar, Alert } from "@mui/material";
+import { Button } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import styles from "./ProductCard.module.css";
 import { scrollToTop } from "../../utils/scroll";
@@ -21,7 +21,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
 }) => {
   const categories = useAppSelector(selectFilteredCategories);
   const dispatch = useAppDispatch();
-  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   // Мемоизируем название категории
   const categoryName = useMemo(() => {
@@ -49,13 +48,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.preventDefault(); // Предотвращаем переход по ссылке
     e.stopPropagation(); // Предотвращаем всплытие события
-    dispatch(addToCart({ ...product, quantity: 1 }));
-    setOpenSnackbar(true);
+    dispatch(addToCartWithNotification({ ...product, quantity: 1 }));
   }, [dispatch, product]);
-
-  const handleCloseSnackbar = useCallback(() => {
-    setOpenSnackbar(false);
-  }, []);
 
   const handleCardClick = useCallback((e: React.MouseEvent) => {
     // Предотвращаем перекрытие события клика на кнопку
@@ -105,20 +99,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
           </div>
         </div>
       </Link>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          Товар добавлен в корзину
-        </Alert>
-      </Snackbar>
     </>
   );
 }, (prevProps, nextProps) => {

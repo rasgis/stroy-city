@@ -3,45 +3,12 @@ import { Product, ProductFormData } from "../types/product";
 import { API_CONFIG } from "../config/api";
 import { authService } from "./authService";
 import { fileService } from "./fileService";
+import { prepareDataForApi } from "../utils/apiUtils";
+
 class ProductService {
   private getHeaders() {
     const token = authService.getToken();
-    return {
-      ...API_CONFIG.HEADERS,
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    };
-  }
-
-  private async processImage(image: string | File): Promise<string> {
-    // Если это уже URL (не base64), возвращаем как есть
-    if (typeof image === "string" && !image.startsWith("data:")) {
-      return image;
-    }
-
-    // Если это base64 строка, конвертируем в File
-    if (typeof image === "string" && image.startsWith("data:")) {
-      const base64Data = image.split(",")[1];
-      const mimeType = image.split(";")[0].split(":")[1];
-      const byteCharacters = atob(base64Data);
-      const byteArrays = [];
-
-      for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
-        const slice = byteCharacters.slice(offset, offset + 1024);
-        const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        byteArrays.push(byteArray);
-      }
-
-      const blob = new Blob(byteArrays, { type: mimeType });
-      const file = new File([blob], "image.jpg", { type: mimeType });
-      image = file;
-    }
-
-    // Загружаем файл
-    return await fileService.saveImage(image as File, "product");
+    return token ? { Authorization: `Bearer ${token}` } : {};
   }
 
   async getProducts(): Promise<Product[]> {
@@ -66,40 +33,28 @@ class ProductService {
   }
 
   async createProduct(product: ProductFormData): Promise<Product> {
-    const formData = new FormData();
-
-    // Обрабатываем изображение
-    if (product.image) {
-      try {
-        const imageUrl = await this.processImage(product.image);
-        formData.append("image", imageUrl);
-      } catch (error) {
-        throw error;
-      }
-    } else {
-      console.warn("Изображение не предоставлено");
-    }
-
-    // Добавляем остальные поля
-    formData.append("name", product.name);
-    formData.append("description", product.description);
-    formData.append("price", product.price.toString());
-    formData.append("category", product.category);
-    formData.append("unitOfMeasure", product.unitOfMeasure);
-    if (product.stock !== undefined) {
-      formData.append("stock", product.stock.toString());
-    }
-    if (product.isActive !== undefined) {
-      formData.append("isActive", product.isActive.toString());
-    }
-
-    console.log("formData готов для отправки");
-
     try {
+      // Подготавливаем данные с использованием общей утилиты
+      const data = prepareDataForApi({
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category,
+        unitOfMeasure: product.unitOfMeasure,
+        stock: product.stock,
+        isActive: product.isActive,
+        image: product.image
+      });
+
+      console.log("Данные товара для отправки:", data);
+
       const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BASE}`;
 
-      const response = await axios.post(url, formData, {
-        headers: this.getHeaders(),
+      const response = await axios.post(url, data, {
+        headers: {
+          ...this.getHeaders(),
+          'Content-Type': 'application/json',
+        },
       });
       return response.data;
     } catch (error) {
@@ -112,45 +67,35 @@ class ProductService {
   }
 
   async updateProduct(id: string, product: ProductFormData): Promise<Product> {
-    const formData = new FormData();
-
-    // Обрабатываем изображение
-    if (product.image) {
-      try {
-        const imageUrl = await this.processImage(product.image);
-        formData.append("image", imageUrl);
-      } catch (error) {
-        throw error;
-      }
-    } else {
-      console.warn("Изображение не предоставлено");
-    }
-
-    // Добавляем остальные поля
-    formData.append("name", product.name);
-    formData.append("description", product.description);
-    formData.append("price", product.price.toString());
-    formData.append("category", product.category);
-    formData.append("unitOfMeasure", product.unitOfMeasure);
-    if (product.stock !== undefined) {
-      formData.append("stock", product.stock.toString());
-    }
-    if (product.isActive !== undefined) {
-      formData.append("isActive", product.isActive.toString());
-    }
-
     try {
+      // Подготавливаем данные с использованием общей утилиты
+      const data = prepareDataForApi({
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category,
+        unitOfMeasure: product.unitOfMeasure,
+        stock: product.stock,
+        isActive: product.isActive,
+        image: product.image
+      });
+
       const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(
         id
       )}`;
 
-      const response = await axios.put(url, formData, {
-        headers: this.getHeaders(),
+      const response = await axios.put(url, data, {
+        headers: {
+          ...this.getHeaders(),
+          'Content-Type': 'application/json',
+        },
       });
       return response.data;
     } catch (error) {
       console.error("Ошибка при обновлении продукта:", error);
       if (axios.isAxiosError(error) && error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
       }
       throw error;
     }

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { optimizeImage } from '../../utils/imageUtils';
+import { optimizeImage, isValidImageUrl } from '../../utils/imageUtils';
 import styles from './ImageSelector.module.css';
 import { FaLink, FaCloudUploadAlt, FaImages } from 'react-icons/fa';
 import { imageService } from '../../services/imageService';
@@ -96,7 +96,7 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
       return;
     }
 
-    if (imageService.isValidImageUrl(url)) {
+    if (isValidImageUrl(url)) {
       setPreview(url);
       onChange(url);
       setLocalError('');
@@ -132,23 +132,6 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
     setSelectedServerImage(url);
     setPreview(url);
     onChange(url);
-  };
-
-  // Проверяет, является ли строка корректным URL изображения
-  const isValidImageUrl = (url: string): boolean => {
-    if (!url) return false;
-    
-    // Простая проверка на наличие расширения изображения
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
-    const hasImageExtension = imageExtensions.some(ext => url.toLowerCase().includes(ext));
-    
-    // Проверка на корректный URL
-    try {
-      new URL(url);
-      return hasImageExtension || url.startsWith('data:image/');
-    } catch (e) {
-      return false;
-    }
   };
 
   // Рендер компонента для ввода URL

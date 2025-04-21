@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
 import { CartItem as CartItemType } from '../../types';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { handleImageError } from '../../utils/imageUtils';
 import { Button } from '../';
 import styles from './CartItem.module.css';
 
@@ -59,9 +60,7 @@ export const CartItem: React.FC<CartItemProps> = ({
           src={item.image || "/placeholder-image.png"} 
           alt={item.name} 
           className={styles.image}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "/placeholder-image.png";
-          }} 
+          onError={(e) => handleImageError(e, "/placeholder-image.png")} 
         />
       </div>
       

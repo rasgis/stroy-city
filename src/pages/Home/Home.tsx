@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { partners } from "../../constants/partners";
 import styles from "./Home.module.css";
+import { ROUTES } from "../../constants/routes";
 
 const Home: React.FC = () => {
   const isAuthenticated = useSelector(
@@ -55,31 +56,30 @@ const Home: React.FC = () => {
 
       {!isAuthenticated && (
         <section className={styles.discountBanner}>
-          <h2 className={styles.discountTitle}>
-            <LocalOffer className={styles.discountIcon} />
-            Специальное предложение для гостей!
-          </h2>
-          <p className={styles.discountText}>
-            Зарегистрируйтесь на нашем сайте и получите дополнительную скидку 5%
-            на все товары при оформлении заказа. Это отличная возможность
-            сэкономить на покупке качественных строительных и кровельных
-            материалов!
-          </p>
-          <div className={styles.discountFeatures}>
-            <div className={styles.discountFeature}>
-              <Star className={styles.discountFeatureIcon} />
-              <span>Эксклюзивные предложения</span>
+          <div className={styles.discountContent}>
+            <Discount className={styles.discountIcon} />
+            <h2 className={styles.discountTitle}>Специальное предложение</h2>
+            <p className={styles.discountText}>
+              Зарегистрируйтесь на нашем сайте и получите <span className={styles.discountPercent}>5%</span> скидку на весь ассортимент товаров!
+            </p>
+            <div className={styles.discountFeatures}>
+              <div className={styles.discountFeature}>
+                <PersonAdd className={styles.discountFeatureIcon} />
+                <span>Простая регистрация</span>
+              </div>
+              <div className={styles.discountFeature}>
+                <LocalOffer className={styles.discountFeatureIcon} />
+                <span>Скидка 5% на всё</span>
+              </div>
+              <div className={styles.discountFeature}>
+                <Star className={styles.discountFeatureIcon} />
+                <span>Постоянные акции</span>
+              </div>
             </div>
-            <div className={styles.discountFeature}>
-              <Discount className={styles.discountFeatureIcon} />
-              <span>Постоянная скидка 5%</span>
-            </div>
+            <Link to={ROUTES.REGISTER} className={styles.discountButton}>
+              ЗАРЕГИСТРИРОВАТЬСЯ <ArrowForward className={styles.arrowIcon} />
+            </Link>
           </div>
-          <Link to="/register" className={styles.discountButton}>
-            <PersonAdd className={styles.discountIcon} />
-            Зарегистрироваться и получить скидку
-            <ArrowForward className={styles.discountIcon} />
-          </Link>
         </section>
       )}
 

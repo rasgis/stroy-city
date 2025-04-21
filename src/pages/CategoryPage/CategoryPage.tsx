@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -14,6 +14,7 @@ import { Category, Product } from "../../types";
 import { categoryService } from "../../services/categoryService";
 import { scrollToTop } from "../../utils/scroll";
 import styles from "./CategoryPage.module.css";
+import { BsExclamationCircle } from "react-icons/bs";
 
 const CategoryPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
@@ -186,9 +187,15 @@ const CategoryPage: React.FC = () => {
         )}
 
         {categoryProducts.length === 0 && (
-          <Typography className={styles.emptyCategory}>
-            В данной категории пока нет товаров
-          </Typography>
+          <div className={styles.emptyMessage}>
+            <BsExclamationCircle size={32} style={{ marginBottom: '1rem' }} />
+            <Typography>
+              В данной категории пока нет товаров
+            </Typography>
+            <Link to={ROUTES.CATALOG} className={styles.returnLink}>
+              Вернуться в каталог
+            </Link>
+          </div>
         )}
       </Box>
     </Container>

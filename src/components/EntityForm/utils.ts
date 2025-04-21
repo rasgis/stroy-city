@@ -39,7 +39,6 @@ export const getInitialValues = (entityType: EntityType, entityData?: any) => {
         password: "",
         role: "user",
       };
-      console.log("Initial user values:", initialValues);
       return initialValues;
     }
 
@@ -93,7 +92,6 @@ export const getInitialValues = (entityType: EntityType, entityData?: any) => {
       role: entityData.role === "admin" ? "admin" : "user",
       _id: entityData._id || entityData.id || "",
     };
-    console.log("Existing user values:", userValues);
     return userValues;
   }
 

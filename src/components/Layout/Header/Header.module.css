@@ -395,3 +395,24 @@
     display: none;
   }
 }
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #0be0b8;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.backButton:hover {
+  background-color: rgba(11, 224, 184, 0.15);
+  transform: translateX(-3px);
+  color: #42ffdc;
+}
