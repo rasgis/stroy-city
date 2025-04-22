@@ -29,6 +29,7 @@ import CategoryListContainer from "./pages/Admin/Categories";
 import Cart from "./pages/Cart/Cart";
 import AdminUsers from "./pages/Admin/Users/Users";
 import AccessDenied from "./pages/AccessDenied";
+import Profile from "./pages/Profile/Profile";
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -66,6 +67,14 @@ const App: React.FC = () => {
             <Route path={ROUTES.ALL_PRODUCTS} element={<AllProducts />} />
             <Route path={ROUTES.CART} element={<Cart />} />
             <Route path="/access-denied" element={<AccessDenied />} />
+            <Route
+              path={ROUTES.PROFILE}
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
             <Route
               path={ROUTES.ADMIN.PRODUCTS}
               element={

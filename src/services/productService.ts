@@ -46,7 +46,6 @@ class ProductService {
         image: product.image
       });
 
-      console.log("Данные товара для отправки:", data);
 
       const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BASE}`;
 

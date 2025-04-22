@@ -28,6 +28,41 @@ const readJsonFile = (filename) => {
   }
 };
 
+// Создание тестового пользователя
+const createTestUser = async () => {
+  try {
+    // Очищаем коллекцию пользователей
+    await User.deleteMany({});
+
+    // Создаем тестового пользователя
+    const testUser = await User.create({
+      name: "Тестовый Пользователь",
+      email: "user@example.com",
+      login: "user",
+      password: "user123",
+      role: "user",
+    });
+
+    console.log("Создан тестовый пользователь:", testUser.email);
+
+    // Создаем администратора
+    const adminUser = await User.create({
+      name: "Администратор",
+      email: "admin@example.com",
+      login: "admin",
+      password: "admin123",
+      role: "admin",
+    });
+
+    console.log("Создан администратор:", adminUser.email);
+
+    return { testUser, adminUser };
+  } catch (error) {
+    console.error("Ошибка при создании тестовых пользователей:", error);
+    process.exit(1);
+  }
+};
+
 // Импорт данных в базу данных
 const importData = async () => {
   try {
@@ -46,16 +81,8 @@ const importData = async () => {
       process.exit(1);
     }
 
-    // Создание администратора
-    const adminUser = await User.create({
-      name: "Администратор",
-      email: "admin@example.com",
-      login: "admin",
-      password: "admin123",
-      role: "admin",
-    });
-
-    console.log("Создан администратор:", adminUser.email);
+    // Создание тестового пользователя и администратора
+    const { testUser, adminUser } = await createTestUser();
 
     // Импорт категорий
     const categories = await Promise.all(

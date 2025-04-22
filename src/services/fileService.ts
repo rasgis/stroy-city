@@ -6,13 +6,7 @@ export const fileService = {
     try {
       // Оптимизируем изображение перед загрузкой
       const optimizedFile = await optimizeImage(file, 1200, 1200, 0.7);
-      console.log(
-        `Размер изображения после оптимизации: ${(
-          optimizedFile.size /
-          1024 /
-          1024
-        ).toFixed(2)} МБ`
-      );
+
 
       // Загружаем изображение в Cloudinary
       const imageUrl = await cloudinaryService.uploadImage(optimizedFile);

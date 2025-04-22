@@ -95,49 +95,72 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @desc    Обновление профиля пользователя
 // @route   PUT /api/users/profile
 // @access  Private
-const updateUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
-
-  if (user) {
-    user.name = req.body.name || user.name;
-
-    if (req.body.email && req.body.email !== user.email) {
-      const emailExists = await User.findOne({ email: req.body.email });
-      if (emailExists) {
-        res.status(400);
-        throw new Error("Пользователь с таким email уже существует");
-      }
-      user.email = req.body.email;
+const updateUserProfile = async (req, res) => {
+  try {
+    console.log("[UserController] Начало выполнения updateUserProfile");
+    
+    // Проверка наличия пользователя
+    if (!req.user || !req.user._id) {
+      console.log("[UserController] Ошибка: Пользователь не аутентифицирован");
+      return res.status(401).json({ message: "Пользователь не аутентифицирован" });
     }
-
-    if (req.body.login && req.body.login !== user.login) {
-      const loginExists = await User.findOne({ login: req.body.login });
-      if (loginExists) {
-        res.status(400);
-        throw new Error("Пользователь с таким логином уже существует");
-      }
-      user.login = req.body.login;
-    }
-
-    if (req.body.password) {
-      user.password = req.body.password;
-    }
-
-    const updatedUser = await user.save();
-
-    res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      login: updatedUser.login,
-      role: updatedUser.role,
-      token: generateToken(updatedUser._id),
+    
+    // Получаем данные из запроса
+    const { name, email, login, password } = req.body;
+    console.log("[UserController] Полученные данные:", { 
+      name, 
+      email, 
+      login, 
+      password: password ? "предоставлен" : "не предоставлен" 
     });
-  } else {
-    res.status(404);
-    throw new Error("Пользователь не найден");
+    
+    try {
+      // Поиск пользователя в базе
+      const user = await User.findById(req.user._id);
+      console.log("[UserController] Пользователь найден:", user ? "да" : "нет");
+      
+      if (!user) {
+        console.log("[UserController] Ошибка: Пользователь не найден в базе");
+        return res.status(404).json({ message: "Пользователь не найден" });
+      }
+      
+      // Обновляем простейшие поля напрямую, без проверок
+      if (name) user.name = name;
+      if (email) user.email = email;
+      if (login) user.login = login;
+      if (password) user.password = password;
+      
+      console.log("[UserController] Сохранение обновленного пользователя...");
+      const updatedUser = await user.save();
+      console.log("[UserController] Пользователь сохранен");
+      
+      // Создаем токен
+      const token = generateToken(updatedUser._id);
+      
+      // Возвращаем данные пользователя
+      return res.status(200).json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        login: updatedUser.login, 
+        role: updatedUser.role,
+        token
+      });
+    } catch (dbError) {
+      console.error("[UserController] Ошибка при работе с базой данных:", dbError);
+      return res.status(500).json({ 
+        message: "Ошибка при обновлении профиля в базе данных",
+        error: dbError.message
+      });
+    }
+  } catch (error) {
+    console.error("[UserController] Необработанная ошибка:", error);
+    return res.status(500).json({ 
+      message: "Внутренняя ошибка сервера",
+      error: error.message
+    });
   }
-});
+};
 
 // @desc    Получение всех пользователей
 // @route   GET /api/users

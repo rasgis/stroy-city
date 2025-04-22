@@ -19,32 +19,42 @@ const initialState: AuthState = {
 
 export const login = createAsyncThunk(
   "auth/login",
-  async (credentials: LoginCredentials, { dispatch }) => {
+  async (credentials: LoginCredentials, { dispatch, rejectWithValue }) => {
     try {
       // При входе получаем данные пользователя и загружаем его корзину
       const response = await authService.login(credentials);
+      
       // Загружаем корзину из localStorage при входе
       dispatch(loadCart());
       return response.user; // Возвращаем пользователя из ответа
     } catch (error) {
       console.error("Ошибка в thunk login:", error);
-      throw error;
+      // Проверяем, имеет ли ошибка сообщение и возвращаем его для более информативного вывода
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("Ошибка при входе");
     }
   }
 );
 
 export const register = createAsyncThunk(
   "auth/register",
-  async (credentials: RegisterCredentials, { dispatch }) => {
+  async (credentials: RegisterCredentials, { dispatch, rejectWithValue }) => {
     try {
       // При регистрации получаем данные пользователя и загружаем его корзину
       const user = await authService.register(credentials);
+      
       // Загружаем корзину из localStorage при регистрации
       dispatch(loadCart());
       return user;
     } catch (error) {
       console.error("Ошибка в thunk register:", error);
-      throw error;
+      // Проверяем, имеет ли ошибка сообщение и возвращаем его для более информативного вывода
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("Ошибка при регистрации");
     }
   }
 );
@@ -64,6 +74,9 @@ const authSlice = createSlice({
   reducers: {
     clearError: (state) => {
       state.error = null;
+    },
+    updateUserData: (state, action) => {
+      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -90,7 +103,17 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        
+        // Убедимся, что имя пользователя корректно обрабатывается
+        if (action.payload) {
+          state.user = {
+            ...action.payload,
+            name: action.payload.name || "", // Явно указываем имя пользователя
+          };
+        } else {
+          state.user = action.payload;
+        }
+        
         state.isAuthenticated = true;
       })
       .addCase(register.rejected, (state, action) => {
@@ -107,6 +130,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError } = authSlice.actions;
+export const { clearError, updateUserData } = authSlice.actions;
 
 export default authSlice.reducer;

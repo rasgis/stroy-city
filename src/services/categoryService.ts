@@ -51,7 +51,6 @@ class CategoryService {
         image: categoryData.image
       });
 
-      console.log("Данные категории для отправки:", data);
 
       const response = await axios.post(`${API_URL}/categories`, data, {
         headers: {
@@ -84,12 +83,7 @@ class CategoryService {
         isActive: categoryData.isActive,
         image: categoryData.image
       });
-      
-      // Добавляем отладочные логи
-      console.log("Отправляем данные категории:", {
-        id,
-        ...data
-      });
+
       
       const response = await axios.put(
         `${API_URL}/categories/${id}`,

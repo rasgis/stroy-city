@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { register } from "../../reducers/authSlice";
+import { register, clearError } from "../../reducers/authSlice";
 import { ROUTES } from "../../constants/routes";
 import styles from "./Auth.module.css";
 
@@ -28,6 +28,13 @@ const Register: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { loading, error } = useAppSelector((state) => state.auth);
+  
+  // Очищаем ошибку при размонтировании компонента
+  React.useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   const formik = useFormik({
     initialValues: {
@@ -45,6 +52,7 @@ const Register: React.FC = () => {
         navigate(ROUTES.HOME);
       } catch (error) {
         console.error("Ошибка регистрации:", error);
+        // Ошибка уже обработана в authSlice и установлена в state.error
       }
     },
   });
@@ -164,7 +172,7 @@ const Register: React.FC = () => {
         </form>
 
         <div className={styles.switchAuth}>
-          Уже есть аккаунт? <Link to={ROUTES.LOGIN}>Войти</Link>
+          Уже есть аккаунт? <Link to={ROUTES.LOGIN} onClick={() => dispatch(clearError())}>Войти</Link>
         </div>
       </div>
     </div>

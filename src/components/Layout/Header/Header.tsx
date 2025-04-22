@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../../reducers/authSlice";
 import { RootState, AppDispatch } from "../../../store";
 import { scrollToTop } from "../../../utils/scroll";
+import { ROUTES } from "../../../constants/routes";
 import {
   FaShoppingCart,
   FaUser,
@@ -141,8 +142,12 @@ const Header: React.FC = () => {
         <div className={styles.auth}>
           {isAuthenticated && user ? (
             <div className={styles.userInfo}>
-              <FaUser className={styles.userIcon} />
-              <span className={styles.userName}>{user.name}</span>
+              <Link to={ROUTES.PROFILE} className={styles.userLink} title="Перейти в профиль">
+                <FaUser className={styles.userIcon} />
+                <span className={styles.userName}>
+                  {user.name || user.login || 'Профиль'}
+                </span>
+              </Link>
               <button
                 onClick={handleLogout}
                 className={styles.logoutButton}
@@ -154,7 +159,7 @@ const Header: React.FC = () => {
           ) : (
             <div className={styles.authLinks}>
               <Link
-                to="/login"
+                to={ROUTES.LOGIN}
                 className={styles.authLink}
                 onClick={closeMobileMenu}
               >

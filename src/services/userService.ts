@@ -86,7 +86,6 @@ export const userService = {
         role: userData.role === "admin" ? "admin" : "user",
       };
 
-      console.log("Отправка запроса на создание пользователя:", validUserData);
 
       const response = await axios.post(
         `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USERS.BASE}`,
@@ -98,8 +97,7 @@ export const userService = {
           },
         }
       );
-
-      console.log("Ответ сервера при создании пользователя:", response.data);
+      
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -179,6 +177,71 @@ export const userService = {
           }`
         );
       }
+      throw error;
+    }
+  },
+
+  // Обновление профиля текущего пользователя
+  async updateUserProfile(userData: UserUpdateData): Promise<User> {
+    try {
+      console.log("Отправка запроса на обновление профиля:", userData);
+      const token = authService.getToken();
+
+      if (!token) {
+        throw new Error("Необходима авторизация для обновления профиля");
+      }
+
+      console.log("Токен авторизации:", token ? "присутствует" : "отсутствует");
+      
+      // Изменяем маршрут на /api/users/profile вместо /api/auth/profile
+      const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USERS.BASE}/profile`;
+      console.log("URL запроса:", url);
+
+      const response = await axios.put(
+        url,
+        userData,
+        {
+          headers: {
+            ...API_CONFIG.HEADERS,
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Ответ сервера:", response.status, response.statusText);
+      
+      // Обновляем данные пользователя в localStorage, если они изменились
+      const currentUser = authService.getUser();
+      if (currentUser && response.data) {
+        const updatedUser = {
+          ...currentUser,
+          ...response.data,
+          id: response.data._id || response.data.id || currentUser.id,
+        };
+        authService.setAuthData(response.data.token || token, updatedUser);
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error("Ошибка при обновлении профиля:", error);
+      
+      // Подробный вывод ошибки для диагностики
+      if (axios.isAxiosError(error)) {
+        console.error("Детали ошибки:", {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          message: error.message
+        });
+        
+        const errorMessage = error.response?.data?.message || 
+                             error.response?.data?.error || 
+                             error.message || 
+                             "Неизвестная ошибка";
+        
+        throw new Error(`Ошибка при обновлении профиля: ${errorMessage}`);
+      }
+      
       throw error;
     }
   },

@@ -37,17 +37,28 @@ const userSchema = mongoose.Schema(
 
 // Хеширование пароля перед сохранением
 userSchema.pre("save", async function (next) {
+  // Если пароль не был изменен, пропускаем хеширование
   if (!this.isModified("password")) {
-    next();
+    return next();
   }
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Метод для сравнения паролей
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  try {
+    return await bcrypt.compare(enteredPassword, this.password);
+  } catch (error) {
+    console.error("Error comparing passwords:", error);
+    return false;
+  }
 };
 
 const User = mongoose.model("User", userSchema);

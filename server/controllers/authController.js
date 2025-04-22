@@ -7,33 +7,40 @@ export const register = async (req, res) => {
   try {
     const { name, email, login, password, role } = req.body;
 
-    // Проверка существования пользователя
-    let user = await User.findOne({ $or: [{ email }, { login }] });
-    if (user) {
+    // Проверка на наличие всех необходимых полей
+    if (!name || !email || !login || !password) {
       return res.status(400).json({
-        message: "Пользователь с таким email или логином уже существует",
+        message: "Все поля (имя, email, логин, пароль) обязательны для заполнения"
+      });
+    }
+
+    // Проверка существования пользователя по email
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
+      return res.status(400).json({
+        message: "Пользователь с таким email уже существует"
+      });
+    }
+
+    // Проверка существования пользователя по логину
+    const loginExists = await User.findOne({ login });
+    if (loginExists) {
+      return res.status(400).json({
+        message: "Пользователь с таким логином уже существует"
       });
     }
 
     // Создание нового пользователя
-    user = new User({
+    const user = new User({
       name,
       email,
       login,
-      password,
-      // Используем роль из запроса только если это "admin", иначе "user"
+      password, // Пароль будет автоматически хеширован pre-save хуком
       role: "user", // Для регистрации всегда устанавливаем роль "user"
     });
 
-    // Хеширование пароля
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-
+    // Сохраняем пользователя - хеширование произойдет автоматически в pre-save хуке
     await user.save();
-
-    console.log(
-      `Зарегистрирован новый пользователь: ${email}, роль: ${user.role}`
-    );
 
     // Создание JWT токена
     const payload = {
@@ -41,6 +48,15 @@ export const register = async (req, res) => {
         id: user._id,
         role: user.role,
       },
+    };
+
+    // Подготовка данных о пользователе для отправки клиенту
+    const userData = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      login: user.login,
+      role: user.role,
     };
 
     jwt.sign(
@@ -51,19 +67,13 @@ export const register = async (req, res) => {
         if (err) throw err;
         res.json({
           token,
-          user: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            login: user.login,
-            role: user.role,
-          },
+          user: userData
         });
       }
     );
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Ошибка сервера");
+    console.error("Ошибка при регистрации:", err.message);
+    res.status(500).json({ message: "Ошибка сервера при регистрации пользователя" });
   }
 };
 
@@ -71,6 +81,10 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { identifier, password } = req.body;
+    
+    if (!identifier || !password) {
+      return res.status(400).json({ message: "Необходимо указать логин/email и пароль" });
+    }
 
     // Поиск пользователя по email или login
     const user = await User.findOne({
@@ -80,9 +94,9 @@ export const login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "Неверные учетные данные" });
     }
-
+    
     // Проверка пароля
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return res.status(400).json({ message: "Неверные учетные данные" });
     }
@@ -114,7 +128,7 @@ export const login = async (req, res) => {
       }
     );
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Ошибка сервера");
+    console.error("Ошибка при входе:", err.message);
+    res.status(500).json({ message: "Ошибка сервера при входе в систему" });
   }
 };

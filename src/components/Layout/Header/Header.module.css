@@ -205,6 +205,28 @@
   position: relative;
 }
 
+.userLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #0bb999;
+  transition: all 0.3s ease;
+}
+
+.userLink:hover {
+  color: #42ffdc;
+}
+
+.userLink:hover .userName {
+  text-decoration: underline;
+}
+
+.userName {
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
 .logoutButton {
   background: none;
   border: none;
