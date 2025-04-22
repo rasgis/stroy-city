@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
-import { CartItem as CartItemType } from '../../types';
-import { formatCurrency } from '../../utils/formatCurrency';
-import { handleImageError } from '../../utils/imageUtils';
-import { Button } from '../';
-import styles from './CartItem.module.css';
+import React, { useState, useCallback, useMemo } from "react";
+import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
+import { CartItem as CartItemType } from "../../types";
+import { formatCurrency } from "../../utils/formatCurrency";
+import { handleImageError } from "../../utils/imageUtils";
+import { Button } from "../";
+import styles from "./CartItem.module.css";
 
 interface CartItemProps {
   item: CartItemType;
@@ -13,11 +13,11 @@ interface CartItemProps {
   maxQuantity?: number;
 }
 
-export const CartItem: React.FC<CartItemProps> = ({ 
-  item, 
-  onUpdateQuantity, 
+export const CartItem: React.FC<CartItemProps> = ({
+  item,
+  onUpdateQuantity,
   onRemove,
-  maxQuantity = 10
+  maxQuantity = 10,
 }) => {
   const [error, setError] = useState<string | null>(null);
 
@@ -56,33 +56,29 @@ export const CartItem: React.FC<CartItemProps> = ({
   return (
     <div className={styles.card}>
       <div className={styles.imageContainer}>
-        <img 
-          src={item.image || "/placeholder-image.png"} 
-          alt={item.name} 
+        <img
+          src={item.image || "/placeholder-image.png"}
+          alt={item.name}
           className={styles.image}
-          onError={(e) => handleImageError(e, "/placeholder-image.png")} 
+          onError={(e) => handleImageError(e, "/placeholder-image.png")}
         />
       </div>
-      
+
       <div className={styles.content}>
         <h3 className={styles.title}>{item.name}</h3>
-        
+
         <div className={styles.priceContainer}>
           <div className={styles.price}>
             {formatCurrency(item.price)} × {item.quantity}
           </div>
           <div className={styles.total}>{formatCurrency(totalPrice)}</div>
         </div>
-        
-        {error && (
-          <div className={styles.error}>
-            {error}
-          </div>
-        )}
-        
+
+        {error && <div className={styles.error}>{error}</div>}
+
         <div className={styles.actions}>
           <div className={styles.quantity}>
-            <Button 
+            <Button
               variant="secondary"
               size="small"
               startIcon={<FaMinus size={16} />}
@@ -91,12 +87,10 @@ export const CartItem: React.FC<CartItemProps> = ({
               title="Уменьшить количество"
               className={styles.quantityButton}
             />
-            
-            <span className={styles.quantityValue}>
-              {item.quantity}
-            </span>
-            
-            <Button 
+
+            <span className={styles.quantityValue}>{item.quantity}</span>
+
+            <Button
               variant="secondary"
               size="small"
               startIcon={<FaPlus size={16} />}
@@ -106,8 +100,8 @@ export const CartItem: React.FC<CartItemProps> = ({
               className={styles.quantityButton}
             />
           </div>
-          
-          <Button 
+
+          <Button
             variant="danger"
             size="medium"
             startIcon={<FaTrash size={14} />}

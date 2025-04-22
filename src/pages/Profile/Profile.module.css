@@ -6,10 +6,10 @@
 }
 
 .profileCard {
-  background: linear-gradient(135deg, #1e2026, #283844);
+  background: var(--background-card);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(11, 224, 184, 0.2);
-  border: 1px solid rgba(11, 224, 184, 0.3);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
   padding: 2rem;
   position: relative;
   overflow: hidden;
@@ -23,12 +23,16 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 30% 30%, rgba(11, 224, 184, 0.1), transparent 70%);
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--accent-focus),
+    transparent 70%
+  );
   z-index: -1;
 }
 
 .title {
-  color: #d4ffea;
+  color: var(--text-primary);
   font-size: 2rem;
   margin-bottom: 2rem;
   text-align: center;
@@ -51,24 +55,24 @@
 
 .label {
   font-size: 1rem;
-  color: #d4ffea;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .input {
   padding: 0.75rem 1rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(11, 224, 184, 0.3);
+  background-color: var(--input-background);
+  border: 1px solid var(--input-border);
   border-radius: 8px;
-  color: #d4ffea;
+  color: var(--input-text);
   font-size: 1rem;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .input:focus {
   outline: none;
-  border-color: rgba(11, 224, 184, 0.8);
-  box-shadow: 0 0 0 2px rgba(11, 224, 184, 0.2);
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 2px var(--accent-focus);
 }
 
 .formActions {
@@ -80,8 +84,8 @@
 
 .saveButton {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #0be0b8 0%, #00d4b8 100%);
-  color: #1d1e24;
+  background: var(--button-background);
+  color: var(--button-text);
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -92,13 +96,16 @@
 
 .saveButton:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(11, 224, 184, 0.4);
+  box-shadow: var(--card-shadow);
+  background: var(--button-hover);
 }
 
 .saveButton:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
+  background: var(--button-disabled-background);
+  color: var(--button-disabled-text);
 }
 
 .deleteButton {
@@ -142,25 +149,26 @@
     padding: 0 1rem;
     margin: 1rem auto;
   }
-  
+
   .profileCard {
     padding: 1.5rem;
   }
-  
+
   .title {
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
   }
-  
+
   .form {
     gap: 1rem;
   }
-  
+
   .input {
     padding: 0.6rem 0.8rem;
   }
-  
-  .saveButton, .deleteButton {
+
+  .saveButton,
+  .deleteButton {
     padding: 0.6rem 1.2rem;
   }
-} 
+}

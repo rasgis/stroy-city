@@ -98,66 +98,91 @@ const getUserProfile = asyncHandler(async (req, res) => {
 const updateUserProfile = async (req, res) => {
   try {
     console.log("[UserController] Начало выполнения updateUserProfile");
-    
+
     // Проверка наличия пользователя
     if (!req.user || !req.user._id) {
       console.log("[UserController] Ошибка: Пользователь не аутентифицирован");
-      return res.status(401).json({ message: "Пользователь не аутентифицирован" });
+      return res
+        .status(401)
+        .json({ message: "Пользователь не аутентифицирован" });
     }
-    
+
     // Получаем данные из запроса
-    const { name, email, login, password } = req.body;
-    console.log("[UserController] Полученные данные:", { 
-      name, 
-      email, 
-      login, 
-      password: password ? "предоставлен" : "не предоставлен" 
+    const { name, email, login, password, role } = req.body;
+    console.log("[UserController] Полученные данные:", {
+      name,
+      email,
+      login,
+      password: password ? "предоставлен" : "не предоставлен",
+      role: role, // Добавляем логирование попытки изменения роли
     });
-    
+
+    // Проверяем, не пытается ли пользователь изменить свою роль
+    if (role) {
+      console.log(
+        "[UserController] ВНИМАНИЕ: Попытка изменения роли через API профиля"
+      );
+      return res.status(403).json({
+        message: "Изменение роли через API профиля запрещено",
+      });
+    }
+
     try {
       // Поиск пользователя в базе
       const user = await User.findById(req.user._id);
       console.log("[UserController] Пользователь найден:", user ? "да" : "нет");
-      
+
       if (!user) {
         console.log("[UserController] Ошибка: Пользователь не найден в базе");
         return res.status(404).json({ message: "Пользователь не найден" });
       }
-      
-      // Обновляем простейшие поля напрямую, без проверок
+
+      // Обновляем поля пользователя
       if (name) user.name = name;
       if (email) user.email = email;
       if (login) user.login = login;
-      if (password) user.password = password;
-      
+
+      // Обновляем пароль, если он предоставлен
+      // Хеширование будет выполнено автоматически в pre-save хуке модели
+      if (password) {
+        console.log("[UserController] Установка нового пароля");
+        user.password = password;
+      }
+
+      // Роль сохраняем неизменной - защита от повышения привилегий
+      // Явно игнорируем role из request.body
+
       console.log("[UserController] Сохранение обновленного пользователя...");
       const updatedUser = await user.save();
       console.log("[UserController] Пользователь сохранен");
-      
+
       // Создаем токен
       const token = generateToken(updatedUser._id);
-      
+
       // Возвращаем данные пользователя
       return res.status(200).json({
         _id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
-        login: updatedUser.login, 
+        login: updatedUser.login,
         role: updatedUser.role,
-        token
+        token,
       });
     } catch (dbError) {
-      console.error("[UserController] Ошибка при работе с базой данных:", dbError);
-      return res.status(500).json({ 
+      console.error(
+        "[UserController] Ошибка при работе с базой данных:",
+        dbError
+      );
+      return res.status(500).json({
         message: "Ошибка при обновлении профиля в базе данных",
-        error: dbError.message
+        error: dbError.message,
       });
     }
   } catch (error) {
     console.error("[UserController] Необработанная ошибка:", error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       message: "Внутренняя ошибка сервера",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -191,8 +216,10 @@ const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user) {
+    // Обновляем основную информацию
     user.name = req.body.name || user.name;
 
+    // Проверяем уникальность email перед обновлением
     if (req.body.email && req.body.email !== user.email) {
       const emailExists = await User.findOne({ email: req.body.email });
       if (emailExists && emailExists._id.toString() !== req.params.id) {
@@ -202,6 +229,7 @@ const updateUser = asyncHandler(async (req, res) => {
       user.email = req.body.email;
     }
 
+    // Проверяем уникальность логина перед обновлением
     if (req.body.login && req.body.login !== user.login) {
       const loginExists = await User.findOne({ login: req.body.login });
       if (loginExists && loginExists._id.toString() !== req.params.id) {
@@ -211,16 +239,22 @@ const updateUser = asyncHandler(async (req, res) => {
       user.login = req.body.login;
     }
 
+    // Обновляем роль пользователя, если она предоставлена
     if (req.body.role) {
       user.role = req.body.role;
     }
 
+    // Обновляем пароль, если он предоставлен
+    // Пароль будет хеширован автоматически через pre-save хук в модели
     if (req.body.password) {
+      console.log(`Обновление пароля для пользователя ${user._id}`);
       user.password = req.body.password;
     }
 
+    // Сохраняем обновленного пользователя
     const updatedUser = await user.save();
 
+    // Возвращаем обновленную информацию о пользователе (без пароля)
     res.json({
       _id: updatedUser._id,
       name: updatedUser.name,

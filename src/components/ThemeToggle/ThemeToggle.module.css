@@ -1,0 +1,71 @@
+.toggleButton {
+  background: none;
+  border: 2px solid var(--accent-primary);
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.toggleButton:focus,
+.toggleButton:active,
+.toggleButton:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.toggleButton:hover {
+  background-color: rgba(var(--accent-primary-rgb), 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(var(--accent-primary-rgb), 0.3);
+}
+
+.icon {
+  font-size: 20px;
+  transition: all 0.3s ease;
+  position: absolute;
+  transform: scale(1);
+}
+
+.sunIcon {
+  color: var(--accent-hover);
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.moonIcon {
+  color: var(--accent-primary);
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .toggleButton {
+    width: 36px;
+    height: 36px;
+  }
+
+  .icon {
+    font-size: 18px;
+  }
+}

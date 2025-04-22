@@ -120,16 +120,19 @@ const cartSlice = createSlice({
   },
 });
 
-export const addToCartWithNotification = (item: CartItem) => (dispatch: AppDispatch) => {
-  // Добавляем товар в корзину
-  dispatch(addToCart(item));
-  
-  // Показываем уведомление
-  dispatch(showNotification({
-    message: "Товар добавлен в корзину",
-    type: "success"
-  }));
-};
+export const addToCartWithNotification =
+  (item: CartItem) => (dispatch: AppDispatch) => {
+    // Добавляем товар в корзину
+    dispatch(addToCart(item));
+
+    // Показываем уведомление
+    dispatch(
+      showNotification({
+        message: "Товар добавлен в корзину",
+        type: "success",
+      })
+    );
+  };
 
 export const {
   addToCart,

@@ -12,6 +12,8 @@ import { useAuth } from "./hooks/useAuth";
 import { ROUTES } from "./constants/routes";
 import "./styles/global.css";
 import { GlobalNotification } from "./components/GlobalNotification";
+import SecurityProvider from "./components/SecurityProvider";
+import { ThemeProvider } from "./context/ThemeContext";
 
 // Pages
 import Home from "./pages/Home/Home";
@@ -40,6 +42,16 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isAdmin } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated && !isAdmin) {
+      console.error(
+        "ВНИМАНИЕ: Обнаружена попытка доступа к административному маршруту неавторизованным пользователем"
+      );
+      navigate(ROUTES.ACCESS_DENIED);
+    }
+  }, [isAuthenticated, isAdmin, navigate]);
 
   if (!isAuthenticated) {
     return <Navigate to={ROUTES.LOGIN} />;
@@ -55,71 +67,78 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const App: React.FC = () => {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <div className="app">
-        <Layout>
-          <Routes>
-            <Route path={ROUTES.HOME} element={<Home />} />
-            <Route path={ROUTES.LOGIN} element={<Login />} />
-            <Route path={ROUTES.REGISTER} element={<Register />} />
-            <Route path={ROUTES.CATALOG} element={<ProductCatalog />} />
-            <Route path={ROUTES.CATEGORY} element={<CategoryPage />} />
-            <Route path={ROUTES.PRODUCT_DETAIL} element={<ProductDetail />} />
-            <Route path={ROUTES.ALL_PRODUCTS} element={<AllProducts />} />
-            <Route path={ROUTES.CART} element={<Cart />} />
-            <Route path="/access-denied" element={<AccessDenied />} />
-            <Route
-              path={ROUTES.PROFILE}
-              element={
-                <PrivateRoute>
-                  <Profile />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path={ROUTES.ADMIN.PRODUCTS}
-              element={
-                <AdminRoute>
-                  <ProductList />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path={ROUTES.ADMIN.PRODUCT_CREATE}
-              element={
-                <AdminRoute>
-                  <ProductCreate />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path={ROUTES.ADMIN.PRODUCT_EDIT}
-              element={
-                <AdminRoute>
-                  <ProductEdit />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path={ROUTES.ADMIN.CATEGORIES}
-              element={
-                <AdminRoute>
-                  <CategoryListContainer />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path={ROUTES.ADMIN.USERS + "/*"}
-              element={
-                <AdminRoute>
-                  <AdminUsers />
-                </AdminRoute>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Layout>
-        <GlobalNotification />
-      </div>
+      <SecurityProvider>
+        <ThemeProvider>
+          <div className="app">
+            <Layout>
+              <Routes>
+                <Route path={ROUTES.HOME} element={<Home />} />
+                <Route path={ROUTES.LOGIN} element={<Login />} />
+                <Route path={ROUTES.REGISTER} element={<Register />} />
+                <Route path={ROUTES.CATALOG} element={<ProductCatalog />} />
+                <Route path={ROUTES.CATEGORY} element={<CategoryPage />} />
+                <Route
+                  path={ROUTES.PRODUCT_DETAIL}
+                  element={<ProductDetail />}
+                />
+                <Route path={ROUTES.ALL_PRODUCTS} element={<AllProducts />} />
+                <Route path={ROUTES.CART} element={<Cart />} />
+                <Route path="/access-denied" element={<AccessDenied />} />
+                <Route
+                  path={ROUTES.PROFILE}
+                  element={
+                    <PrivateRoute>
+                      <Profile />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.ADMIN.PRODUCTS}
+                  element={
+                    <AdminRoute>
+                      <ProductList />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.ADMIN.PRODUCT_CREATE}
+                  element={
+                    <AdminRoute>
+                      <ProductCreate />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.ADMIN.PRODUCT_EDIT}
+                  element={
+                    <AdminRoute>
+                      <ProductEdit />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.ADMIN.CATEGORIES}
+                  element={
+                    <AdminRoute>
+                      <CategoryListContainer />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.ADMIN.USERS + "/*"}
+                  element={
+                    <AdminRoute>
+                      <AdminUsers />
+                    </AdminRoute>
+                  }
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Layout>
+            <GlobalNotification />
+          </div>
+        </ThemeProvider>
+      </SecurityProvider>
     </Router>
   );
 };

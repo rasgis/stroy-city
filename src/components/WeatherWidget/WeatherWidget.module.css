@@ -17,10 +17,10 @@
   margin-top: 10px;
   background: radial-gradient(
     circle,
-    rgba(11, 188, 156, 0.7) 20%,
-    rgba(11, 224, 184, 0) 100%
+    rgba(var(--accent-primary-rgb), 0.7) 20%,
+    rgba(var(--accent-primary-rgb), 0) 100%
   );
-  border: 2px solid rgba(11, 188, 156, 0.7);
+  border: 2px solid rgba(var(--accent-primary-rgb), 0.7);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -28,43 +28,46 @@
   width: 60px;
   height: 60px;
   animation: pulse 2s infinite;
-  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.3);
-  color: #0bbc9c;
+  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.3);
+  color: var(--accent-primary);
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(11, 188, 156, 0.4);
+    box-shadow: 0 0 0 0 rgba(var(--accent-primary-rgb), 0.4);
   }
   70% {
-    box-shadow: 0 0 0 15px rgba(11, 188, 156, 0);
+    box-shadow: 0 0 0 15px rgba(var(--accent-primary-rgb), 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(11, 188, 156, 0);
+    box-shadow: 0 0 0 0 rgba(var(--accent-primary-rgb), 0);
   }
 }
 
 .toggleButton:hover {
-  border-color: rgba(11, 188, 156, 0.2);
-  box-shadow: 0 0 30px 10px rgba(11, 188, 156, 0.7);
+  border-color: rgba(var(--accent-primary-rgb), 0.2);
+  box-shadow: 0 0 30px 10px rgba(var(--accent-primary-rgb), 0.7);
   transform: scale(1.05);
 }
 
 .weatherWidget {
-  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  background: var(--background-card);
   border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 4px 20px rgba(11, 224, 184, 0.3);
+  padding: 15px;
+  box-shadow: 0 4px 20px rgba(var(--accent-primary-rgb), 0.3);
   transform: translateY(20px);
   opacity: 0;
   transition: all 0.5s ease;
-  width: 280px;
+  width: 340px;
   backdrop-filter: blur(5px);
-  border: 1px solid rgba(11, 224, 184, 0.3);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.3);
   z-index: 10;
   position: relative;
   pointer-events: auto;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .weatherWidget::before {
@@ -76,7 +79,7 @@
   bottom: 0;
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(11, 224, 184, 0.1),
+    rgba(var(--accent-primary-rgb), 0.1),
     transparent 70%
   );
   z-index: -1;
@@ -92,7 +95,7 @@
   background: linear-gradient(
     45deg,
     transparent 0%,
-    rgba(11, 224, 184, 0.1) 50%,
+    rgba(var(--accent-primary-rgb), 0.1) 50%,
     transparent 100%
   );
   animation: shine 8s infinite;
@@ -102,14 +105,14 @@
 .weatherWidget.visible {
   transform: translateY(0);
   opacity: 1;
-  box-shadow: 0 8px 30px rgba(11, 224, 184, 0.4);
+  box-shadow: 0 8px 30px rgba(var(--accent-primary-rgb), 0.4);
 }
 
 .location h2 {
   margin: 0 0 15px 0;
   font-size: 1.3rem;
   text-align: left;
-  color: #0be0b8;
+  color: var(--accent-primary);
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding-left: 0;
 }
@@ -141,7 +144,7 @@
 
 .weatherIcon {
   font-size: 2.5rem !important;
-  color: #0be0b8 !important;
+  color: var(--accent-primary) !important;
   animation: rotate 20s linear infinite;
 }
 
@@ -157,13 +160,13 @@
 .temperature {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #0be0b8;
+  color: var(--accent-primary);
 }
 
 .condition {
   text-align: center;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
   text-transform: capitalize;
 }
 
@@ -172,10 +175,10 @@
   justify-content: space-between;
   width: 100%;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid rgba(11, 188, 156, 0.2);
+  border-top: 1px solid rgba(var(--accent-primary-rgb), 0.2);
 }
 
 .detail {
@@ -200,14 +203,14 @@
 }
 
 .modal {
-  background: #1d1e24;
+  background: var(--background-card);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(11, 188, 156, 0.3);
+  box-shadow: 0 4px 20px rgba(var(--accent-primary-rgb), 0.3);
   width: 90%;
   max-width: 400px;
   animation: slideUp 0.3s ease;
-  border: 1px solid rgba(11, 188, 156, 0.2);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.2);
 }
 
 @keyframes slideUp {
@@ -223,26 +226,26 @@
 
 .modal h3 {
   margin: 0 0 1rem 0;
-  color: #0be0b8;
+  color: var(--accent-primary);
   text-align: center;
 }
 
 .input {
   width: 100%;
   padding: 0.8rem;
-  border: 1px solid rgba(11, 188, 156, 0.3);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.3);
   border-radius: 6px;
   font-size: 1rem;
   margin-bottom: 1rem;
   transition: all 0.3s ease;
-  background: rgba(29, 30, 36, 0.8);
-  color: white;
+  background: var(--input-background);
+  color: var(--input-text);
 }
 
 .input:focus {
   outline: none;
-  border-color: #0be0b8;
-  box-shadow: 0 0 0 2px rgba(11, 188, 156, 0.2);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.2);
 }
 
 .error {
@@ -281,34 +284,34 @@
 
 .submitButton,
 .cancelButton {
-  padding: 0.8rem 1.5rem;
-  border: none;
+  padding: 0.7rem 1.2rem;
   border-radius: 6px;
-  font-size: 1rem;
+  border: none;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: 0.9rem;
 }
 
 .submitButton {
-  background: #0bbc9c;
-  color: white;
+  background-color: var(--accent-primary);
+  color: var(--button-text);
 }
 
 .submitButton:hover {
-  background: #0a9e84;
+  background-color: var(--accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(11, 188, 156, 0.3);
 }
 
 .cancelButton {
-  background: rgba(29, 30, 36, 0.8);
-  color: white;
-  border: 1px solid rgba(11, 188, 156, 0.3);
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
 }
 
 .cancelButton:hover {
-  background: rgba(42, 43, 51, 0.8);
-  border-color: rgba(11, 188, 156, 0.5);
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
 }
 
 @media (max-width: 768px) {
@@ -334,57 +337,144 @@
 .currentCity {
   margin: 10px 0;
   font-size: 0.9rem;
-  color: rgba(212, 255, 234, 0.7);
+  color: var(--text-primary);
   text-align: center;
+  font-weight: 500;
 }
 
+.cityDisplay {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  padding: 0 5px;
+}
+
+.editCityButton,
+.forecastButton,
 .refreshButton {
   background: transparent;
   border: none;
-  color: #0be0b8;
-  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border: 1px solid rgba(11, 188, 156, 0.3);
-  width: 32px;
-  height: 32px;
-  z-index: 20;
-  overflow: visible;
+  color: var(--accent-primary);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
-.refreshButton::after {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  z-index: -1;
-  cursor: pointer;
-}
-
+.editCityButton:hover,
+.forecastButton:hover,
 .refreshButton:hover {
-  color: #0be0b8;
-  transform: rotate(180deg);
-  background: rgba(11, 188, 156, 0.1);
+  color: var(--accent-hover);
+  transform: scale(1.1);
 }
 
 .refreshButton:active {
   transform: scale(0.95);
-  background: rgba(11, 188, 156, 0.2);
+  color: var(--accent-focus);
 }
 
-/* Отменяем поворот при активном состоянии, чтобы он не конфликтовал с масштабированием */
-.refreshButton:hover:active {
-  transform: scale(0.95);
+.forecastContainer {
+  background: var(--background-card);
+  border-radius: 16px;
+  padding: 15px;
+  box-shadow: 0 4px 20px rgba(var(--accent-primary-rgb), 0.3);
+  width: 340px;
+  position: relative;
+  margin-top: 10px;
+  max-width: 100%;
+}
+
+.forecastHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(var(--accent-primary-rgb), 0.2);
+  position: relative;
+}
+
+.forecastHeader h3 {
+  font-size: 1.2rem;
+  color: var(--accent-primary);
+  margin: 0;
+  text-align: center;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.forecastList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 5px;
+  margin-top: 10px;
+  scrollbar-width: none; /* Firefox */
+}
+
+.forecastList::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.forecastDay {
+  display: grid;
+  grid-template-columns: 75px 50px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--background-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.forecastDay:hover {
+  background: var(--background-tertiary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(var(--accent-primary-rgb), 0.15);
+}
+
+.forecastDate {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.forecastTemp {
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-align: center;
+}
+
+.forecastCondition {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-align: right;
 }
 
 .cityEditForm {
@@ -396,179 +486,38 @@
 }
 
 .cityInput {
-  width: 100%;
-  padding: 8px 35px 8px 12px;
-  border: 1px solid rgba(11, 188, 156, 0.3);
-  border-radius: 6px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  flex: 1;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
-  background: rgba(29, 30, 36, 0.8);
-  color: white;
+  background: var(--input-background);
+  color: var(--input-text);
 }
 
 .cityInput:focus {
   outline: none;
-  border-color: #0be0b8;
-  box-shadow: 0 0 0 2px rgba(11, 188, 156, 0.2);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.1);
 }
 
 .searchButton {
-  position: absolute;
-  right: 5px;
-  background: transparent;
+  background-color: var(--accent-primary);
+  color: var(--button-text);
   border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
   cursor: pointer;
-  color: #0be0b8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
+  margin-left: 5px;
 }
 
 .searchButton:hover {
-  transform: scale(1.1);
-  color: #0be0b8;
-}
-
-.cityDisplay {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  position: relative;
-  width: 100%;
-  padding-left: 55px;
-}
-
-.editCityButton {
-  position: absolute;
-  left: 30px;
-  top: 5%;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: rgba(11, 188, 156, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  padding: 3px;
-}
-
-.editCityButton:hover {
-  transform: scale(1.1);
-  color: #0be0b8;
-}
-
-.forecastButton {
-  position: absolute;
-  left: 5px;
-  top: 5%;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: rgba(11, 188, 156, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  padding: 3px;
-}
-
-.forecastButton:hover {
-  transform: scale(1.1);
-  color: #0be0b8;
-}
-
-.forecastContainer {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid rgba(11, 188, 156, 0.2);
-  width: 100%;
-  animation: fadeIn 0.5s ease;
-}
-
-.forecastHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.forecastHeader h3 {
-  margin: 0;
-  color: #0be0b8;
-  font-size: 1rem;
-}
-
-.closeButton {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px;
-  line-height: 1;
-  transition: all 0.3s ease;
+  background-color: var(--accent-hover);
 }
 
 .closeButton:hover {
-  color: #0be0b8;
-}
-
-.forecastList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 200px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(11, 188, 156, 0.5) rgba(29, 30, 36, 0.8);
-}
-
-.forecastList::-webkit-scrollbar {
-  width: 6px;
-}
-
-.forecastList::-webkit-scrollbar-track {
-  background: rgba(29, 30, 36, 0.8);
-  border-radius: 3px;
-}
-
-.forecastList::-webkit-scrollbar-thumb {
-  background: rgba(11, 188, 156, 0.5);
-  border-radius: 3px;
-}
-
-.forecastDay {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
-  align-items: center;
-  padding: 6px 8px;
-  background: rgba(42, 43, 51, 0.5);
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-.forecastDay:hover {
-  background: rgba(11, 188, 156, 0.1);
-}
-
-.forecastDate {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.forecastTemp {
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #0be0b8;
-}
-
-.forecastCondition {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.8);
-  text-align: right;
+  color: var(--accent-primary);
+  transform: rotate(90deg);
 }

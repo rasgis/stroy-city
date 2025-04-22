@@ -9,6 +9,7 @@ interface ModalProps {
   title: string;
   children: React.ReactNode;
   onConfirm?: () => void;
+  onCancel?: () => void;
   confirmText?: string;
   cancelText?: string;
   type?: "default" | "delete";
@@ -20,19 +21,22 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   children,
   onConfirm,
+  onCancel,
   confirmText = "Подтвердить",
   cancelText = "Отмена",
   type = "default",
 }) => {
   if (!isOpen) return null;
 
+  const handleCancel = onCancel || onClose;
+
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalBody}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>{title}</h2>
-          <Button 
-            onClick={onClose} 
+          <Button
+            onClick={onClose}
             className={styles.modalClose}
             variant="text"
             startIcon={<FaTimes size={16} />}
@@ -42,8 +46,8 @@ export const Modal: React.FC<ModalProps> = ({
         <div className={styles.modalContent}>{children}</div>
         {onConfirm && (
           <div className={styles.modalFooter}>
-            <Button 
-              onClick={onClose} 
+            <Button
+              onClick={handleCancel}
               className={styles.cancelButton}
               variant="secondary"
             >

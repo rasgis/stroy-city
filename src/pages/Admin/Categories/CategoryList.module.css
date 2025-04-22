@@ -44,9 +44,9 @@
   align-items: center;
   margin-bottom: 2rem;
   padding: 2rem;
-  background: #1d1e24;
+  background: var(--background-card);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  box-shadow: var(--card-shadow);
   position: relative;
   overflow: hidden;
 }
@@ -64,16 +64,16 @@
 
 .header h2 {
   margin: 0;
-  color: #d4ffea;
+  color: var(--text-primary);
   font-size: 2.5rem;
   font-weight: 700;
 }
 
 .addButton {
   padding: 0.5rem 1rem;
-  background: rgba(11, 224, 184, 0.1);
-  color: #0be0b8;
-  border: 1px solid rgba(11, 224, 184, 0.3);
+  background: var(--accent-focus);
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -85,8 +85,8 @@
 }
 
 .addButton:hover {
-  background: rgba(11, 224, 184, 0.2);
-  border-color: #0be0b8;
+  background: var(--accent-focus);
+  border-color: var(--accent-primary);
   transform: translateY(-1px);
 }
 
@@ -99,13 +99,9 @@
   display: grid;
   gap: 1rem;
   padding: 1rem;
-  background: linear-gradient(
-    135deg,
-    rgba(11, 224, 184, 0.1),
-    rgba(29, 30, 36, 0.1)
-  );
+  background: var(--background-secondary);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(11, 224, 184, 0.15);
+  box-shadow: var(--card-shadow);
 }
 
 .categoryItem {
@@ -113,11 +109,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  background: var(--background-card);
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(11, 224, 184, 0.2);
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -132,7 +128,7 @@
   bottom: 0;
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(11, 224, 184, 0.1),
+    var(--accent-focus),
     transparent 70%
   );
   z-index: -1;
@@ -140,7 +136,7 @@
 
 .categoryItem:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(11, 224, 184, 0.2);
+  box-shadow: var(--box-shadow-medium);
 }
 
 .categoryInfo {
@@ -151,7 +147,7 @@
 
 .categoryInfo h3 {
   margin: 0;
-  color: #d4ffea;
+  color: var(--text-primary);
   font-size: 1.2rem;
   font-weight: 500;
 }
@@ -161,7 +157,7 @@
   height: 60px;
   object-fit: cover;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--box-shadow);
 }
 
 .actions {
@@ -173,7 +169,6 @@
 .editButton,
 .deleteButton {
   padding: 0.5rem;
-  border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -186,26 +181,26 @@
 }
 
 .editButton {
-  background: rgba(11, 224, 184, 0.1);
-  color: #0be0b8;
-  border: 1px solid rgba(11, 224, 184, 0.3);
+  background: var(--accent-focus);
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
 }
 
 .editButton:hover {
-  background: rgba(11, 224, 184, 0.2);
-  border-color: #0be0b8;
+  background: var(--accent-focus);
+  border-color: var(--accent-primary);
   transform: translateY(-1px);
 }
 
 .deleteButton {
   background: rgba(255, 82, 82, 0.1);
-  color: #ff5252;
+  color: var(--error);
   border: 1px solid rgba(255, 82, 82, 0.3);
 }
 
 .deleteButton:hover {
   background: rgba(255, 82, 82, 0.2);
-  border-color: #ff5252;
+  border-color: var(--error);
   transform: translateY(-1px);
 }
 
@@ -224,7 +219,7 @@
 
 .expandButton {
   background-color: transparent;
-  color: #d4ffea;
+  color: var(--text-primary);
   padding: 0.5rem;
   border: none;
   border-radius: 4px;
@@ -239,16 +234,32 @@
 }
 
 .expandButton:hover {
-  background-color: rgba(11, 224, 184, 0.1);
+  background-color: var(--accent-focus);
   transform: translateY(-1px);
 }
 
 .childrenContainer {
   margin-left: 2rem;
-  border-left: 2px solid rgba(11, 224, 184, 0.2);
+  border-left: 2px solid var(--border-color);
   padding-left: 1rem;
   display: grid;
   gap: 1rem;
+  margin-top: 1rem;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 4rem 2rem;
+  background-color: var(--background-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  text-align: center;
+  margin-top: 1rem;
 }
 
 /* Модальное окно */
@@ -392,70 +403,51 @@
 /* Адаптивность для модального окна */
 @media (max-width: 768px) {
   .categoryItem {
-    flex-direction: column;
     padding: 1rem;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .categoryInfo {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .categoryInfo::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #0be0b8;
-    margin-bottom: 0.5rem;
+    display: none;
   }
 
   .actions {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    justify-content: flex-end;
   }
 
   .actions::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #0be0b8;
-    margin-bottom: 0.5rem;
+    display: none;
   }
 
   .editButton,
   .deleteButton {
-    width: 100%;
-    justify-content: center;
+    padding: 0.4rem;
   }
 
   .categoryImage {
-    width: 100%;
-    height: auto;
-    max-height: 200px;
-    object-fit: cover;
+    width: 50px;
+    height: 50px;
   }
 }
 
 @media (max-width: 480px) {
   .header h2 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 
   .addButton {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .modalContent {
-    margin: 1rem;
-    padding: 1.5rem;
+    padding: 0.4rem 0.8rem;
   }
 
   .categoryItem {
-    padding: 0.75rem;
+    padding: 0.8rem;
   }
 
   .categoryInfo h3 {
@@ -464,11 +456,11 @@
 
   .editButton,
   .deleteButton {
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
+    width: 28px;
+    height: 28px;
   }
 
   .buttonIcon {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
 }

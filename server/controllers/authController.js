@@ -10,7 +10,8 @@ export const register = async (req, res) => {
     // Проверка на наличие всех необходимых полей
     if (!name || !email || !login || !password) {
       return res.status(400).json({
-        message: "Все поля (имя, email, логин, пароль) обязательны для заполнения"
+        message:
+          "Все поля (имя, email, логин, пароль) обязательны для заполнения",
       });
     }
 
@@ -18,7 +19,7 @@ export const register = async (req, res) => {
     const emailExists = await User.findOne({ email });
     if (emailExists) {
       return res.status(400).json({
-        message: "Пользователь с таким email уже существует"
+        message: "Пользователь с таким email уже существует",
       });
     }
 
@@ -26,7 +27,7 @@ export const register = async (req, res) => {
     const loginExists = await User.findOne({ login });
     if (loginExists) {
       return res.status(400).json({
-        message: "Пользователь с таким логином уже существует"
+        message: "Пользователь с таким логином уже существует",
       });
     }
 
@@ -62,18 +63,20 @@ export const register = async (req, res) => {
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: "24h" },
+      { expiresIn: "7d" },
       (err, token) => {
         if (err) throw err;
         res.json({
           token,
-          user: userData
+          user: userData,
         });
       }
     );
   } catch (err) {
     console.error("Ошибка при регистрации:", err.message);
-    res.status(500).json({ message: "Ошибка сервера при регистрации пользователя" });
+    res
+      .status(500)
+      .json({ message: "Ошибка сервера при регистрации пользователя" });
   }
 };
 
@@ -81,9 +84,11 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { identifier, password } = req.body;
-    
+
     if (!identifier || !password) {
-      return res.status(400).json({ message: "Необходимо указать логин/email и пароль" });
+      return res
+        .status(400)
+        .json({ message: "Необходимо указать логин/email и пароль" });
     }
 
     // Поиск пользователя по email или login
@@ -94,7 +99,7 @@ export const login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "Неверные учетные данные" });
     }
-    
+
     // Проверка пароля
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
@@ -112,7 +117,7 @@ export const login = async (req, res) => {
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: "24h" },
+      { expiresIn: "7d" },
       (err, token) => {
         if (err) throw err;
         res.json({

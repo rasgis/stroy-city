@@ -5,6 +5,7 @@ import { logoutUser } from "../../../reducers/authSlice";
 import { RootState, AppDispatch } from "../../../store";
 import { scrollToTop } from "../../../utils/scroll";
 import { ROUTES } from "../../../constants/routes";
+import ThemeToggle from "../../ThemeToggle/ThemeToggle";
 import {
   FaShoppingCart,
   FaUser,
@@ -15,7 +16,7 @@ import {
   FaUsers,
   FaListAlt,
   FaBoxes,
-  FaArrowLeft
+  FaArrowLeft,
 } from "react-icons/fa";
 import styles from "./Header.module.css";
 
@@ -35,7 +36,7 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     // Не показываем кнопку "Назад" на главной странице
-    setShowBackButton(location.pathname !== '/');
+    setShowBackButton(location.pathname !== "/");
   }, [location.pathname]);
 
   const handleLogout = () => {
@@ -128,6 +129,7 @@ const Header: React.FC = () => {
   const renderUserMenuItems = () => {
     return (
       <>
+        <ThemeToggle />
         {isAuthenticated && (
           <div className={styles.cart}>
             <Link
@@ -142,10 +144,14 @@ const Header: React.FC = () => {
         <div className={styles.auth}>
           {isAuthenticated && user ? (
             <div className={styles.userInfo}>
-              <Link to={ROUTES.PROFILE} className={styles.userLink} title="Перейти в профиль">
+              <Link
+                to={ROUTES.PROFILE}
+                className={styles.userLink}
+                title="Перейти в профиль"
+              >
                 <FaUser className={styles.userIcon} />
                 <span className={styles.userName}>
-                  {user.name || user.login || 'Профиль'}
+                  {user.name || user.login || "Профиль"}
                 </span>
               </Link>
               <button
@@ -178,8 +184,8 @@ const Header: React.FC = () => {
         <div className={styles.container}>
           <div className={styles.leftSection}>
             {showBackButton && (
-              <button 
-                className={styles.backButton} 
+              <button
+                className={styles.backButton}
                 onClick={handleGoBack}
                 aria-label="Вернуться назад"
                 title="Назад"

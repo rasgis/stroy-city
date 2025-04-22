@@ -2,7 +2,6 @@ import axios from "axios";
 import { Product, ProductFormData } from "../types/product";
 import { API_CONFIG } from "../config/api";
 import { authService } from "./authService";
-import { fileService } from "./fileService";
 import { prepareDataForApi } from "../utils/apiUtils";
 
 class ProductService {
@@ -43,16 +42,15 @@ class ProductService {
         unitOfMeasure: product.unitOfMeasure,
         stock: product.stock,
         isActive: product.isActive,
-        image: product.image
+        image: product.image,
       });
-
 
       const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BASE}`;
 
       const response = await axios.post(url, data, {
         headers: {
           ...this.getHeaders(),
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       return response.data;
@@ -76,7 +74,7 @@ class ProductService {
         unitOfMeasure: product.unitOfMeasure,
         stock: product.stock,
         isActive: product.isActive,
-        image: product.image
+        image: product.image,
       });
 
       const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(
@@ -86,7 +84,7 @@ class ProductService {
       const response = await axios.put(url, data, {
         headers: {
           ...this.getHeaders(),
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       return response.data;

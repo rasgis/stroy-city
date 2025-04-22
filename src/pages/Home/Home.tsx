@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { WeatherWidget, Slider, AnimationText } from "../../components";
 import { sliderData } from "../../constants/sliderData";
@@ -19,15 +19,6 @@ const Home: React.FC = () => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % partners.length);
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handlePartnerClick = (url: string) => {
     window.open(url, "_blank", "noopener,noreferrer");
@@ -45,7 +36,7 @@ const Home: React.FC = () => {
             className={styles.logo}
           />
         </div>
-        <AnimationText textColor="#2196f3" />
+        <AnimationText />
         <p className={styles.subtitle}>
           Лучшие строительные и кровельные материалы по доступным ценам
         </p>
@@ -60,7 +51,9 @@ const Home: React.FC = () => {
             <Discount className={styles.discountIcon} />
             <h2 className={styles.discountTitle}>Специальное предложение</h2>
             <p className={styles.discountText}>
-              Зарегистрируйтесь на нашем сайте и получите <span className={styles.discountPercent}>5%</span> скидку на весь ассортимент товаров!
+              Зарегистрируйтесь на нашем сайте и получите{" "}
+              <span className={styles.discountPercent}>5%</span> скидку на весь
+              ассортимент товаров!
             </p>
             <div className={styles.discountFeatures}>
               <div className={styles.discountFeature}>
@@ -151,7 +144,7 @@ const Home: React.FC = () => {
           продукцию по конкурентным ценам.
         </p>
         <div className={styles.partnersGrid}>
-          {partners.map((partner, index) => (
+          {partners.map((partner) => (
             <div
               key={partner.id}
               className={styles.partnerLogoContainer}
@@ -161,9 +154,7 @@ const Home: React.FC = () => {
               <img
                 src={`/${String(partner.id).padStart(2, "0")}.png`}
                 alt={partner.name}
-                className={`${styles.partnerLogo} ${
-                  index === currentIndex ? styles.glowing : ""
-                }`}
+                className={styles.partnerLogo}
               />
             </div>
           ))}

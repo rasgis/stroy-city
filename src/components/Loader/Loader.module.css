@@ -15,12 +15,12 @@
 }
 
 .spinner {
-  color: #1976d2;
+  color: var(--accent-primary);
   animation: pulse 1.5s ease-in-out infinite;
 }
 
 .message {
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
   animation: fadeInOut 2s ease-in-out infinite;
 }

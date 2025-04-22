@@ -17,7 +17,7 @@ const productSchema = mongoose.Schema(
     },
     image: {
       type: String,
-      required: [true, "Изображение товара обязательно"],
+      required: false,
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,

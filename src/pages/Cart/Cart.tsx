@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FaShoppingCart, FaTrash, FaShoppingBag } from "react-icons/fa";
 import { useAppSelector, useAppDispatch } from "../../hooks";
-import { clearCart, removeFromCart, updateQuantity } from "../../reducers/cartSlice";
+import {
+  clearCart,
+  removeFromCart,
+  updateQuantity,
+} from "../../reducers/cartSlice";
 import { CartItem, Button } from "../../components";
 import { Breadcrumbs } from "../../components/Breadcrumbs/Breadcrumbs";
 import { Modal } from "../../components/Modal/Modal";
@@ -36,17 +40,17 @@ const Cart: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <Breadcrumbs 
+        <Breadcrumbs
           items={[
             {
               _id: "cart",
               name: "Корзина",
-              url: ROUTES.CART
-            }
+              url: ROUTES.CART,
+            },
           ]}
           className={styles.breadcrumbs}
         />
-        
+
         <div className={styles.cart}>
           <h1 className={styles.title}>Корзина</h1>
           {cartItems.length === 0 ? (
@@ -60,8 +64,8 @@ const Cart: React.FC = () => {
               <div className={styles.cartGrid}>
                 {cartItems.map((item) => (
                   <div key={item._id} className={styles.cartItem}>
-                    <CartItem 
-                      item={item} 
+                    <CartItem
+                      item={item}
                       onUpdateQuantity={handleUpdateQuantity}
                       onRemove={handleRemoveItem}
                       maxQuantity={item.stock || 10}
@@ -69,11 +73,13 @@ const Cart: React.FC = () => {
                   </div>
                 ))}
               </div>
-              
+
               <div className={styles.cartSummary}>
                 <div className={styles.total}>
                   <span>Итого:</span>
-                  <span className={styles.totalAmount}>{formatCurrency(total)}</span>
+                  <span className={styles.totalAmount}>
+                    {formatCurrency(total)}
+                  </span>
                 </div>
                 <div className={styles.actions}>
                   <Button

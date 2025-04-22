@@ -2,16 +2,17 @@
 
 /* Стили для MuiBox с классом css-19kzrtu */
 .MuiBox-root.css-19kzrtu {
-  background-color: #f9f9f9;
+  background-color: var(--background-card);
   border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease,
+    background-color var(--transition-speed);
 }
 
 .MuiBox-root.css-19kzrtu:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Стили для кнопок */
@@ -19,38 +20,64 @@
   border-radius: 4px;
   text-transform: none;
   font-weight: 500;
+  transition: background-color var(--transition-speed),
+    color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
 .MuiButton-contained {
   box-shadow: none;
+  background-color: var(--accent-primary);
+  color: var(--button-text);
 }
 
 .MuiButton-contained:hover {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--accent-hover);
+  box-shadow: var(--card-shadow);
 }
 
 /* Стили для карточек */
 .MuiCard-root {
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--card-shadow);
+  background-color: var(--background-card);
+  color: var(--text-primary);
+  transition: transform 0.3s ease, box-shadow 0.3s ease,
+    background-color var(--transition-speed), color var(--transition-speed);
 }
 
 .MuiCard-root:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Стили для текстовых полей */
 .MuiOutlinedInput-root {
   border-radius: 4px;
+  background-color: var(--input-background);
+  color: var(--input-text);
+  transition: all var(--transition-speed);
+}
+
+.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+  border-color: var(--input-border);
+  transition: border-color var(--transition-speed);
 }
 
 .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-  border-color: #0be0b8;
+  border-color: var(--accent-primary);
 }
 
 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #0be0b8;
+  border-color: var(--accent-primary);
   border-width: 2px;
+}
+
+/* Стили для меток полей */
+.MuiInputLabel-root {
+  color: var(--text-secondary);
+  transition: color var(--transition-speed);
+}
+
+.MuiInputLabel-root.Mui-focused {
+  color: var(--accent-primary);
 }

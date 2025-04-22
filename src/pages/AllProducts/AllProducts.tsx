@@ -73,30 +73,17 @@ const AllProducts: React.FC = () => {
   return (
     <Container className={styles.container}>
       <Box className={styles.content}>
-        <Breadcrumbs 
+        <Breadcrumbs
           items={[
             {
               _id: "products",
               name: "Все товары",
-              url: ROUTES.ALL_PRODUCTS
-            }
+              url: ROUTES.ALL_PRODUCTS,
+            },
           ]}
           className={styles.breadcrumbs}
         />
-      
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          className={styles.title}
-        >
-          Поиск товара
-        </Typography>
-
-        <SearchBar 
-          onSearch={handleSearch} 
-          loading={productsLoading}
-        />
+        <SearchBar onSearch={handleSearch} loading={productsLoading} />
 
         {currentProducts.length === 0 ? (
           <Typography style={{ marginTop: "2rem", color: "#d4ffea" }}>

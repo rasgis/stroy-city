@@ -1,0 +1,50 @@
+.notFoundContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  margin: 1rem 0;
+  text-align: center;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.notFoundIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--text-tertiary);
+}
+
+.notFoundText {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .notFoundContainer {
+    padding: 1.5rem;
+  }
+
+  .notFoundIcon {
+    font-size: 2.5rem;
+  }
+
+  .notFoundText {
+    font-size: 1rem;
+  }
+}

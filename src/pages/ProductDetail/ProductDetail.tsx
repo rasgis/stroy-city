@@ -1,35 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import {
-  Container,
-  Typography,
-  Box,
-} from "@mui/material";
+import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { fetchProductById, selectSelectedProduct, selectProductLoading, selectProductError } from "../../reducers/products";
-import { fetchCategories, selectFilteredCategories } from "../../reducers/categories";
+import {
+  fetchProductById,
+  selectSelectedProduct,
+  selectProductLoading,
+  selectProductError,
+} from "../../reducers/products";
+import {
+  fetchCategories,
+  selectFilteredCategories,
+} from "../../reducers/categories";
 import { addToCartWithNotification } from "../../reducers/cartSlice";
 import { ROUTES } from "../../constants/routes";
 import { categoryService } from "../../services/categoryService";
-import { Breadcrumbs } from "../../components";
+import { Breadcrumbs, Loader, ErrorMessage, NotFound } from "../../components";
 import styles from "./ProductDetail.module.css";
 import { scrollToTop } from "../../utils/scroll";
-import { BsExclamationCircle } from "react-icons/bs";
+import { handleImageError } from "../../utils/imageUtils";
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
-  
+  const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
+
   // Используем мемоизированные селекторы для продукта
   const product = useAppSelector(selectSelectedProduct);
   const productLoading = useAppSelector(selectProductLoading);
   const productError = useAppSelector(selectProductError);
-  
+
   // Используем мемоизированные селекторы для категорий
   const categories = useAppSelector(selectFilteredCategories);
-  const categoriesLoading = useAppSelector((state) => state.categoriesList.loading);
+  const categoriesLoading = useAppSelector(
+    (state) => state.categoriesList.loading
+  );
   const categoriesError = useAppSelector((state) => state.categoriesList.error);
-  
+
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
@@ -43,13 +49,17 @@ const ProductDetail: React.FC = () => {
   const handleAddToCart = () => {
     if (product) {
       dispatch(addToCartWithNotification({ ...product, quantity: 1 }));
+      setShowSnackbar(true);
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
     }
   };
 
   if (productLoading || categoriesLoading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>Загрузка...</div>
+        <Loader message="Загрузка информации о продукте..." />
       </div>
     );
   }
@@ -57,7 +67,13 @@ const ProductDetail: React.FC = () => {
   if (productError || categoriesError) {
     return (
       <div className={styles.container}>
-        <div className={styles.error}>{productError || categoriesError}</div>
+        <ErrorMessage
+          message={
+            productError ||
+            categoriesError ||
+            "Произошла ошибка при загрузке товара"
+          }
+        />
       </div>
     );
   }
@@ -65,7 +81,7 @@ const ProductDetail: React.FC = () => {
   if (!product) {
     return (
       <div className={styles.container}>
-        <div className={styles.notFound}>Товар не найден</div>
+        <NotFound message="Товар не найден" />
       </div>
     );
   }
@@ -80,23 +96,23 @@ const ProductDetail: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.product}>
-        <Breadcrumbs 
+        <Breadcrumbs
           items={[
             {
               _id: "catalog",
               name: "Каталог",
-              url: ROUTES.CATALOG
+              url: ROUTES.CATALOG,
             },
-            ...categoryPath.map(category => ({
+            ...categoryPath.map((category) => ({
               _id: category._id,
               name: category.name,
-              url: ROUTES.CATEGORY.replace(":categoryId", category._id)
+              url: ROUTES.CATEGORY.replace(":categoryId", category._id),
             })),
             {
               _id: product._id,
               name: product.name,
-              url: ""
-            }
+              url: "",
+            },
           ]}
           className={styles.breadcrumbs}
         />
@@ -104,9 +120,10 @@ const ProductDetail: React.FC = () => {
         <div className={styles.content}>
           <div className={styles.imageContainer}>
             <img
-              src={product.image}
+              src={product.image || "/placeholder-image.png"}
               alt={product.name}
               className={styles.image}
+              onError={(e) => handleImageError(e, "/placeholder-image.png")}
             />
           </div>
           <div className={styles.info}>
@@ -126,6 +143,20 @@ const ProductDetail: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {showSnackbar && (
+        <div className={styles.snackbar}>
+          <div className={styles.snackbarContent}>
+            <span>Товар добавлен в корзину</span>
+            <button
+              className={styles.closeButton}
+              onClick={() => setShowSnackbar(false)}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,0 +1,245 @@
+/* Общие CSS-переменные для темной и светлой тем */
+
+/* Цветовые схемы для темной темы */
+:root,
+[data-theme="dark"] {
+  /* Основные цвета */
+  --background-primary: #1a1a1f;
+  --background-primary-rgb: 26, 26, 31;
+  --background-secondary: #202026;
+  --background-secondary-rgb: 32, 32, 38;
+  --background-tertiary: #26262c;
+  --background-tertiary-rgb: 38, 38, 44;
+  --background-card: #1d1e24;
+  --background-card-rgb: 29, 30, 36;
+  --background-elevated: #26262c;
+  --background-elevated-rgb: 38, 38, 44;
+  --background-modal: #1d1e24;
+  --background-modal-rgb: 29, 30, 36;
+  --background-dropdown: #26262c;
+  --background-dropdown-rgb: 38, 38, 44;
+  --background-tooltip: #323338;
+  --background-tooltip-rgb: 50, 51, 56;
+
+  /* Цвета текста */
+  --text-primary: #d4ffea;
+  --text-secondary: rgba(212, 255, 234, 0.7);
+  --text-tertiary: rgba(212, 255, 234, 0.5);
+  --text-accent: #0be0b8;
+  --text-accent-hover: #42ffdc;
+  --text-disabled: #595964;
+
+  /* Акцентные цвета */
+  --accent-primary: #0be0b8;
+  --accent-primary-rgb: 11, 224, 184;
+  --accent-secondary: #42ffdc;
+  --accent-secondary-rgb: 66, 255, 220;
+  --accent-hover: #42ffdc;
+  --accent-hover-rgb: 66, 255, 220;
+  --accent-admin: #ff5252;
+  --accent-admin-rgb: 255, 82, 82;
+  --accent-admin-hover: #ff7b7b;
+  --accent-admin-hover-rgb: 255, 123, 123;
+  --accent-focus: rgba(11, 224, 184, 0.15);
+
+  /* Цвета компонентов */
+  --header-background: #202026;
+  --footer-background: #1f1f23;
+  --card-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  --input-background: #323338;
+  --input-border: #424248;
+  --input-text: #f5f5f5;
+  --input-placeholder: #777777;
+  --input-focus-border: #0be0b8;
+  --button-background: #0be0b8;
+  --button-text: #202026;
+  --button-hover: #42ffdc;
+  --button-disabled-background: #424248;
+  --button-disabled-text: #888888;
+  --scrollbar-track: #26282e;
+  --scrollbar-thumb: #424248;
+  --scrollbar-thumb-hover: #0be0b8;
+  --table-header-background: #2c2e34;
+  --table-row-odd: #26282e;
+  --table-row-even: #2d2f36;
+  --table-border: #424248;
+
+  /* Статусные цвета */
+  --success: #0be0b8;
+  --success-rgb: 11, 224, 184;
+  --warning: #f7ad22;
+  --warning-rgb: 247, 173, 34;
+  --error: #f44336;
+  --error-rgb: 244, 67, 54;
+  --info: #2196f3;
+  --info-rgb: 33, 150, 243;
+
+  /* Цвета границ */
+  --border-color: #424248;
+  --divider-color: #424248;
+  --border-hover: #0be0b8;
+
+  /* Transition */
+  --transition-speed: 0.3s;
+
+  /* Каталог */
+  --catalog-title-bg: #1d1e24;
+  --catalog-title-color: #d4ffea;
+  --catalog-card-bg: #1d1e24;
+  --catalog-card-border: rgba(39, 184, 140, 0.7);
+  --catalog-card-border-hover: rgba(31, 238, 176, 0.7);
+  --catalog-card-shadow: rgba(59, 134, 127, 0.2);
+  --catalog-card-shadow-hover: rgba(11, 224, 184, 0.5);
+  --catalog-card-text: #d4ffea;
+  --catalog-grid-bg: #1d1e24;
+  --catalog-grid-shadow: rgba(11, 224, 184, 0.2);
+  --catalog-error-color: #f8c06d;
+
+  /* Хлебные крошки */
+  --breadcrumb-bg: linear-gradient(
+    135deg,
+    rgba(29, 30, 36, 0.7) 0%,
+    rgba(42, 43, 50, 0.7) 100%
+  );
+  --breadcrumb-border: rgba(11, 224, 184, 0.2);
+  --breadcrumb-shadow: rgba(11, 224, 184, 0.1);
+  --breadcrumb-link: rgba(11, 224, 184, 0.8);
+  --breadcrumb-link-hover: #0be0b8;
+  --breadcrumb-active: #d4ffea;
+  --breadcrumb-separator: rgba(212, 255, 234, 0.4);
+}
+
+/* Цветовые схемы для светлой темы - индиго и синевато-зеленые оттенки на светлом/бежевом фоне */
+[data-theme="light"] {
+  /* Основные цвета */
+  --background-primary: #f5f2eb;
+  --background-primary-rgb: 245, 242, 235;
+  --background-secondary: #f9f6f0;
+  --background-secondary-rgb: 249, 246, 240;
+  --background-tertiary: #ebe7df;
+  --background-tertiary-rgb: 235, 231, 223;
+  --background-card: #ffffff;
+  --background-card-rgb: 255, 255, 255;
+  --background-elevated: #ffffff;
+  --background-elevated-rgb: 255, 255, 255;
+  --background-modal: #ffffff;
+  --background-modal-rgb: 255, 255, 255;
+  --background-dropdown: #ffffff;
+  --background-dropdown-rgb: 255, 255, 255;
+  --background-tooltip: #f0ece4;
+  --background-tooltip-rgb: 240, 236, 228;
+
+  /* Цвета текста */
+  --text-primary: #2c3e50;
+  --text-secondary: #546e7a;
+  --text-tertiary: #78909c;
+  --text-accent: #3f51b5;
+  --text-accent-hover: #303f9f;
+  --text-disabled: #b0bec5;
+
+  /* Акцентные цвета */
+  --accent-primary: #3f51b5;
+  --accent-primary-rgb: 63, 81, 181;
+  --accent-secondary: #1a237e;
+  --accent-secondary-rgb: 26, 35, 126;
+  --accent-hover: #5c6bc0;
+  --accent-hover-rgb: 92, 107, 192;
+  --accent-admin: #2e7d32;
+  --accent-admin-rgb: 46, 125, 50;
+  --accent-admin-hover: #388e3c;
+  --accent-admin-hover-rgb: 56, 142, 60;
+  --accent-focus: rgba(63, 81, 181, 0.15);
+
+  /* Цвета компонентов */
+  --header-background: #ffffff;
+  --footer-background: #f0ece4;
+  --card-shadow: 0 4px 8px rgba(63, 81, 181, 0.1);
+  --input-background: #ffffff;
+  --input-border: #dcd8d0;
+  --input-text: #2c3e50;
+  --input-placeholder: #90a4ae;
+  --input-focus-border: #3f51b5;
+  --button-background: #3f51b5;
+  --button-text: #ffffff;
+  --button-hover: #5c6bc0;
+  --button-disabled-background: #d5d2cb;
+  --button-disabled-text: #90a4ae;
+  --scrollbar-track: #f5f2eb;
+  --scrollbar-thumb: #dcd8d0;
+  --scrollbar-thumb-hover: #3f51b5;
+  --table-header-background: #ebe7df;
+  --table-row-odd: #ffffff;
+  --table-row-even: #f9f6f0;
+  --table-border: #dcd8d0;
+
+  /* Статусные цвета */
+  --success: #26a69a;
+  --success-rgb: 38, 166, 154;
+  --warning: #ff9800;
+  --warning-rgb: 255, 152, 0;
+  --error: #f44336;
+  --error-rgb: 244, 67, 54;
+  --info: #2196f3;
+  --info-rgb: 33, 150, 243;
+
+  /* Цвета границ */
+  --border-color: #dcd8d0;
+  --divider-color: #ebe7df;
+  --border-hover: #3f51b5;
+
+  /* Цвета для хлебных крошек и пагинации в светлой теме */
+  --breadcrumb-color: #546e7a;
+  --breadcrumb-active-color: #2e7d32;
+  --breadcrumb-hover-color: #388e3c;
+  --pagination-active-bg: #2e7d32;
+  --pagination-active-text: #ffffff;
+  --pagination-hover-bg: #388e3c;
+
+  /* Каталог */
+  --catalog-title-bg: #ffffff;
+  --catalog-title-color: #1a237e;
+  --catalog-card-bg: #ffffff;
+  --catalog-card-border: rgba(63, 81, 181, 0.4);
+  --catalog-card-border-hover: rgba(63, 81, 181, 0.9);
+  --catalog-card-shadow: rgba(63, 81, 181, 0.15);
+  --catalog-card-shadow-hover: rgba(63, 81, 181, 0.4);
+  --catalog-card-text: #1a237e;
+  --catalog-grid-bg: #f8f7f2;
+  --catalog-grid-shadow: rgba(63, 81, 181, 0.15);
+  --catalog-error-color: #f44336;
+
+  /* Хлебные крошки */
+  --breadcrumb-bg: linear-gradient(
+    135deg,
+    rgba(63, 81, 181, 0.07) 0%,
+    rgba(92, 107, 192, 0.1) 100%
+  );
+  --breadcrumb-border: rgba(63, 81, 181, 0.2);
+  --breadcrumb-shadow: rgba(63, 81, 181, 0.05);
+  --breadcrumb-link: #5c6bc0;
+  --breadcrumb-link-hover: #3f51b5;
+  --breadcrumb-active: #1a237e;
+  --breadcrumb-separator: rgba(63, 81, 181, 0.4);
+
+  /* Transition */
+  --transition-speed: 0.3s;
+}
+
+/* Стили для скроллбара */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}

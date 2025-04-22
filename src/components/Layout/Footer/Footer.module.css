@@ -1,11 +1,13 @@
 .footer {
-  background-color: #202026;
-  color: white;
-  padding: 3rem 0;
+  background-color: var(--footer-background);
+  padding: 2rem 0;
+  color: var(--text-secondary);
+  transition: background-color var(--transition-speed),
+    color var(--transition-speed);
   margin-top: auto;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 -4px 12px rgba(11, 224, 184, 0.2);
+  box-shadow: 0 -4px 12px var(--accent-focus);
 }
 
 .footer::before {
@@ -17,7 +19,7 @@
   bottom: 0;
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(255, 255, 255, 0.05),
+    var(--accent-focus),
     transparent 70%
   );
   z-index: 0;
@@ -39,11 +41,17 @@
   gap: 1rem;
 }
 
+.aboutCompany {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
 .sectionTitle {
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #0bb999;
+  color: var(--accent-primary);
   position: relative;
   padding-bottom: 0.5rem;
 }
@@ -55,14 +63,14 @@
   left: 0;
   width: 50px;
   height: 2px;
-  background-color: rgba(11, 185, 153, 0.5);
+  background-color: var(--accent-focus);
 }
 
 .link {
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #0be0b8;
+  color: var(--accent-primary);
   font-weight: 500;
   padding: 4px 8px;
   border-radius: 4px;
@@ -79,12 +87,12 @@
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: #0be0b8;
+  background-color: var(--accent-primary);
   transition: all 0.3s ease;
 }
 
 .link:hover {
-  color: #0be0b8;
+  color: var(--accent-hover);
 }
 
 .link:hover::after {
@@ -101,7 +109,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(212, 255, 234, 0.8);
+  color: var(--text-secondary);
 }
 
 .socialLinks {
@@ -111,23 +119,22 @@
 }
 
 .socialLink {
-  color: rgba(212, 255, 234, 0.8);
-
+  color: var(--text-secondary);
   font-size: 1.5rem;
   transition: all 0.3s ease;
 }
 
 .socialLink:hover {
   transform: translateY(-3px);
-  color: rgba(11, 185, 153, 0.8);
+  color: var(--accent-primary);
 }
 
 .copyright {
   text-align: center;
   padding-top: 2rem;
   margin-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.6);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-tertiary);
   font-size: 0.9rem;
 }
 
@@ -141,17 +148,17 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   transition: all 0.3s ease;
   padding: 0.5rem;
 }
 
 .serviceItem:hover {
-  color: c;
+  color: var(--accent-primary);
 }
 
 .serviceItem svg {
-  color: #0be0b8;
+  color: var(--accent-primary);
   flex-shrink: 0;
 }
 

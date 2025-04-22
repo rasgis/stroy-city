@@ -4,13 +4,11 @@ import styles from "./AnimationText.module.css";
 interface AnimationTextProps {
   text?: string;
   fontSize?: number;
-  textColor?: string;
 }
 
 export const AnimationText: React.FC<AnimationTextProps> = ({
   text = "Добро пожаловать в Stroy City!",
   fontSize = 72,
-  textColor = "currentColor",
 }) => {
   return (
     <div className={styles.container}>
@@ -22,7 +20,6 @@ export const AnimationText: React.FC<AnimationTextProps> = ({
           className={styles.text}
           style={{
             fontSize: `${fontSize}px`,
-            fill: textColor,
           }}
         >
           {text}

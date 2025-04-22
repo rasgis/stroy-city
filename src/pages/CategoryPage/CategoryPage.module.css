@@ -20,28 +20,62 @@
 .sectionTitle {
   font-size: 1.8rem;
   margin-bottom: 2rem;
-  color: #d4ffea;
+  color: var(--catalog-card-text);
   text-align: center;
   font-weight: 600;
   padding: 1rem;
-  border-bottom: 1px solid rgba(11, 224, 184, 0.2);
+  border-bottom: 1px solid var(--catalog-card-border);
+  position: relative;
+}
+
+.sectionTitle::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background-color: var(--accent-primary);
+  border-radius: 3px;
 }
 
 /* Описание категории */
 .description {
   margin: 1.5rem 0;
-  padding: 1.5rem;
-  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  padding: 1.5rem 2rem;
+  background-color: var(--catalog-grid-bg);
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(11, 224, 184, 0.2);
+  box-shadow: 0 4px 15px var(--catalog-grid-shadow);
+  border: 1px solid var(--catalog-card-border);
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.description::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-primary-rgb), 0.05) 0%,
+    rgba(var(--accent-primary-rgb), 0.01) 100%
+  );
+  z-index: 0;
+  pointer-events: none;
 }
 
 .descriptionText {
-  color: #d4ffea;
+  color: var(--catalog-card-text);
   font-size: 1.1rem;
-  line-height: 1.6;
+  line-height: 1.7;
   margin: 0;
+  position: relative;
+  z-index: 1;
 }
 
 /* Подкатегории */
@@ -62,17 +96,13 @@
 /* Сообщение при отсутствии товаров */
 .emptyMessage {
   text-align: center;
-  color: #d4ffea;
+  color: var(--catalog-card-text);
   padding: 3rem 2rem;
   font-size: 1.1rem;
-  background: linear-gradient(
-    135deg,
-    rgba(29, 30, 36, 0.7) 0%,
-    rgba(42, 43, 50, 0.7) 100%
-  );
+  background: var(--catalog-grid-bg);
   border-radius: 12px;
-  border: 1px solid rgba(11, 224, 184, 0.2);
-  box-shadow: 0 8px 24px rgba(11, 224, 184, 0.1);
+  border: 1px solid var(--catalog-card-border);
+  box-shadow: 0 8px 24px var(--catalog-grid-shadow);
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -83,21 +113,22 @@
 /* Ссылка возврата */
 .returnLink {
   margin-top: 2.5rem;
-  color: #0be0b8 !important;
+  color: var(--accent-primary) !important;
   text-decoration: none !important;
   font-weight: 500;
   display: inline-block;
   padding: 0.8rem 1.5rem;
-  background: rgba(11, 224, 184, 0.1);
-  border: 1px solid rgba(11, 224, 184, 0.2);
+  background: rgba(var(--accent-primary-rgb), 0.1);
+  border: 1px solid var(--catalog-card-border);
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 
 .returnLink:hover {
-  background: rgba(11, 224, 184, 0.15);
-  border-color: rgba(11, 224, 184, 0.4);
+  background: rgba(var(--accent-primary-rgb), 0.15);
+  border-color: var(--catalog-card-border-hover);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--catalog-card-shadow-hover);
 }
 
 /* Поиск */

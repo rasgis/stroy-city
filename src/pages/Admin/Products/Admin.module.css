@@ -44,9 +44,9 @@
   align-items: center;
   margin-bottom: 2rem;
   padding: 2rem;
-  background: #1d1e24;
+  background: var(--background-card);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  box-shadow: var(--card-shadow);
   position: relative;
   overflow: hidden;
 }
@@ -64,16 +64,16 @@
 
 .header h2 {
   margin: 0;
-  color: #d4ffea;
+  color: var(--text-primary);
   font-size: 2.5rem;
   font-weight: 700;
 }
 
 .addButton {
   padding: 0.5rem 1rem;
-  background: rgba(11, 224, 184, 0.1);
-  color: #0be0b8;
-  border: 1px solid rgba(11, 224, 184, 0.3);
+  background: var(--accent-focus);
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -85,8 +85,8 @@
 }
 
 .addButton:hover {
-  background: rgba(11, 224, 184, 0.2);
-  border-color: #0be0b8;
+  background: var(--accent-focus);
+  border-color: var(--accent-primary);
   transform: translateY(-1px);
 }
 
@@ -96,13 +96,9 @@
 
 .tableContainer {
   width: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(11, 224, 184, 0.1),
-    rgba(29, 30, 36, 0.1)
-  );
+  background: var(--background-card);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(11, 224, 184, 0.15);
+  box-shadow: var(--card-shadow);
   overflow: hidden;
   padding: 1rem;
 }
@@ -115,23 +111,23 @@
 }
 
 .table th {
-  background: linear-gradient(
-    135deg,
-    rgba(11, 224, 184, 0.1) 0%,
-    rgba(11, 200, 224, 0.1) 100%
-  );
-  color: #0be0b8;
+  background: var(--table-header-background);
+  color: var(--accent-primary);
   font-weight: 600;
   padding: 1rem;
   text-align: left;
-  border-bottom: 2px solid rgba(11, 224, 184, 0.2);
+  border-bottom: 2px solid var(--accent-focus);
 }
 
 .table td {
   padding: 1.25rem 1rem;
-  color: #d4ffea;
-  background: rgba(29, 30, 36, 0.7);
-  border-bottom: 1px solid rgba(11, 224, 184, 0.1);
+  color: var(--text-primary);
+  background: var(--table-row-odd);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table tr:nth-child(even) td {
+  background: var(--table-row-even);
 }
 
 .table tr {
@@ -139,9 +135,9 @@
 }
 
 .table tr:hover td {
-  background: rgba(29, 30, 36, 0.9);
+  background: var(--background-tertiary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--card-shadow);
 }
 
 .table tr:first-child td:first-child {
@@ -221,13 +217,13 @@
 }
 
 .form {
-  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  background: var(--background-card);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(11, 224, 184, 0.15);
+  box-shadow: var(--card-shadow);
   max-width: 600px;
   margin: 0 auto;
-  border: 1px solid rgba(11, 224, 184, 0.2);
+  border: 1px solid var(--border-color);
   position: relative;
   overflow: hidden;
 }
@@ -241,7 +237,7 @@
   bottom: 0;
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(11, 224, 184, 0.1),
+    var(--accent-focus),
     transparent 70%
   );
   z-index: -1;
@@ -254,7 +250,7 @@
 .formGroup label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #d4ffea;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -263,10 +259,10 @@
 .formGroup select {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid rgba(11, 224, 184, 0.3);
+  border: 1px solid var(--input-border);
   border-radius: 8px;
-  background-color: rgba(29, 30, 36, 0.7);
-  color: #fff;
+  background-color: var(--input-background);
+  color: var(--input-text);
   font-size: 1rem;
   transition: all 0.2s;
 }
@@ -275,18 +271,18 @@
 .formGroup textarea:focus,
 .formGroup select:focus {
   outline: none;
-  border-color: #0be0b8;
-  box-shadow: 0 0 0 2px rgba(11, 224, 184, 0.2);
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 2px var(--accent-focus);
 }
 
 .formGroup input.error,
 .formGroup select.error,
 .formGroup textarea.error {
-  border-color: #ff4757;
+  border-color: var(--error);
 }
 
 .errorMessage {
-  color: #ff4757;
+  color: var(--error);
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
@@ -309,24 +305,24 @@
 }
 
 .submitButton {
-  background: #0be0b8;
-  color: white;
+  background: var(--button-background);
+  color: var(--button-text);
 }
 
 .submitButton:hover {
-  background: #09c9a3;
+  background: var(--button-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(11, 224, 184, 0.3);
+  box-shadow: var(--card-shadow);
 }
 
 .cancelButton {
-  background: #2a2b33;
-  color: #d4ffea;
-  border: 1px solid rgba(11, 224, 184, 0.2);
+  background: var(--background-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 .cancelButton:hover {
-  background: #3a3b43;
+  background: var(--background-tertiary);
   transform: translateY(-2px);
 }
 
@@ -336,17 +332,17 @@
   text-align: center;
   padding: 2rem;
   font-size: 1.2rem;
-  color: #d4ffea;
-  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  color: var(--text-primary);
+  background: var(--background-card);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(11, 224, 184, 0.15);
+  box-shadow: var(--card-shadow);
   width: 100%;
   max-width: 600px;
   margin: 2rem auto;
 }
 
 .error {
-  color: #ff4757;
+  color: var(--error);
 }
 
 @media (max-width: 768px) {
@@ -617,222 +613,202 @@
 
 .productGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
   width: 100%;
   margin-top: 2rem;
 }
 
 .productCard {
-  width: 100%;
-  overflow: hidden;
+  perspective: 1000px;
 }
 
 .card {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
-  background: linear-gradient(
-    135deg,
-    rgba(29, 30, 36, 0.8) 0%,
-    rgba(42, 43, 50, 0.8) 100%
-  );
-  border-radius: 10px;
+  height: 100%;
+  border-radius: 12px;
+  background-color: var(--background-card);
+  box-shadow: var(--card-shadow);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(11, 224, 184, 0.1);
-  border: 1px solid rgba(11, 224, 184, 0.15);
+  border: 1px solid var(--border-color);
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(11, 224, 184, 0.2);
-  border-color: rgba(11, 224, 184, 0.3);
+  transform: translateY(-10px);
+  box-shadow: var(--box-shadow-medium);
 }
 
 .imageContainer {
   position: relative;
   width: 100%;
-  padding-top: 70%;
+  height: 200px;
   overflow: hidden;
-  background-color: rgba(29, 30, 36, 0.8);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 .productImage {
-  position: absolute;
-  top: 0.4rem;
-  left: 0.4rem;
-  right: 0.4rem;
-  bottom: 0.4rem;
-  width: calc(100% - 0.8rem);
-  height: calc(100% - 0.8rem);
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
-  border-radius: 6px;
+  background-color: var(--background-tertiary);
 }
 
 .card:hover .productImage {
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .content {
-  padding: 1.2rem;
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(
-    135deg,
-    rgba(29, 30, 36, 0.5) 0%,
-    rgba(42, 43, 50, 0.5) 100%
-  );
+  gap: 0.75rem;
+  padding: 1.5rem;
+  flex-grow: 1;
 }
 
 .title {
-  margin: 0 0 0.6rem 0;
+  font-size: 1.25rem;
   font-weight: 600;
-  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: #d4ffea;
 }
 
 .description {
-  color: rgba(212, 255, 234, 0.7);
-  margin: 0 0 0.8rem 0;
-  flex-grow: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.6;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 0.85rem;
-  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  flex-grow: 1;
 }
 
 .category {
-  color: #d4ffea;
-  font-size: 0.8rem;
-  margin: 0 0 0.6rem 0;
-  padding: 0.3rem 0.6rem;
-  background: rgba(11, 224, 184, 0.1);
-  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  background-color: var(--background-secondary);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
   display: inline-block;
-  border: 1px solid rgba(11, 224, 184, 0.2);
+  margin-top: 0.5rem;
   transition: all 0.3s ease;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .card:hover .category {
-  background: rgba(11, 224, 184, 0.15);
-  border-color: rgba(11, 224, 184, 0.3);
+  background-color: var(--accent-focus);
 }
 
 .price {
-  font-weight: 700;
-  color: #0be0b8;
-  margin: 0 0 0.8rem 0;
   font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--accent-primary);
+  margin-top: auto;
 }
 
 .cardActions {
   display: flex;
   justify-content: space-between;
-  gap: 0.5rem;
-  margin-top: auto;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 .editButton,
 .deleteButton {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
   padding: 0.5rem;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border: none;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .editButton {
-  background: rgba(11, 224, 184, 0.1);
-  color: #0be0b8;
-  border: 1px solid rgba(11, 224, 184, 0.3);
+  background: var(--accent-focus);
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
 }
 
 .editButton:hover {
-  background: rgba(11, 224, 184, 0.2);
-  border-color: #0be0b8;
+  background: var(--accent-focus);
+  border-color: var(--accent-primary);
   transform: translateY(-1px);
 }
 
 .deleteButton {
   background: rgba(255, 82, 82, 0.1);
-  color: #ff5252;
+  color: var(--error);
   border: 1px solid rgba(255, 82, 82, 0.3);
 }
 
 .deleteButton:hover {
   background: rgba(255, 82, 82, 0.2);
-  border-color: #ff5252;
+  border-color: var(--error);
   transform: translateY(-1px);
 }
 
 .empty {
-  text-align: center;
-  color: #d4ffea;
-  padding: 3rem 2rem;
-  font-size: 1.2rem;
-  background: linear-gradient(
-    135deg,
-    rgba(29, 30, 36, 0.7) 0%,
-    rgba(42, 43, 50, 0.7) 100%
-  );
-  border-radius: 12px;
-  border: 1px solid rgba(11, 224, 184, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  margin-top: 1rem;
+  padding: 4rem 2rem;
+  background-color: var(--background-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  text-align: center;
+  margin-top: 2rem;
 }
 
 @media (max-width: 768px) {
   .productGrid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
+    gap: 1.5rem;
   }
-  
+
   .content {
     padding: 1rem;
   }
-  
+
   .title {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
-  
+
   .description {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
-  
+
   .editButton,
   .deleteButton {
-    padding: 0.4rem 0.3rem;
-    font-size: 0.75rem;
+    padding: 0.4rem;
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
   .productGrid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: 1fr;
   }
-  
+
   .cardActions {
     flex-direction: column;
   }

@@ -38,13 +38,16 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
-  const { name, description, price, category, unitOfMeasure, stock, isActive } =
-    req.body;
-
-  // Получаем путь к загруженному файлу из multer
-  const image = req.file
-    ? `/uploads/products/${req.file.filename}`
-    : req.body.image;
+  const {
+    name,
+    description,
+    price,
+    category,
+    unitOfMeasure,
+    stock,
+    isActive,
+    image,
+  } = req.body;
 
   // Если категория приходит строкой, преобразуем в ObjectId
   let categoryId = category;
@@ -80,11 +83,6 @@ const createProduct = asyncHandler(async (req, res) => {
 // @route   PUT /api/products/:id
 // @access  Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
-  // Получаем путь к загруженному файлу из multer
-  const image = req.file
-    ? `/uploads/products/${req.file.filename}`
-    : req.body.image;
-
   // Если категория приходит строкой, преобразуем в ObjectId
   if (req.body.category && typeof req.body.category === "string") {
     req.body.category = new mongoose.Types.ObjectId(req.body.category);
@@ -96,7 +94,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       name: req.body.name,
       description: req.body.description,
       price: req.body.price,
-      image: image,
+      image: req.body.image,
       category: req.body.category,
       unitOfMeasure: req.body.unitOfMeasure,
       stock: req.body.stock,

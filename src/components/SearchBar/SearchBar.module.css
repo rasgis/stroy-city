@@ -19,21 +19,21 @@
   width: 100%;
   display: flex;
   align-items: center;
-  background-color: rgba(29, 30, 36, 0.8);
+  background-color: var(--input-background);
   border-radius: 8px;
-  border: 1px solid rgba(11, 224, 184, 0.2);
+  border: 1px solid var(--input-border);
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.1);
+  box-shadow: var(--card-shadow);
 }
 
 .searchInputContainer:hover {
-  border-color: rgba(11, 224, 184, 0.7);
+  border-color: var(--border-hover);
 }
 
 .searchInputContainer:focus-within {
-  border-color: #0be0b8;
+  border-color: var(--input-focus-border);
   border-width: 2px;
-  box-shadow: 0 10px 25px rgba(11, 224, 184, 0.25);
+  box-shadow: 0 10px 25px var(--accent-focus);
   transform: translateY(-2px);
 }
 
@@ -42,13 +42,13 @@
   left: 12px;
   width: 20px;
   height: 20px;
-  fill: rgba(212, 255, 234, 0.7);
+  fill: var(--text-tertiary);
   transition: fill 0.2s ease;
 }
 
 .searchInputContainer:hover .searchIcon,
 .searchInputContainer:focus-within .searchIcon {
-  fill: #0be0b8;
+  fill: var(--accent-primary);
 }
 
 .searchInput {
@@ -58,20 +58,20 @@
   border: none;
   outline: none;
   font-size: 1rem;
-  color: #d4ffea;
+  color: var(--input-text);
   letter-spacing: 0.5px;
   font-weight: 400;
-  caret-color: #d4ffea;
+  caret-color: var(--input-text);
 }
 
 .searchInput::placeholder {
-  color: rgba(212, 255, 234, 0.5);
+  color: var(--input-placeholder);
   opacity: 1;
   transition: color 0.2s ease;
 }
 
 .searchInputContainer:hover .searchInput::placeholder {
-  color: rgba(212, 255, 234, 0.7);
+  color: var(--text-tertiary);
 }
 
 .clearButton {
@@ -91,19 +91,18 @@
 }
 
 .clearButton:hover {
-  background-color: rgba(11, 224, 184, 0.1);
+  background-color: var(--accent-focus);
 }
 
 .clearIcon {
   width: 18px;
   height: 18px;
-  fill: rgba(212, 255, 234, 0.7);
+  fill: var(--text-tertiary);
   transition: fill 0.2s ease;
 }
 
 .clearButton:hover .clearIcon {
-  fill: #0be0b8;
-  transform: scale(1.1);
+  fill: var(--accent-primary);
 }
 
 /* Стили загрузки */
@@ -118,7 +117,7 @@
 .loadingDot {
   width: 6px;
   height: 6px;
-  background-color: #0be0b8;
+  background-color: var(--accent-primary);
   border-radius: 50%;
   margin: 0 2px;
   animation: loadingDot 1.4s infinite ease-in-out both;
@@ -137,7 +136,7 @@
   .searchBar {
     max-width: 100%;
   }
-  
+
   .searchInput {
     font-size: 0.9rem;
     padding: 10px 40px 10px 40px;
@@ -148,16 +147,16 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
 @keyframes loadingDot {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(0);
     opacity: 0.3;
   }
@@ -165,4 +164,4 @@
     transform: scale(1);
     opacity: 1;
   }
-} 
+}

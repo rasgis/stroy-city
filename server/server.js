@@ -7,21 +7,13 @@ import connectDB from "./config/db.js";
 import { authRoutes } from "./routes/auth.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
-import uploadRoutes from "./routes/uploadRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 // import emailRoutes from "./routes/emailRoutes.js";
-import fs from "fs";
 import { dirname } from "path";
 
 // Получаем текущую директорию
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-// Проверяем и создаем директорию uploads если она не существует
-const uploadsDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
 
 // Загружаем переменные окружения из корня проекта
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
@@ -54,22 +46,12 @@ app.use(express.json({ limit: "50mb" }));
 // Настройка статических файлов
 const publicDir = path.join(__dirname, "..", "public");
 app.use("/public", express.static(publicDir));
-app.use("/uploads", express.static(uploadsDir));
-app.use(
-  "/uploads/categories",
-  express.static(path.join(__dirname, "uploads", "categories"))
-);
-app.use(
-  "/uploads/products",
-  express.static(path.join(__dirname, "uploads", "products"))
-);
 
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
-app.use("/api/upload", uploadRoutes);
 // app.use("/api/email", emailRoutes);
 
 // Базовый роут для проверки

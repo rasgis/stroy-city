@@ -23,7 +23,7 @@ export const login = createAsyncThunk(
     try {
       // При входе получаем данные пользователя и загружаем его корзину
       const response = await authService.login(credentials);
-      
+
       // Загружаем корзину из localStorage при входе
       dispatch(loadCart());
       return response.user; // Возвращаем пользователя из ответа
@@ -44,7 +44,7 @@ export const register = createAsyncThunk(
     try {
       // При регистрации получаем данные пользователя и загружаем его корзину
       const user = await authService.register(credentials);
-      
+
       // Загружаем корзину из localStorage при регистрации
       dispatch(loadCart());
       return user;
@@ -76,7 +76,31 @@ const authSlice = createSlice({
       state.error = null;
     },
     updateUserData: (state, action) => {
+      // Если у нас уже есть пользователь, сохраняем его роль
+      const currentUserRole = state.user?.role;
+
+      // Обновляем данные пользователя
       state.user = action.payload;
+
+      // Проверка безопасности: если роль в новых данных отличается от текущей,
+      // и пользователь уже был авторизован, это может быть попытка повышения привилегий
+      if (
+        currentUserRole &&
+        state.user &&
+        state.isAuthenticated &&
+        state.user.role !== currentUserRole
+      ) {
+        console.error(
+          "КРИТИЧЕСКАЯ ОШИБКА БЕЗОПАСНОСТИ: Обнаружена попытка изменения роли пользователя",
+          {
+            previousRole: currentUserRole,
+            attemptedNewRole: state.user.role,
+          }
+        );
+
+        // Восстанавливаем правильную роль
+        state.user.role = currentUserRole;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -103,7 +127,7 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
-        
+
         // Убедимся, что имя пользователя корректно обрабатывается
         if (action.payload) {
           state.user = {
@@ -113,7 +137,7 @@ const authSlice = createSlice({
         } else {
           state.user = action.payload;
         }
-        
+
         state.isAuthenticated = true;
       })
       .addCase(register.rejected, (state, action) => {

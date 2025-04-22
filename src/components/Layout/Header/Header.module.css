@@ -1,6 +1,6 @@
 .header {
-  background-color: #202026;
-  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  background-color: var(--header-background);
+  box-shadow: 0 4px 12px var(--accent-focus);
   position: fixed;
   top: 0;
   left: 0;
@@ -9,6 +9,8 @@
   width: 100%;
   height: 72px;
   transform: translateZ(0);
+  transition: background-color var(--transition-speed),
+    box-shadow var(--transition-speed);
 }
 
 .container {
@@ -66,7 +68,8 @@
 .logoText {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #0be0b8;
+  color: var(--accent-primary);
+  transition: color var(--transition-speed);
 }
 
 /* Навигация */
@@ -100,17 +103,20 @@
   transition: all 0.2s;
   white-space: nowrap;
   position: relative;
+  color: var(--accent-primary);
+  transition: color var(--transition-speed);
 }
 
 .navLink,
 .cartLink,
 .authLink {
-  color: #0be0b8;
+  color: var(--accent-primary);
 }
 
 .adminLink {
-  color: #9f5bdf;
+  color: var(--accent-admin);
   font-size: 0.85rem;
+  transition: color var(--transition-speed);
 }
 
 /* Подчеркивание при наведении */
@@ -126,27 +132,29 @@
   left: 50%;
   transition: all 0.3s ease;
   transform: translateX(-50%);
+  background-color: var(--accent-primary);
+  transition: background-color var(--transition-speed);
 }
 
 .navLink::after,
 .cartLink::after,
 .authLink::after {
-  background-color: #0be0b8;
+  background-color: var(--accent-primary);
 }
 
 .adminLink::after {
-  background-color: #9f5bdf;
+  background-color: var(--accent-admin);
 }
 
 /* Эффекты при наведении */
 .navLink:hover,
 .cartLink:hover,
 .authLink:hover {
-  color: #42ffdc;
+  color: var(--accent-hover);
 }
 
 .adminLink:hover {
-  color: #be78ff;
+  color: var(--accent-admin-hover);
 }
 
 .navLink:hover::after,
@@ -171,15 +179,15 @@
   display: none;
   background: none;
   border: none;
-  color: #0be0b8;
+  color: var(--accent-primary);
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 4px;
-  transition: all 0.2s;
+  transition: all var(--transition-speed);
 }
 
 .mobileMenuButton:hover {
-  background-color: rgba(11, 224, 184, 0.1);
+  background-color: var(--accent-focus);
 }
 
 .mobileActions {
@@ -200,9 +208,10 @@
   gap: 0.5rem;
   padding: 8px 12px;
   border-radius: 4px;
-  color: #0bb999;
+  color: var(--accent-secondary);
   font-weight: 500;
   position: relative;
+  transition: color var(--transition-speed);
 }
 
 .userLink {
@@ -210,12 +219,12 @@
   align-items: center;
   gap: 0.5rem;
   text-decoration: none;
-  color: #0bb999;
-  transition: all 0.3s ease;
+  color: var(--accent-secondary);
+  transition: all var(--transition-speed);
 }
 
 .userLink:hover {
-  color: #42ffdc;
+  color: var(--accent-hover);
 }
 
 .userLink:hover .userName {
@@ -230,19 +239,19 @@
 .logoutButton {
   background: none;
   border: none;
-  color: #0bb999;
+  color: var(--accent-secondary);
   cursor: pointer;
   padding: 8px 12px;
   display: flex;
   align-items: center;
-  transition: color 0.2s;
+  transition: color var(--transition-speed);
   font-weight: 500;
   border-radius: 4px;
   position: relative;
 }
 
 .logoutButton:hover {
-  color: #42ffdc;
+  color: var(--accent-hover);
 }
 
 /* Медиа-запросы */
@@ -364,8 +373,8 @@
   .adminNav {
     margin: 0.5rem 0;
     padding: 0.5rem 0;
-    border-top: 1px solid rgba(11, 224, 184, 0.1);
-    border-bottom: 1px solid rgba(11, 224, 184, 0.1);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
   }
 }
 
@@ -424,7 +433,7 @@
   justify-content: center;
   background: none;
   border: none;
-  color: #0be0b8;
+  color: var(--accent-primary);
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 4px;
@@ -434,7 +443,7 @@
 }
 
 .backButton:hover {
-  background-color: rgba(11, 224, 184, 0.15);
+  background-color: var(--accent-focus);
   transform: translateX(-3px);
-  color: #42ffdc;
+  color: var(--accent-hover);
 }

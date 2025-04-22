@@ -36,11 +36,6 @@ const createCategory = asyncHandler(async (req, res) => {
       throw new Error("Название категории обязательно");
     }
 
-    if (!image) {
-      res.status(400);
-      throw new Error("Изображение категории обязательно");
-    }
-
     const categoryExists = await Category.findOne({ name });
 
     if (categoryExists) {

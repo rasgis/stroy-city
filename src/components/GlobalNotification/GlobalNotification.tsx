@@ -1,12 +1,14 @@
-import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store';
-import { hideNotification } from '../../reducers/notificationsSlice';
-import { Notification } from '../Notification/Notification';
+import React, { useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../store";
+import { hideNotification } from "../../reducers/notificationsSlice";
+import { Notification } from "../Notification/Notification";
 
 export const GlobalNotification: React.FC = () => {
   const dispatch = useDispatch();
-  const { isOpen, message } = useSelector((state: RootState) => state.notifications);
+  const { isOpen, message } = useSelector(
+    (state: RootState) => state.notifications
+  );
 
   const handleClose = useCallback(() => {
     dispatch(hideNotification());
@@ -22,4 +24,4 @@ export const GlobalNotification: React.FC = () => {
   );
 };
 
-export default GlobalNotification; 
+export default GlobalNotification;

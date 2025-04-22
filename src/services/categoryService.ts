@@ -1,7 +1,6 @@
 import axios from "axios";
 import { Category, CategoryFormData } from "../types/category";
 import { authService } from "./authService";
-import { fileService } from "./fileService";
 import { prepareDataForApi } from "../utils/apiUtils";
 
 export interface CategoryWithChildren extends Category {
@@ -38,9 +37,7 @@ class CategoryService {
     return response.data;
   }
 
-  async createCategory(
-    categoryData: CategoryFormData
-  ): Promise<Category> {
+  async createCategory(categoryData: CategoryFormData): Promise<Category> {
     try {
       // Подготавливаем данные с использованием общей утилиты
       const data = prepareDataForApi({
@@ -48,17 +45,16 @@ class CategoryService {
         description: categoryData.description,
         parentId: categoryData.parentId,
         isActive: categoryData.isActive,
-        image: categoryData.image
+        image: categoryData.image,
       });
-
 
       const response = await axios.post(`${API_URL}/categories`, data, {
         headers: {
           ...this.getAuthHeaders(),
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
-      
+
       return response.data;
     } catch (error) {
       console.error("Error creating category:", error);
@@ -81,21 +77,16 @@ class CategoryService {
         description: categoryData.description,
         parentId: categoryData.parentId,
         isActive: categoryData.isActive,
-        image: categoryData.image
+        image: categoryData.image,
       });
 
-      
-      const response = await axios.put(
-        `${API_URL}/categories/${id}`,
-        data,
-        {
-          headers: {
-            ...this.getAuthHeaders(),
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      
+      const response = await axios.put(`${API_URL}/categories/${id}`, data, {
+        headers: {
+          ...this.getAuthHeaders(),
+          "Content-Type": "application/json",
+        },
+      });
+
       return response.data;
     } catch (error) {
       console.error("Error updating category:", error);

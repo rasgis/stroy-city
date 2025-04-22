@@ -2,9 +2,10 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #26282e;
+  background-color: var(--background-primary);
   overflow-y: scroll;
   scrollbar-gutter: stable;
+  transition: background-color var(--transition-speed);
 }
 
 .main {
@@ -14,4 +15,6 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  color: var(--text-primary);
+  transition: color var(--transition-speed);
 }

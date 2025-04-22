@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>О компании</h3>
-          <p style={{ color: "rgba(212, 255, 234, 0.8)" }}>
+          <p className={styles.aboutCompany}>
             Мы предлагаем широкий ассортимент качественных строительных
             материалов для ваших проектов. Наша цель - сделать строительство
             доступным и удобным.

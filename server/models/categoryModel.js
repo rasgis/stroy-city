@@ -12,7 +12,7 @@ const categorySchema = mongoose.Schema(
     },
     image: {
       type: String,
-      required: [true, "Изображение категории обязательно"],
+      required: false,
     },
     parentId: {
       type: mongoose.Schema.Types.ObjectId,

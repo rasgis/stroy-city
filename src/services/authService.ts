@@ -6,6 +6,7 @@ import {
   User,
 } from "../types/auth";
 import { API_CONFIG } from "../config/api";
+import { auditSecurityAction, clearAllAuthData } from "../utils/securityUtils";
 
 const TOKEN_KEY = "token";
 const USER_KEY = "user";
@@ -15,12 +16,55 @@ export const authService = {
   // Сохранение токена и данных пользователя
   setAuthData(token: string, user: User | any) {
     // Проверка и нормализация ID пользователя
+    // Получаем текущие данные пользователя для проверки безопасности
+    const currentUserStr = localStorage.getItem(USER_KEY);
+    const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
+    const currentRole = currentUser?.role;
+
+    let userProfile = { ...user };
+
+    // Проверка безопасности: если пользователь пытается изменить роль
+    if (currentUser && userProfile && currentRole) {
+      // Если роль пытаются изменить или роль не указана - блокируем изменение
+      if (userProfile.role !== currentRole) {
+        console.warn("БЛОКИРОВАНА ПОПЫТКА ИЗМЕНЕНИЯ РОЛИ через setAuthData", {
+          currentRole,
+          attemptedRole: userProfile.role || "не указана",
+          userId: userProfile.id || userProfile._id,
+          timestamp: new Date().toISOString(),
+        });
+
+        // Принудительно восстанавливаем правильную роль
+        userProfile.role = currentRole;
+      }
+
+      // Дополнительная проверка на подмену идентификатора
+      if (
+        currentUser.id &&
+        userProfile.id &&
+        currentUser.id !== userProfile.id
+      ) {
+        console.warn(
+          "БЛОКИРОВАНА ПОПЫТКА ПОДМЕНЫ ИДЕНТИФИКАТОРА ПОЛЬЗОВАТЕЛЯ",
+          {
+            currentId: currentUser.id,
+            attemptedId: userProfile.id,
+            timestamp: new Date().toISOString(),
+          }
+        );
+
+        // Сохраняем оригинальный идентификатор
+        userProfile.id = currentUser.id;
+        userProfile._id = currentUser.id;
+      }
+    }
+
     const normalizedUser = {
-      ...user,
+      ...userProfile,
       // Используем _id или id из ответа сервера
-      id: user._id || user.id || "",
+      id: userProfile._id || userProfile.id || "",
       // Гарантируем, что имя будет установлено
-      name: user.name || "",
+      name: userProfile.name || "",
     };
 
     localStorage.setItem(TOKEN_KEY, token);
@@ -30,6 +74,9 @@ export const authService = {
     if (normalizedUser.role) {
       localStorage.setItem(ROLE_KEY, normalizedUser.role);
     }
+
+    // Обновляем сохраненный профиль с безопасной ролью
+    localStorage.setItem("SAVED_USER_PROFILE", JSON.stringify(normalizedUser));
   },
 
   // Получение токена
@@ -48,6 +95,7 @@ export const authService = {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(ROLE_KEY);
+    localStorage.removeItem("SAVED_USER_PROFILE"); // Удаляем сохраненный профиль при выходе
   },
 
   // Проверка авторизации
@@ -62,13 +110,13 @@ export const authService = {
         `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`,
         credentials,
         {
-          headers: API_CONFIG.HEADERS
+          headers: API_CONFIG.HEADERS,
         }
       );
 
       // Сохраняем данные пользователя, включая _id или id
       const user = response.data.user;
-      
+
       // Убедимся, что все поля пользователя корректно копируются
       const userToSave = {
         ...user,
@@ -76,7 +124,7 @@ export const authService = {
         name: user.name || "", // Явно указываем имя
         email: user.email || "",
         login: user.login || "",
-        role: user.role || "user"
+        role: user.role || "user",
       };
 
       // Используем метод setAuthData для унификации сохранения данных
@@ -84,16 +132,16 @@ export const authService = {
 
       return {
         ...response.data,
-        user: userToSave // Возвращаем обработанного пользователя
+        user: userToSave, // Возвращаем обработанного пользователя
       };
     } catch (error) {
       console.error("Ошибка входа:", error);
-      
+
       // Улучшаем обработку ошибок, возвращая более информативное сообщение
       if (axios.isAxiosError(error) && error.response?.data?.message) {
         throw new Error(error.response.data.message);
       }
-      
+
       throw error;
     }
   },
@@ -131,7 +179,7 @@ export const authService = {
         name: user.name || credentials.name || "", // Используем имя из ответа или из отправленных данных
         email: user.email || credentials.email || "",
         login: user.login || credentials.login || "",
-        role: user.role || "user"
+        role: user.role || "user",
       };
 
       // Сохраняем данные авторизации
@@ -174,6 +222,13 @@ export const authService = {
   },
 
   logout() {
+    // Записываем информацию об операции в аудит безопасности
+    auditSecurityAction("user-logout", {
+      timestamp: new Date().toISOString(),
+      success: true,
+    });
+
+    // Очищаем все данные аутентификации
     this.clearAuthData();
   },
 
@@ -185,18 +240,36 @@ export const authService = {
       this.setAuthData(token, user);
     }
   },
-  
+
   // Локальное обновление профиля без обращения к серверу (временное решение)
-  localUpdateUserProfile(userData: { name?: string; email?: string; login?: string; password?: string }): User {
+  localUpdateUserProfile(userData: {
+    name?: string;
+    email?: string;
+    login?: string;
+    password?: string;
+    role?: string;
+  }): User {
     try {
       console.log("Локальное обновление профиля пользователя");
       const token = this.getToken();
       const currentUser = this.getUser();
-      
+
       if (!token || !currentUser) {
         throw new Error("Необходима авторизация для обновления профиля");
       }
-      
+
+      // Проверяем попытку изменения роли - критическая уязвимость безопасности
+      if (userData.role && userData.role !== currentUser.role) {
+        console.error(
+          "ВНИМАНИЕ: Попытка изменить роль пользователя локально!",
+          {
+            currentRole: currentUser.role,
+            attemptedRole: userData.role,
+          }
+        );
+        throw new Error("Изменение роли пользователя запрещено");
+      }
+
       // Создаем обновленные данные пользователя, сохраняя все предыдущие поля
       const updatedUser = {
         ...currentUser,
@@ -206,49 +279,91 @@ export const authService = {
         // Сохраняем оригинальный _id и другие важные поля
         _id: currentUser._id || currentUser.id,
         id: currentUser._id || currentUser.id,
+        // Явно сохраняем текущую роль пользователя
+        role: currentUser.role,
       };
-      
+
       console.log("Обновленные данные пользователя:", updatedUser);
-      
+
       // Сохраняем в localStorage с тем же токеном
       localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
-      
+
       // Дополнительно сохраняем в постоянное хранилище под специальным ключом
       // Это поможет сохранить данные даже после перезагрузки
       try {
         localStorage.setItem("SAVED_USER_PROFILE", JSON.stringify(updatedUser));
         console.log("Профиль сохранен в постоянное хранилище");
       } catch (storageError) {
-        console.warn("Не удалось сохранить профиль в постоянное хранилище:", storageError);
+        console.warn(
+          "Не удалось сохранить профиль в постоянное хранилище:",
+          storageError
+        );
       }
-      
+
       return updatedUser;
     } catch (error) {
       console.error("Ошибка при локальном обновлении профиля:", error);
       throw error as Error;
     }
   },
-  
+
   // Загрузка сохраненного профиля из localStorage
   loadSavedProfile(): User | null {
     try {
       const savedProfileStr = localStorage.getItem("SAVED_USER_PROFILE");
       if (!savedProfileStr) return null;
-      
-      const savedProfile = JSON.parse(savedProfileStr);
+
+      // Получаем текущего пользователя и его роль
+      const currentUser = this.getUser();
+      const currentRole = currentUser?.role;
+
+      let savedProfile = JSON.parse(savedProfileStr);
       console.log("Загружен сохраненный профиль:", savedProfile);
-      
-      // Если есть действующий токен, обновляем текущего пользователя
+
+      // Проверка и защита: если роль в сохраненном профиле отличается от текущей роли пользователя
+      if (
+        currentUser &&
+        savedProfile &&
+        currentRole &&
+        savedProfile.role !== currentRole
+      ) {
+        console.error(
+          "КРИТИЧЕСКАЯ УЯЗВИМОСТЬ: Обнаружена попытка загрузки профиля с измененной ролью",
+          {
+            currentRole,
+            savedProfileRole: savedProfile.role,
+          }
+        );
+
+        // Принудительно устанавливаем правильную роль в загруженном профиле
+        savedProfile.role = currentRole;
+
+        // Обновляем SAVED_USER_PROFILE с правильной ролью
+        localStorage.setItem(
+          "SAVED_USER_PROFILE",
+          JSON.stringify(savedProfile)
+        );
+        console.log(
+          "Роль в сохраненном профиле принудительно исправлена на:",
+          currentRole
+        );
+      }
+
+      // Если есть действующий токен, обновляем текущего пользователя с защитой от изменения роли
       const token = this.getToken();
       if (token) {
         this.setAuthData(token, savedProfile);
         console.log("Профиль применен с текущим токеном");
       }
-      
+
       return savedProfile;
     } catch (error) {
       console.error("Ошибка при загрузке сохраненного профиля:", error);
+
+      // В случае ошибки чтения профиля - удаляем его из localStorage, чтобы предотвратить повторные ошибки
+      localStorage.removeItem("SAVED_USER_PROFILE");
+
       return null;
     }
-  }
+  },
 };

@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background-color: #1d1e24;
+  background-color: var(--background-primary);
   position: relative;
   overflow: hidden;
 }
@@ -18,27 +18,27 @@
   bottom: 0;
   background: linear-gradient(
     135deg,
-    rgba(11, 224, 184, 0.1),
-    rgba(29, 30, 36, 0.1)
+    rgba(var(--accent-primary-rgb), 0.1),
+    rgba(var(--background-primary-rgb), 0.1)
   );
   z-index: 0;
 }
 
 .authCard {
-  background: #1d1e24;
+  background: var(--background-card);
   padding: 2.5rem;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.2);
   width: 100%;
   max-width: 450px;
   position: relative;
   z-index: 1;
-  border: 1px solid rgba(11, 224, 184, 0.3);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.3);
 }
 
 .authCard h2 {
   text-align: center;
-  color: #d4ffea;
+  color: var(--text-primary);
   margin-bottom: 2rem;
   font-size: 2rem;
   font-weight: 600;
@@ -57,39 +57,39 @@
 }
 
 .formGroup label {
-  color: #d4ffea;
+  color: var(--text-primary);
   font-size: 0.95rem;
   font-weight: 500;
 }
 
 .formGroup input {
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(11, 224, 184, 0.3);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.3);
   border-radius: 4px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background-color: rgba(29, 30, 36, 0.8);
-  color: #d4ffea;
+  background-color: var(--input-background);
+  color: var(--input-text);
 }
 
 .formGroup input:focus {
   outline: none;
-  border-color: #0be0b8;
-  box-shadow: 0 0 0 2px rgba(11, 224, 184, 0.2);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.2);
 }
 
 .formGroup input.error {
-  border-color: #f8c06d;
+  border-color: var(--warning);
 }
 
 .errorMessage {
-  color: #f8c06d;
+  color: var(--warning);
   font-size: 0.875rem;
 }
 
 .error {
-  color: #f8c06d;
-  background-color: rgba(248, 192, 109, 0.1);
+  color: var(--warning);
+  background-color: rgba(var(--warning-rgb), 0.1);
   padding: 0.75rem;
   border-radius: 4px;
   margin-bottom: 1rem;
@@ -97,8 +97,8 @@
 }
 
 .submitButton {
-  background: #3b867f;
-  color: #f9f3e4;
+  background: var(--accent-primary);
+  color: var(--button-text);
   padding: 0.75rem;
   border: none;
   border-radius: 4px;
@@ -110,14 +110,14 @@
 }
 
 .submitButton:hover {
-  background: #0be0b8;
-  color: #1d1e24;
+  background: var(--accent-hover);
+  color: var(--background-primary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(11, 224, 184, 0.3);
+  box-shadow: 0 4px 8px rgba(var(--accent-primary-rgb), 0.3);
 }
 
 .submitButton:disabled {
-  background: #3b867f;
+  background: var(--accent-primary);
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
@@ -127,17 +127,17 @@
 .switchAuth {
   text-align: center;
   margin-top: 1.5rem;
-  color: #d4ffea;
+  color: var(--text-primary);
 }
 
 .switchAuth a {
-  color: #0be0b8;
+  color: var(--accent-primary);
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
 }
 
 .switchAuth a:hover {
-  color: #f8c06d;
+  color: var(--accent-hover);
   text-decoration: none;
 }

@@ -9,6 +9,7 @@ export const ROUTES = {
   CATEGORY: "/catalog/:categoryId",
   ALL_PRODUCTS: "/all-products",
   PROFILE: "/profile",
+  ACCESS_DENIED: "/access-denied",
   ADMIN: {
     PRODUCTS: "/admin/products",
     PRODUCT_EDIT: "/admin/products/:id",

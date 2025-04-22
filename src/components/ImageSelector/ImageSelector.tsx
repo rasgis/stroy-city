@@ -1,9 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { optimizeImage, isValidImageUrl } from '../../utils/imageUtils';
-import styles from './ImageSelector.module.css';
-import { FaLink, FaCloudUploadAlt, FaImages } from 'react-icons/fa';
-import { imageService } from '../../services/imageService';
-import { BsImage, BsCloudUpload, BsServer, BsExclamationCircle, BsX } from 'react-icons/bs';
+import React, { useState, useCallback, useEffect } from "react";
+import { isValidImageUrl } from "../../utils/imageUtils";
+import styles from "./ImageSelector.module.css";
+import { FaLink, FaCloudUploadAlt, FaImages } from "react-icons/fa";
+import { imageService } from "../../services/imageService";
+import {
+  BsImage,
+  BsCloudUpload,
+  BsServer,
+  BsExclamationCircle,
+  BsX,
+} from "react-icons/bs";
 
 // Типы входных параметров компонента
 export interface ImageSelectorProps {
@@ -18,9 +24,9 @@ export interface ImageSelectorProps {
 
 // Перечисление для типов добавления изображения
 enum ImageSourceType {
-  URL = 'url',
-  UPLOAD = 'upload',
-  SERVER = 'server'
+  URL = "url",
+  UPLOAD = "upload",
+  SERVER = "server",
 }
 
 /**
@@ -30,32 +36,34 @@ enum ImageSourceType {
  * 3. Выбор из уже загруженных изображений на сервере
  */
 export const ImageSelector: React.FC<ImageSelectorProps> = ({
-  value = '',
+  value = "",
   onChange,
   onFileChange,
-  label = 'Изображение',
+  label = "Изображение",
   error = false,
-  helperText = '',
+  helperText = "",
   iconOnly = false,
 }) => {
   // Состояние для отслеживания выбранного источника изображения
-  const [sourceType, setSourceType] = useState<ImageSourceType>(ImageSourceType.URL);
-  
+  const [sourceType, setSourceType] = useState<ImageSourceType>(
+    ImageSourceType.URL
+  );
+
   // Состояние для хранения URL изображения
-  const [imageUrl, setImageUrl] = useState<string>(value || '');
-  
+  const [imageUrl, setImageUrl] = useState<string>(value || "");
+
   // Состояние для хранения выбранного файла
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  
+
   // Состояние для предпросмотра изображения
-  const [preview, setPreview] = useState<string>(value || '');
+  const [preview, setPreview] = useState<string>(value || "");
 
   // Состояние для хранения ошибки
-  const [localError, setLocalError] = useState<string>('');
+  const [localError, setLocalError] = useState<string>("");
 
   // Состояние для серверных изображений
   const [serverImages, setServerImages] = useState<string[]>([]);
-  const [selectedServerImage, setSelectedServerImage] = useState<string>('');
+  const [selectedServerImage, setSelectedServerImage] = useState<string>("");
 
   // При изменении значения, обновляем состояние
   useEffect(() => {
@@ -69,10 +77,10 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
   useEffect(() => {
     // В реальном приложении здесь будет запрос к API
     const mockServerImages = [
-      'https://via.placeholder.com/150/92c952',
-      'https://via.placeholder.com/150/771796',
-      'https://via.placeholder.com/150/24f355',
-      'https://via.placeholder.com/150/f66b97',
+      "https://via.placeholder.com/150/92c952",
+      "https://via.placeholder.com/150/771796",
+      "https://via.placeholder.com/150/24f355",
+      "https://via.placeholder.com/150/f66b97",
     ];
     setServerImages(mockServerImages);
   }, []);
@@ -81,27 +89,27 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
   const handleSourceChange = (type: ImageSourceType) => {
     setSourceType(type);
     // Сбрасываем ошибки при смене вкладки
-    setLocalError('');
+    setLocalError("");
   };
 
   // Обработчик изменения URL изображения
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
     setImageUrl(url);
-    
-    if (url.trim() === '') {
-      setPreview('');
-      onChange('');
-      setLocalError('');
+
+    if (url.trim() === "") {
+      setPreview("");
+      onChange("");
+      setLocalError("");
       return;
     }
 
     if (isValidImageUrl(url)) {
       setPreview(url);
       onChange(url);
-      setLocalError('');
+      setLocalError("");
     } else {
-      setLocalError('Пожалуйста, введите корректный URL изображения');
+      setLocalError("Пожалуйста, введите корректный URL изображения");
     }
   };
 
@@ -110,8 +118,8 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      setLocalError('Пожалуйста, выберите файл изображения');
+    if (!file.type.startsWith("image/")) {
+      setLocalError("Пожалуйста, выберите файл изображения");
       return;
     }
 
@@ -121,7 +129,7 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
       const result = fileReader.result as string;
       setPreview(result);
       onChange(result);
-      setLocalError('');
+      setLocalError("");
       if (onFileChange) onFileChange(file);
     };
     fileReader.readAsDataURL(file);
@@ -140,7 +148,7 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
       <div className={styles.formField}>
         <input
           type="text"
-          className={`${styles.input} ${localError ? styles.inputError : ''}`}
+          className={`${styles.input} ${localError ? styles.inputError : ""}`}
           value={imageUrl}
           onChange={handleUrlChange}
           placeholder="https://example.com/image.jpg"
@@ -149,9 +157,7 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
           <FaLink />
         </div>
       </div>
-      {localError && (
-        <div className={styles.errorText}>{localError}</div>
-      )}
+      {localError && <div className={styles.errorText}>{localError}</div>}
     </div>
   );
 
@@ -159,7 +165,9 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
   const renderFileUpload = () => (
     <div className={styles.fileUploadContainer}>
       <label className={styles.uploadButton}>
-        <span className={styles.uploadIcon}><FaCloudUploadAlt /></span>
+        <span className={styles.uploadIcon}>
+          <FaCloudUploadAlt />
+        </span>
         <span>Выбрать файл</span>
         <input
           type="file"
@@ -168,16 +176,14 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
           onChange={handleFileChange}
         />
       </label>
-      
+
       {selectedFile && (
         <div className={styles.fileName}>
           {selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)
         </div>
       )}
-      
-      {localError && (
-        <div className={styles.errorText}>{localError}</div>
-      )}
+
+      {localError && <div className={styles.errorText}>{localError}</div>}
     </div>
   );
 
@@ -189,7 +195,9 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
           {serverImages.map((imageUrl, index) => (
             <div
               key={index}
-              className={`${styles.serverImageItem} ${selectedServerImage === imageUrl ? styles.selected : ''}`}
+              className={`${styles.serverImageItem} ${
+                selectedServerImage === imageUrl ? styles.selected : ""
+              }`}
               onClick={() => handleServerImageSelect(imageUrl)}
             >
               <img src={imageUrl} alt={`Серверное изображение ${index + 1}`} />
@@ -220,16 +228,20 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
         </label>
         {preview && (
           <div className={styles.previewContainer}>
-            <img src={preview} alt="Предпросмотр" className={styles.previewImage} />
+            <img
+              src={preview}
+              alt="Предпросмотр"
+              className={styles.previewImage}
+            />
             <button
               type="button"
               className={styles.clearButton}
               onClick={() => {
-                setImageUrl('');
+                setImageUrl("");
                 setSelectedFile(null);
-                setPreview('');
-                onChange('');
-                setLocalError('');
+                setPreview("");
+                onChange("");
+                setLocalError("");
               }}
               aria-label="Очистить"
             >
@@ -247,57 +259,61 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
   }
 
   return (
-    <div className={`${styles.container} ${error || localError ? styles.error : ''}`}>
-      <div className={styles.label}>
-        {label}
-      </div>
-      
+    <div
+      className={`${styles.container} ${
+        error || localError ? styles.error : ""
+      }`}
+    >
+      <div className={styles.label}>{label}</div>
+
       <div className={styles.tabs}>
-        <button 
+        <button
           type="button"
-          className={`${styles.tab} ${sourceType === ImageSourceType.URL ? styles.activeTab : ''}`}
+          className={`${styles.tab} ${
+            sourceType === ImageSourceType.URL ? styles.activeTab : ""
+          }`}
           onClick={() => handleSourceChange(ImageSourceType.URL)}
         >
           <BsImage /> URL
         </button>
-        <button 
+        <button
           type="button"
-          className={`${styles.tab} ${sourceType === ImageSourceType.UPLOAD ? styles.activeTab : ''}`}
+          className={`${styles.tab} ${
+            sourceType === ImageSourceType.UPLOAD ? styles.activeTab : ""
+          }`}
           onClick={() => handleSourceChange(ImageSourceType.UPLOAD)}
         >
           <BsCloudUpload /> Загрузить
         </button>
-        <button 
+        <button
           type="button"
-          className={`${styles.tab} ${sourceType === ImageSourceType.SERVER ? styles.activeTab : ''}`}
+          className={`${styles.tab} ${
+            sourceType === ImageSourceType.SERVER ? styles.activeTab : ""
+          }`}
           onClick={() => handleSourceChange(ImageSourceType.SERVER)}
         >
           <BsServer /> Сервер
         </button>
       </div>
-      
+
       <div className={styles.tabContent}>
         {sourceType === ImageSourceType.URL && renderUrlInput()}
         {sourceType === ImageSourceType.UPLOAD && renderFileUpload()}
         {sourceType === ImageSourceType.SERVER && renderServerImages()}
       </div>
-      
+
       {preview && (
         <div className={styles.previewContainer}>
-          <div className={styles.previewLabel}>
-            Предпросмотр
-          </div>
+          <div className={styles.previewLabel}>Предпросмотр</div>
           <div className={styles.imagePreview}>
             <img src={preview} alt="Предпросмотр" />
           </div>
         </div>
       )}
-      
+
       {error && !localError && (
-        <div className={styles.errorText}>
-          {helperText}
-        </div>
+        <div className={styles.errorText}>{helperText}</div>
       )}
     </div>
   );
-}; 
+};

@@ -6,25 +6,30 @@ import User from "../models/userModel.js";
 const protect = async (req, res, next) => {
   try {
     console.log("Аутентификация запроса");
-    
+
     // Проверка наличия заголовка авторизации
-    if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
-      console.log("Ошибка: Заголовок авторизации отсутствует или имеет неверный формат");
+    if (
+      !req.headers.authorization ||
+      !req.headers.authorization.startsWith("Bearer ")
+    ) {
+      console.log(
+        "Ошибка: Заголовок авторизации отсутствует или имеет неверный формат"
+      );
       return res.status(401).json({ message: "Требуется авторизация" });
     }
-    
+
     // Извлечение токена
-    const token = req.headers.authorization.split(' ')[1];
+    const token = req.headers.authorization.split(" ")[1];
     if (!token) {
       console.log("Ошибка: Токен отсутствует");
       return res.status(401).json({ message: "Токен не предоставлен" });
     }
-    
+
     try {
       // Верификация токена
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       console.log("Токен верифицирован:", decoded);
-      
+
       // Определение ID пользователя из токена
       let userId;
       if (decoded.user && decoded.user.id) {
@@ -35,19 +40,39 @@ const protect = async (req, res, next) => {
         console.log("Ошибка: Невозможно извлечь ID пользователя из токена");
         return res.status(401).json({ message: "Недействительный токен" });
       }
-      
+
       // Поиск пользователя в базе данных
-      const user = await User.findById(userId).select('-password');
-      
+      const user = await User.findById(userId).select("-password");
+
       if (!user) {
         console.log("Ошибка: Пользователь не найден в базе данных");
         return res.status(401).json({ message: "Пользователь не найден" });
       }
-      
+
+      // Проверка валидности роли пользователя (дополнительная защита)
+      if (user.role !== "user" && user.role !== "admin") {
+        console.error(
+          "ВНИМАНИЕ: Обнаружена недопустимая роль пользователя:",
+          user.role
+        );
+        console.log("Принудительно устанавливаем роль 'user'");
+
+        // В случае обнаружения недопустимой роли, устанавливаем роль по умолчанию
+        user.role = "user";
+
+        // Сохраняем обновленную роль
+        await User.findByIdAndUpdate(userId, { role: "user" });
+      }
+
       // Установка пользователя в объект запроса
       req.user = user;
-      console.log("Пользователь аутентифицирован:", user._id);
-      
+      console.log(
+        "Пользователь аутентифицирован:",
+        user._id,
+        "с ролью:",
+        user.role
+      );
+
       // Переход к следующему middleware
       next();
     } catch (jwtError) {
@@ -64,17 +89,42 @@ const protect = async (req, res, next) => {
 const admin = async (req, res, next) => {
   try {
     console.log("Проверка прав администратора");
-    
+
     if (!req.user) {
       console.log("Ошибка: Пользователь не аутентифицирован");
       return res.status(401).json({ message: "Требуется авторизация" });
     }
-    
-    if (req.user.role !== "admin") {
-      console.log("Ошибка: Недостаточно прав, пользователь не является администратором:", req.user.role);
-      return res.status(403).json({ message: "Доступ запрещен. Требуются права администратора" });
+
+    // Дополнительная проверка роли из базы данных для предотвращения подделки
+    const freshUserData = await User.findById(req.user._id).select("role");
+    if (!freshUserData) {
+      return res.status(401).json({ message: "Пользователь не найден" });
     }
-    
+
+    const userRole = freshUserData.role;
+
+    if (userRole !== "admin") {
+      console.log(
+        "Ошибка: Недостаточно прав, пользователь не является администратором:",
+        userRole
+      );
+
+      // Ведение журнала попыток несанкционированного доступа
+      console.error(
+        "ВНИМАНИЕ: Попытка доступа к административным функциям пользователем без прав:",
+        {
+          userId: req.user._id,
+          userRole: userRole,
+          path: req.originalUrl,
+          method: req.method,
+        }
+      );
+
+      return res
+        .status(403)
+        .json({ message: "Доступ запрещен. Требуются права администратора" });
+    }
+
     console.log("Доступ разрешен. Пользователь имеет права администратора.");
     next();
   } catch (error) {

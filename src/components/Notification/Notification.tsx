@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
-import styles from './Notification.module.css';
+import React, { useCallback, useEffect } from "react";
+import styles from "./Notification.module.css";
 
 interface NotificationProps {
   message: string;
@@ -12,7 +12,7 @@ export const Notification: React.FC<NotificationProps> = ({
   message,
   isOpen,
   onClose,
-  autoHideDuration = 3000
+  autoHideDuration = 3000,
 }) => {
   // Автоматическое закрытие уведомления после указанного времени
   useEffect(() => {
@@ -20,7 +20,7 @@ export const Notification: React.FC<NotificationProps> = ({
       const timer = setTimeout(() => {
         onClose();
       }, autoHideDuration);
-      
+
       return () => {
         clearTimeout(timer);
       };
@@ -50,4 +50,4 @@ export const Notification: React.FC<NotificationProps> = ({
   );
 };
 
-export default Notification; 
+export default Notification;

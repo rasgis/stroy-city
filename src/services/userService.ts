@@ -86,7 +86,6 @@ export const userService = {
         role: userData.role === "admin" ? "admin" : "user",
       };
 
-
       const response = await axios.post(
         `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USERS.BASE}`,
         validUserData,
@@ -97,7 +96,7 @@ export const userService = {
           },
         }
       );
-      
+
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -191,32 +190,51 @@ export const userService = {
         throw new Error("Необходима авторизация для обновления профиля");
       }
 
+      // Получаем текущего пользователя
+      const currentUser = authService.getUser();
+
+      // Проверяем попытку изменения роли - это критическая уязвимость безопасности
+      if (userData.role) {
+        console.error(
+          "ПРЕДУПРЕЖДЕНИЕ: Попытка изменить роль через API профиля:",
+          {
+            userData,
+            currentRole: currentUser?.role,
+          }
+        );
+
+        // Удаляем роль из данных перед отправкой на сервер
+        delete userData.role;
+      }
+
       console.log("Токен авторизации:", token ? "присутствует" : "отсутствует");
-      
+      console.log(
+        "Данные для отправки (после проверки безопасности):",
+        userData
+      );
+
       // Изменяем маршрут на /api/users/profile вместо /api/auth/profile
       const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USERS.BASE}/profile`;
       console.log("URL запроса:", url);
 
-      const response = await axios.put(
-        url,
-        userData,
-        {
-          headers: {
-            ...API_CONFIG.HEADERS,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.put(url, userData, {
+        headers: {
+          ...API_CONFIG.HEADERS,
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       console.log("Ответ сервера:", response.status, response.statusText);
-      
+
       // Обновляем данные пользователя в localStorage, если они изменились
-      const currentUser = authService.getUser();
       if (currentUser && response.data) {
+        // Важно! Убедимся, что роль не изменилась по сравнению с текущей
         const updatedUser = {
           ...currentUser,
           ...response.data,
           id: response.data._id || response.data.id || currentUser.id,
+          // Если роль вернулась измененной, используем текущую роль пользователя
+          role: currentUser.role,
         };
         authService.setAuthData(response.data.token || token, updatedUser);
       }
@@ -224,24 +242,25 @@ export const userService = {
       return response.data;
     } catch (error) {
       console.error("Ошибка при обновлении профиля:", error);
-      
+
       // Подробный вывод ошибки для диагностики
       if (axios.isAxiosError(error)) {
         console.error("Детали ошибки:", {
           status: error.response?.status,
           statusText: error.response?.statusText,
           data: error.response?.data,
-          message: error.message
+          message: error.message,
         });
-        
-        const errorMessage = error.response?.data?.message || 
-                             error.response?.data?.error || 
-                             error.message || 
-                             "Неизвестная ошибка";
-        
+
+        const errorMessage =
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message ||
+          "Неизвестная ошибка";
+
         throw new Error(`Ошибка при обновлении профиля: ${errorMessage}`);
       }
-      
+
       throw error;
     }
   },
