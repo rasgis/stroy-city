@@ -130,11 +130,11 @@ export const updateProduct = async (req, res) => {
 };
 
 /**
- * @desc    Удаление продукта (soft delete - установка isActive: false)
+ * @desc    Скрытие продукта (soft delete - установка isActive: false)
  * @route   DELETE /api/products/:id
  * @access  Приватный/Админ
  * @param   {string} req.params.id - ID продукта
- * @returns {Object} Сообщение об успешном удалении
+ * @returns {Object} Сообщение об успешном скрытии
  */
 export const deleteProduct = async (req, res) => {
   try {
@@ -155,10 +155,77 @@ export const deleteProduct = async (req, res) => {
     product.isActive = false;
     await product.save();
 
-    res.status(200).json({ message: "Продукт успешно удален" });
+    res.status(200).json({ message: "Продукт успешно скрыт" });
+  } catch (error) {
+    res.status(500).json({
+      message: `Ошибка при скрытии продукта: ${error.message}`,
+    });
+  }
+};
+
+/**
+ * @desc    Полное удаление продукта из базы данных
+ * @route   DELETE /api/products/:id/permanent
+ * @access  Приватный/Админ
+ * @param   {string} req.params.id - ID продукта
+ * @returns {Object} Сообщение об успешном удалении
+ */
+export const permanentDeleteProduct = async (req, res) => {
+  try {
+    // Проверяем права доступа
+    if (!req.user || req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Доступ запрещен. Требуются права администратора." });
+    }
+
+    // Проверяем существование продукта
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Продукт не найден" });
+    }
+
+    // Физически удаляем продукт из базы данных
+    await Product.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ message: "Продукт успешно удален из базы данных" });
   } catch (error) {
     res.status(500).json({
       message: `Ошибка при удалении продукта: ${error.message}`,
+    });
+  }
+};
+
+/**
+ * @desc    Восстановление скрытого продукта (установка isActive: true)
+ * @route   PUT /api/products/:id/restore
+ * @access  Приватный/Админ
+ * @param   {string} req.params.id - ID продукта
+ * @returns {Object} Восстановленный продукт
+ */
+export const restoreProduct = async (req, res) => {
+  try {
+    // Проверяем права доступа
+    if (!req.user || req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Доступ запрещен. Требуются права администратора." });
+    }
+
+    // Проверяем существование продукта
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Продукт не найден" });
+    }
+
+    // Восстанавливаем продукт
+    product.isActive = true;
+    const restoredProduct = await product.save();
+
+    res.status(200).json(restoredProduct);
+  } catch (error) {
+    res.status(500).json({
+      message: `Ошибка при восстановлении продукта: ${error.message}`,
     });
   }
 };

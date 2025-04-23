@@ -813,3 +813,54 @@
     flex-direction: column;
   }
 }
+
+.inactiveProduct {
+  opacity: 0.7;
+}
+
+.inactiveProduct .card {
+  position: relative;
+  border: 1px dashed var(--accent-admin);
+  background: var(--table-row-odd);
+}
+
+.inactiveLabel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--accent-admin);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.restoreButton {
+  background: rgba(66, 163, 88, 0.1);
+  color: #42a358;
+  border: 1px solid rgba(66, 163, 88, 0.3);
+}
+
+.restoreButton:hover {
+  background: rgba(66, 163, 88, 0.2);
+  border-color: #42a358;
+  transform: translateY(-1px);
+}
+
+.hideButton {
+  background: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.hideButton:hover {
+  background: rgba(255, 152, 0, 0.2);
+  border-color: #ff9800;
+  transform: translateY(-1px);
+}
+
+.filterButton {
+  margin-right: 10px;
+}

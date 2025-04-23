@@ -1,21 +1,31 @@
-export interface User {
+/**
+ * Базовый интерфейс пользователя с общими полями
+ */
+export interface BaseUser {
+  name: string;
+  email: string;
+  login: string;
+  role: "user" | "admin";
+}
+
+/**
+ * Интерфейс пользователя, получаемый с сервера
+ */
+export interface User extends BaseUser {
   _id: string;
-  name: string;
-  email: string;
-  login: string;
-  role: "user" | "admin";
+  id?: string; // Для совместимости с auth интерфейсом
 }
 
-// Данные для создания пользователя
-export interface UserCreateData {
-  name: string;
-  email: string;
-  login: string;
+/**
+ * Данные для создания пользователя
+ */
+export interface UserCreateData extends BaseUser {
   password: string;
-  role: "user" | "admin";
 }
 
-// Данные для обновления пользователя
+/**
+ * Данные для обновления пользователя
+ */
 export interface UserUpdateData {
   name?: string;
   email?: string;
@@ -24,12 +34,16 @@ export interface UserUpdateData {
   role?: "user" | "admin";
 }
 
-// Ответ API при получении списка пользователей
+/**
+ * Ответ API при получении списка пользователей
+ */
 export interface UsersResponse {
   users: User[];
 }
 
-// Ответ API при получении одного пользователя
+/**
+ * Ответ API при получении одного пользователя
+ */
 export interface UserResponse {
   user: User;
 }

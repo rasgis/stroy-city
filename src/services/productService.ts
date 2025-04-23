@@ -18,6 +18,14 @@ class ProductService {
     return response.data;
   }
 
+  async getAllProductsAdmin(): Promise<Product[]> {
+    const response = await axios.get(
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BASE}/admin/all`,
+      { headers: this.getHeaders() }
+    );
+    return response.data;
+  }
+
   async getProductById(id: string): Promise<Product> {
     const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(
       id
@@ -103,6 +111,26 @@ class ProductService {
       `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(id)}`,
       { headers: this.getHeaders() }
     );
+  }
+
+  async permanentDeleteProduct(id: string): Promise<void> {
+    await axios.delete(
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(
+        id
+      )}/permanent`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  async restoreProduct(id: string): Promise<Product> {
+    const response = await axios.put(
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(
+        id
+      )}/restore`,
+      {},
+      { headers: this.getHeaders() }
+    );
+    return response.data;
   }
 
   private convertFormDataToProduct(

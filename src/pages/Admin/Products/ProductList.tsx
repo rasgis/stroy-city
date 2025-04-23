@@ -1,24 +1,53 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { fetchProducts, deleteProduct, selectFilteredProducts } from "../../../reducers/products";
-import { fetchCategories, selectActiveCategoriesForDropdown } from "../../../reducers/categories";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
-import { Modal, Button, Loader, EntityForm, WeatherWidget, SearchBar } from "../../../components";
+import {
+  fetchAllProductsAdmin,
+  deleteProduct,
+  permanentDeleteProduct,
+  restoreProduct,
+  selectFilteredAdminProducts,
+  setFilters,
+} from "../../../reducers/products";
+import {
+  fetchCategories,
+  selectActiveCategoriesForDropdown,
+} from "../../../reducers/categories";
+import {
+  FaEdit,
+  FaTrash,
+  FaPlus,
+  FaTrashAlt,
+  FaRedoAlt,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
+import {
+  Modal,
+  Button,
+  Loader,
+  EntityForm,
+  WeatherWidget,
+  SearchBar,
+} from "../../../components";
 import { Product } from "../../../types";
 import styles from "./Admin.module.css";
 
 // Временная типизация для преобразования Product в ProductFormValues
 const productToFormValues = (product: Product | null) => {
   if (!product) return undefined;
-  
+
   return {
     _id: product._id,
     name: product.name,
     description: product.description,
     price: product.price,
-    image: product.image || '',
-    categoryId: typeof product.category === 'object' ? product.category._id : product.category,
-    unitOfMeasure: product.unitOfMeasure
+    image: product.image || "",
+    categoryId:
+      typeof product.category === "object"
+        ? product.category._id
+        : product.category,
+    unitOfMeasure: product.unitOfMeasure,
+    isActive: product.isActive,
   };
 };
 
@@ -27,17 +56,22 @@ const ProductList: React.FC = () => {
   const productsLoading = useAppSelector((state) => state.productsList.loading);
   const productsError = useAppSelector((state) => state.productsList.error);
   const categories = useAppSelector(selectActiveCategoriesForDropdown);
-  const allProducts = useAppSelector(selectFilteredProducts);
-  
+  const allProducts = useAppSelector(selectFilteredAdminProducts);
+  const showInactive = useAppSelector(
+    (state) => state.productsList.filters.showInactive
+  );
+
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isPermanentDeleteModalOpen, setIsPermanentDeleteModalOpen] =
+    useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-  const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
+  const [actionProductId, setActionProductId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState<Product[]>(allProducts);
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(fetchAllProductsAdmin());
     dispatch(fetchCategories());
   }, [dispatch]);
 
@@ -62,15 +96,32 @@ const ProductList: React.FC = () => {
   };
 
   const handleDeleteClick = (productId: string) => {
-    setDeleteProductId(productId);
+    setActionProductId(productId);
     setIsDeleteModalOpen(true);
   };
 
+  const handlePermanentDeleteClick = (productId: string) => {
+    setActionProductId(productId);
+    setIsPermanentDeleteModalOpen(true);
+  };
+
+  const handleRestoreClick = async (productId: string) => {
+    await dispatch(restoreProduct(productId));
+  };
+
   const handleDeleteConfirm = async () => {
-    if (deleteProductId) {
-      await dispatch(deleteProduct(deleteProductId));
+    if (actionProductId) {
+      await dispatch(deleteProduct(actionProductId));
       setIsDeleteModalOpen(false);
-      setDeleteProductId(null);
+      setActionProductId(null);
+    }
+  };
+
+  const handlePermanentDeleteConfirm = async () => {
+    if (actionProductId) {
+      await dispatch(permanentDeleteProduct(actionProductId));
+      setIsPermanentDeleteModalOpen(false);
+      setActionProductId(null);
     }
   };
 
@@ -80,11 +131,15 @@ const ProductList: React.FC = () => {
   };
 
   const handleFormSubmit = () => {
-    dispatch(fetchProducts());
+    dispatch(fetchAllProductsAdmin());
   };
-  
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+  };
+
+  const toggleShowInactive = () => {
+    dispatch(setFilters({ showInactive: !showInactive }));
   };
 
   if (productsLoading) {
@@ -104,10 +159,18 @@ const ProductList: React.FC = () => {
       <div className={styles.header}>
         <h2>Управление товарами</h2>
         <div className={styles.actions}>
-          <Button 
-            variant="primary" 
+          <Button
+            variant="secondary"
+            startIcon={showInactive ? <FaEyeSlash /> : <FaEye />}
+            onClick={toggleShowInactive}
+            className={styles.filterButton}
+          >
+            {showInactive ? "Скрыть неактивные" : "Показать все"}
+          </Button>
+          <Button
+            variant="primary"
             startIcon={<FaPlus className={styles.addIcon} />}
-            onClick={handleAddClick} 
+            onClick={handleAddClick}
             className={styles.addButton}
           >
             Добавить товар
@@ -125,15 +188,21 @@ const ProductList: React.FC = () => {
 
       {products.length === 0 ? (
         <div className={styles.empty}>
-          {searchQuery 
-            ? "По вашему запросу товары не найдены" 
-            : "Нет товаров"}
+          {searchQuery ? "По вашему запросу товары не найдены" : "Нет товаров"}
         </div>
       ) : (
         <div className={styles.productGrid}>
           {products.map((product) => (
-            <div key={product._id} className={styles.productCard}>
+            <div
+              key={product._id}
+              className={`${styles.productCard} ${
+                !product.isActive ? styles.inactiveProduct : ""
+              }`}
+            >
               <div className={styles.card}>
+                {!product.isActive && (
+                  <div className={styles.inactiveLabel}>Скрыт</div>
+                )}
                 <div className={styles.imageContainer}>
                   <img
                     src={product.image}
@@ -148,8 +217,9 @@ const ProductList: React.FC = () => {
                     {product.category
                       ? typeof product.category === "object"
                         ? product.category.name || "Без названия"
-                        : categories.find((cat) => cat.value === product.category)
-                            ?.label || "Неизвестная категория"
+                        : categories.find(
+                            (cat) => cat.value === product.category
+                          )?.label || "Неизвестная категория"
                       : "Без категории"}
                   </div>
                   <div className={styles.price}>
@@ -164,11 +234,33 @@ const ProductList: React.FC = () => {
                     >
                       Изменить
                     </Button>
+
+                    {product.isActive ? (
+                      <Button
+                        variant="danger"
+                        startIcon={<FaEyeSlash />}
+                        onClick={() => handleDeleteClick(product._id)}
+                        className={styles.hideButton}
+                      >
+                        Скрыть
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="success"
+                        startIcon={<FaRedoAlt />}
+                        onClick={() => handleRestoreClick(product._id)}
+                        className={styles.restoreButton}
+                      >
+                        Восстановить
+                      </Button>
+                    )}
+
                     <Button
-                      variant="danger" 
-                      startIcon={<FaTrash />}
-                      onClick={() => handleDeleteClick(product._id)}
+                      variant="danger"
+                      startIcon={<FaTrashAlt />}
+                      onClick={() => handlePermanentDeleteClick(product._id)}
                       className={styles.deleteButton}
+                      title="Полное удаление из базы данных"
                     >
                       Удалить
                     </Button>
@@ -179,18 +271,37 @@ const ProductList: React.FC = () => {
           ))}
         </div>
       )}
-      
+
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Подтверждение удаления"
-        type="delete"
+        title="Подтверждение скрытия товара"
+        type="default"
         onConfirm={handleDeleteConfirm}
-        confirmText="Удалить"
+        confirmText="Скрыть"
       >
-        <p>Вы уверены, что хотите удалить этот товар?</p>
+        <p>Вы уверены, что хотите скрыть этот товар?</p>
+        <p>
+          Товар будет скрыт для покупателей, но вы сможете восстановить его
+          позже.
+        </p>
       </Modal>
-      
+
+      <Modal
+        isOpen={isPermanentDeleteModalOpen}
+        onClose={() => setIsPermanentDeleteModalOpen(false)}
+        title="Подтверждение полного удаления"
+        type="delete"
+        onConfirm={handlePermanentDeleteConfirm}
+        confirmText="Удалить безвозвратно"
+      >
+        <p>
+          Вы уверены, что хотите <strong>полностью удалить</strong> этот товар
+          из базы данных?
+        </p>
+        <p>Это действие нельзя будет отменить!</p>
+      </Modal>
+
       {isFormModalOpen && (
         <EntityForm
           isOpen={isFormModalOpen}

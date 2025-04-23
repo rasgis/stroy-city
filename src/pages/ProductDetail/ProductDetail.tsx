@@ -14,7 +14,12 @@ import {
 import { addToCartWithNotification } from "../../reducers/cartSlice";
 import { ROUTES } from "../../constants/routes";
 import { categoryService } from "../../services/categoryService";
-import { Breadcrumbs, Loader, ErrorMessage, NotFound } from "../../components";
+import {
+  Breadcrumbs,
+  Loader,
+  ErrorMessage,
+  ItemNotFound,
+} from "../../components";
 import styles from "./ProductDetail.module.css";
 import { scrollToTop } from "../../utils/scroll";
 import { handleImageError } from "../../utils/imageUtils";
@@ -81,7 +86,7 @@ const ProductDetail: React.FC = () => {
   if (!product) {
     return (
       <div className={styles.container}>
-        <NotFound message="Товар не найден" />
+        <ItemNotFound message="Товар не найден" />
       </div>
     );
   }

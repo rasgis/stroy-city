@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { WeatherWidget, Slider, AnimationText } from "../../components";
-import { sliderData } from "../../constants/sliderData";
+import { sliderData } from "./data/sliderData";
 import {
   LocalOffer,
   PersonAdd,
@@ -11,9 +11,16 @@ import {
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { partners } from "../../constants/partners";
+import { useAppDispatch } from "../../hooks";
+import {
+  fetchCategories,
+  selectFilteredCategories,
+} from "../../reducers/categories";
+import { fetchProducts } from "../../reducers/products";
+import { scrollToTop } from "../../utils/scroll";
 import styles from "./Home.module.css";
 import { ROUTES } from "../../constants/routes";
+import { partners } from "./data/partners";
 
 const Home: React.FC = () => {
   const isAuthenticated = useSelector(

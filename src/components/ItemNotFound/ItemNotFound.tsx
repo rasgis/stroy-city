@@ -1,13 +1,13 @@
 import React from "react";
 import { MdSearchOff } from "react-icons/md";
-import styles from "./NotFound.module.css";
+import styles from "./ItemNotFound.module.css";
 
-interface NotFoundProps {
+interface ItemNotFoundProps {
   message: string;
   className?: string;
 }
 
-const NotFound: React.FC<NotFoundProps> = ({ message, className }) => {
+const ItemNotFound: React.FC<ItemNotFoundProps> = ({ message, className }) => {
   return (
     <div className={`${styles.notFoundContainer} ${className || ""}`}>
       <MdSearchOff className={styles.notFoundIcon} />
@@ -16,4 +16,4 @@ const NotFound: React.FC<NotFoundProps> = ({ message, className }) => {
   );
 };
 
-export default NotFound;
+export default ItemNotFound;

@@ -1,11 +1,9 @@
-export interface User {
+import { BaseUser, User } from "./user";
+
+export interface AuthUser extends BaseUser {
   id: string;
   _id?: string;
-  name: string;
-  email: string;
-  login: string;
   password?: string;
-  role: "admin" | "user";
 }
 
 export interface AuthState {

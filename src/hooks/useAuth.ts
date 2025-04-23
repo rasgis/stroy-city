@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { useAppSelector } from "./useAppSelector";
+import { useAppSelector } from "./redux";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../constants/routes";
+import { User } from "../types/user";
 
 /**
  * Хук для получения данных об аутентификации пользователя

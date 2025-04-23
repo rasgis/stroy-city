@@ -6,12 +6,15 @@ import styles from "./EntityForm.module.css";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloseIcon from "@mui/icons-material/Close";
-import { createProduct, updateProduct } from "../../reducers/productSlice";
+import {
+  createProduct,
+  updateProduct,
+} from "../../reducers/products/productDetailsSlice";
 import {
   fetchCategories,
-  selectFilteredCategories, 
-  createCategory, 
-  updateCategory
+  selectFilteredCategories,
+  createCategory,
+  updateCategory,
 } from "../../reducers/categories";
 import { categoryService } from "../../services/categoryService";
 import { EntityType } from "../../types/entity";
@@ -21,14 +24,14 @@ import { getInitialValues, getTitleByEntityType } from "./utils";
 import * as Yup from "yup";
 import { Button, TextField, MenuItem, Box, Typography } from "@mui/material";
 import { productService } from "../../services/productService";
-import { fetchProducts } from "../../reducers/productSlice";
+import { fetchProducts } from "../../reducers/products/productsListSlice";
 import {
   FormValues,
   ProductFormValues,
   CategoryFormValues,
   UserFormValues,
   FormField,
-  FieldOption
+  FieldOption,
 } from "./types";
 import { userService } from "../../services/userService";
 import { SimpleImageSelector } from "../ImageSelector/SimpleImageSelector";
@@ -306,7 +309,9 @@ export const EntityForm: React.FC<EntityFormProps> = ({
 
   const renderField = (field: FormField) => {
     const fieldValue = formik.values[field.name as keyof FormValues];
-    const fieldError = formik.touched[field.name as keyof FormValues] && formik.errors[field.name as keyof FormValues];
+    const fieldError =
+      formik.touched[field.name as keyof FormValues] &&
+      formik.errors[field.name as keyof FormValues];
 
     switch (field.type) {
       case "image":
@@ -333,9 +338,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                 value={String(fieldValue)}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                className={
-                  fieldError ? styles.error : ""
-                }
+                className={fieldError ? styles.error : ""}
               />
             ) : field.type === "select" ? (
               <select
@@ -344,9 +347,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                 value={String(fieldValue)}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                className={
-                  fieldError ? styles.error : ""
-                }
+                className={fieldError ? styles.error : ""}
               >
                 {field.options?.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -362,26 +363,21 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                 value={String(fieldValue)}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                className={
-                  fieldError ? styles.error : ""
-                }
+                className={fieldError ? styles.error : ""}
               />
             )}
             {fieldError && (
-              <div className={styles.errorMessage}>
-                {fieldError as string}
+              <div className={styles.errorMessage}>{fieldError as string}</div>
+            )}
+            {field.type === "url" && fieldValue && (
+              <div className={styles.imagePreview}>
+                <img
+                  src={String(fieldValue)}
+                  alt="Предпросмотр"
+                  onError={(e) => handleImageError(e, "/placeholder-image.png")}
+                />
               </div>
             )}
-            {field.type === "url" &&
-              fieldValue && (
-                <div className={styles.imagePreview}>
-                  <img
-                    src={String(fieldValue)}
-                    alt="Предпросмотр"
-                    onError={(e) => handleImageError(e, "/placeholder-image.png")}
-                  />
-                </div>
-              )}
           </div>
         );
     }
