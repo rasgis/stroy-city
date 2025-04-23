@@ -1,47 +1,26 @@
-import React, { ButtonHTMLAttributes, ReactNode } from 'react';
-import styles from './Button.module.css';
-import classNames from 'classnames';
+import React, { ButtonHTMLAttributes, ReactNode } from "react";
+import styles from "./Button.module.css";
+import classNames from "classnames";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /**
-   * Вариант стиля кнопки
-   */
-  variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'text';
-  
-  /**
-   * Размер кнопки
-   */
-  size?: 'small' | 'medium' | 'large';
-  
-  /**
-   * Заполнить ширину контейнера
-   */
+  variant?: "primary" | "secondary" | "danger" | "warning" | "success" | "text";
+
+  size?: "small" | "medium" | "large";
+
   fullWidth?: boolean;
-  
-  /**
-   * Состояние загрузки
-   */
+
   isLoading?: boolean;
-  
-  /**
-   * Иконка слева от текста
-   */
+
   startIcon?: ReactNode;
-  
-  /**
-   * Иконка справа от текста
-   */
+
   endIcon?: ReactNode;
-  
-  /**
-   * Содержимое кнопки
-   */
+
   children?: ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'medium',
+  variant = "primary",
+  size = "medium",
   fullWidth = false,
   isLoading = false,
   startIcon,

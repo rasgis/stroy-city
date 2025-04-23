@@ -388,13 +388,6 @@
     font-size: 1rem;
   }
 
-  .mobileMenuButton {
-    position: absolute;
-    right: 0.5rem;
-    top: 1.2rem;
-    z-index: 101;
-  }
-
   .navLink,
   .adminLink,
   .cartLink,
@@ -409,14 +402,32 @@
   .userIcon {
     font-size: 16px;
   }
-}
 
-@media (max-width: 450px) {
-  .mobileMenuButton {
-    position: absolute;
-    right: 0.5rem;
-    top: 1.2rem;
-    z-index: 101;
+  .leftSection {
+    position: relative;
+    padding-right: 40px;
+  }
+
+  .mobileActions {
+    gap: 0.25rem;
+  }
+
+  .auth {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .userInfo {
+    padding: 4px 6px;
+    gap: 0.2rem;
+  }
+
+  .logoutButton {
+    padding: 4px 6px;
+  }
+
+  .userName {
+    max-width: 60px;
   }
 }
 
