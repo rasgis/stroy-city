@@ -1,99 +1,6 @@
-.card {
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(
-    135deg,
-    rgba(var(--background-card-rgb), 0.9) 0%,
-    rgba(var(--background-elevated-rgb), 0.9) 100%
-  );
-  border-radius: 15px;
-  overflow: hidden;
-  margin-bottom: 0;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(var(--accent-primary-rgb), 0.2);
-  position: relative;
-  height: 100%;
-  width: 100%;
-  min-width: 255px;
-  min-height: 455px;
-  max-width: 255px;
-  max-height: 455px;
-}
+/* Все базовые стили перенесены в BaseCard.module.css */
 
-.card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(var(--accent-primary-rgb), 0.05),
-    transparent 70%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(var(--accent-primary-rgb), 0.25);
-  border-color: rgba(var(--accent-primary-rgb), 0.4);
-}
-
-.imageContainer {
-  width: 100%;
-  height: 150px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--background-card);
-  border-bottom: 1px solid rgba(var(--accent-primary-rgb), 0.15);
-  position: relative;
-}
-
-.image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: transform 0.5s ease;
-  padding: 1rem;
-}
-
-.card:hover .image {
-  transform: scale(1.05);
-}
-
-.content {
-  flex: 1;
-  padding: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  z-index: 2;
-}
-
-.title {
-  margin: 0 0 0.8rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  transition: color 0.3s ease;
-  text-align: center;
-  height: 2.8em;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.card:hover .title {
-  color: var(--accent-primary);
-}
-
+/* Уникальные стили для CartItem */
 .priceContainer {
   display: flex;
   align-items: center;
@@ -133,7 +40,7 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  margin-top: auto;
+  width: 100%;
 }
 
 .quantity {
@@ -197,46 +104,8 @@
   -webkit-tap-highlight-color: transparent !important;
 }
 
-@media (max-width: 1200px) {
-  .imageContainer {
-    height: 180px;
-  }
-}
-
-@media (max-width: 992px) {
-  .imageContainer {
-    height: 160px;
-  }
-}
-
 @media (max-width: 768px) {
-  .card {
-    margin-bottom: 0;
-  }
-
-  .imageContainer {
-    height: 140px;
-  }
-
-  .content {
-    padding: 1rem;
-  }
-
-  .title {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .card {
-    width: 100%;
-  }
-
-  .imageContainer {
-    height: 180px;
-  }
-
-  .content {
-    padding: 1rem;
+  .removeButton {
+    font-size: 0.9rem;
   }
 }

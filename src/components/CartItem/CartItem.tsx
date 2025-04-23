@@ -4,6 +4,7 @@ import { CartItem as CartItemType } from "../../types";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { handleImageError } from "../../utils/imageUtils";
 import { Button } from "../";
+import { BaseCard } from "../BaseCard";
 import styles from "./CartItem.module.css";
 
 interface CartItemProps {
@@ -53,67 +54,63 @@ export const CartItem: React.FC<CartItemProps> = ({
     return item.price * item.quantity;
   }, [item.price, item.quantity]);
 
-  return (
-    <div className={styles.card}>
-      <div className={styles.imageContainer}>
-        <img
-          src={item.image || "/placeholder-image.png"}
-          alt={item.name}
-          className={styles.image}
-          onError={(e) => handleImageError(e, "/placeholder-image.png")}
+  const footer = (
+    <div className={styles.actions}>
+      <div className={styles.quantity}>
+        <Button
+          variant="secondary"
+          size="small"
+          startIcon={<FaMinus size={16} />}
+          onClick={handleDecrement}
+          disabled={item.quantity <= 1 || !onUpdateQuantity}
+          title="Уменьшить количество"
+          className={styles.quantityButton}
+        />
+
+        <span className={styles.quantityValue}>{item.quantity}</span>
+
+        <Button
+          variant="secondary"
+          size="small"
+          startIcon={<FaPlus size={16} />}
+          onClick={handleIncrement}
+          disabled={item.quantity >= maxQuantity || !onUpdateQuantity}
+          title="Увеличить количество"
+          className={styles.quantityButton}
         />
       </div>
 
-      <div className={styles.content}>
-        <h3 className={styles.title}>{item.name}</h3>
-
-        <div className={styles.priceContainer}>
-          <div className={styles.price}>
-            {formatCurrency(item.price)} × {item.quantity}
-          </div>
-          <div className={styles.total}>{formatCurrency(totalPrice)}</div>
-        </div>
-
-        {error && <div className={styles.error}>{error}</div>}
-
-        <div className={styles.actions}>
-          <div className={styles.quantity}>
-            <Button
-              variant="secondary"
-              size="small"
-              startIcon={<FaMinus size={16} />}
-              onClick={handleDecrement}
-              disabled={item.quantity <= 1 || !onUpdateQuantity}
-              title="Уменьшить количество"
-              className={styles.quantityButton}
-            />
-
-            <span className={styles.quantityValue}>{item.quantity}</span>
-
-            <Button
-              variant="secondary"
-              size="small"
-              startIcon={<FaPlus size={16} />}
-              onClick={handleIncrement}
-              disabled={item.quantity >= maxQuantity || !onUpdateQuantity}
-              title="Увеличить количество"
-              className={styles.quantityButton}
-            />
-          </div>
-
-          <Button
-            variant="danger"
-            size="medium"
-            startIcon={<FaTrash size={14} />}
-            onClick={handleRemove}
-            disabled={!onRemove}
-            title="Удалить из корзины"
-            className={styles.removeButton}
-          >
-            Удалить
-          </Button>
-        </div>
-      </div>
+      <Button
+        variant="danger"
+        size="medium"
+        startIcon={<FaTrash size={14} />}
+        onClick={handleRemove}
+        disabled={!onRemove}
+        title="Удалить из корзины"
+        className={styles.removeButton}
+      >
+        Удалить
+      </Button>
     </div>
+  );
+
+  return (
+    <BaseCard
+      variant="cart"
+      title={item.name}
+      image={item.image || "/placeholder-image.png"}
+      imageAlt={item.name}
+      fallbackImage="/placeholder-image.png"
+      footer={footer}
+    >
+      <div className={styles.priceContainer}>
+        <div className={styles.price}>
+          {formatCurrency(item.price)} × {item.quantity}
+        </div>
+        <div className={styles.total}>{formatCurrency(totalPrice)}</div>
+      </div>
+
+      {error && <div className={styles.error}>{error}</div>}
+    </BaseCard>
   );
 };

@@ -70,11 +70,8 @@
 
 .cartItem {
   transition: transform 0.3s ease;
-  min-height: 455px;
-  min-width: 255px;
-  max-width: 255px;
-  max-height: 455px;
   display: flex;
+  height: 100%;
 }
 
 .cartItem:hover {

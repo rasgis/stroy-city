@@ -1,0 +1,414 @@
+/* Общие стили для всех типов карточек */
+.card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: var(--background-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(var(--accent-primary-rgb), 0.2);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:active {
+  transform: scale(0.98);
+}
+
+.cardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Заголовок карточки */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  min-height: 60px;
+}
+
+.cardTitle {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Содержимое карточки */
+.cardContent {
+  flex-grow: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Футер карточки */
+.cardFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+}
+
+/* Изображение */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  padding-top: 70%;
+  overflow: hidden;
+  background-color: var(--background-tertiary);
+}
+
+.image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  will-change: transform;
+}
+
+.card:hover .image {
+  transform: scale(1.05);
+}
+
+/* Варианты карточек */
+.elevated {
+  box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.25);
+}
+
+.outlined {
+  background: transparent;
+  box-shadow: none;
+  border: 2px solid var(--border-color);
+}
+
+.transparent {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.gradient::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--accent-focus),
+    transparent 70%
+  );
+  z-index: -1;
+}
+
+/* Специфические стили для ProductCard */
+.productCard {
+  background: var(--catalog-card-bg);
+  border: 1px solid var(--catalog-card-border);
+  box-shadow: 0 4px 16px var(--catalog-card-shadow);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.productCard:hover {
+  box-shadow: 0 8px 20px var(--catalog-card-shadow-hover);
+  border-color: var(--catalog-card-border-hover);
+}
+
+.productCard .cardContent {
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.productCard .cardTitle {
+  font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+  color: var(--catalog-card-text);
+  height: 2.8em; /* Фиксированная высота для заголовка */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+.productCard .imageContainer {
+  padding-top: 80%;
+  height: 0;
+}
+
+.productCard .image {
+  object-fit: contain;
+  padding: 0.4rem;
+}
+
+.productCard .cardFooter {
+  margin-top: auto;
+  padding: 1rem 1.2rem;
+}
+
+/* Специфические стили для CategoryCard */
+.categoryCard {
+  background: var(--catalog-card-bg);
+  border: 1px solid var(--catalog-card-border);
+  box-shadow: 0 3px 10px var(--catalog-card-shadow);
+}
+
+.categoryCard:hover {
+  box-shadow: 0 8px 20px var(--catalog-card-shadow-hover);
+  border-color: var(--catalog-card-border-hover);
+}
+
+.categoryCard .imageContainer {
+  height: 180px;
+  padding-top: 0;
+}
+
+.categoryCard .cardTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+  height: 60px;
+  font-size: 1rem;
+  background: var(--catalog-card-bg);
+  border-top: 1px solid var(--catalog-card-border);
+}
+
+.categoryCard:hover .cardTitle {
+  color: var(--accent-primary);
+}
+
+/* Специфические стили для CartCard */
+.cartCard {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--background-card-rgb), 0.9) 0%,
+    rgba(var(--background-elevated-rgb), 0.9) 100%
+  );
+  border-radius: 15px;
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  min-width: 255px;
+  min-height: 455px;
+  max-width: 255px;
+  max-height: 455px;
+  width: 100%;
+  height: 100%;
+}
+
+.cartCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(var(--accent-primary-rgb), 0.05),
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cartCard:hover {
+  border-color: rgba(var(--accent-primary-rgb), 0.4);
+  box-shadow: 0 8px 25px rgba(var(--accent-primary-rgb), 0.25);
+}
+
+.cartCard .imageContainer {
+  height: 150px;
+  padding-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(var(--accent-primary-rgb), 0.15);
+}
+
+.cartCard .image {
+  padding: 1rem;
+  object-fit: contain;
+}
+
+.cartCard .cardContent {
+  padding: 1.2rem;
+  position: relative;
+  z-index: 2;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cartCard .cardTitle {
+  margin-bottom: 0.8rem;
+  text-align: center;
+  height: 2.8em;
+  color: var(--text-primary);
+}
+
+.cartCard:hover .cardTitle {
+  color: var(--accent-primary);
+}
+
+.cartCard .cardFooter {
+  margin-top: auto;
+}
+
+/* Специфические стили для AdminCard */
+.adminCard {
+  background: var(--background-card);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.adminCard:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--box-shadow-medium);
+}
+
+.adminCard .imageContainer {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.adminCard .image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  background-color: var(--background-tertiary);
+}
+
+.adminCard:hover .image {
+  transform: scale(1.05);
+}
+
+.adminCard .cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  flex-grow: 1;
+}
+
+.adminCard .cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.adminCard .cardFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .card {
+    padding: 0;
+  }
+
+  .cardHeader,
+  .cardContent,
+  .cardFooter {
+    padding: 1rem;
+  }
+
+  .cardTitle {
+    font-size: 1.1rem;
+  }
+
+  .cartCard {
+    min-height: auto;
+    max-height: none;
+  }
+
+  .adminCard .cardContent {
+    padding: 1rem;
+  }
+
+  .adminCard .cardTitle {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardHeader,
+  .cardContent,
+  .cardFooter {
+    padding: 0.8rem;
+  }
+
+  .cardTitle {
+    font-size: 1rem;
+  }
+
+  .adminCard .cardFooter {
+    flex-direction: column;
+  }
+}
