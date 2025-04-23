@@ -24,12 +24,10 @@
       // Применяем тему из локального хранилища при загрузке страницы
       document.addEventListener("DOMContentLoaded", function () {
         const savedTheme = localStorage.getItem("theme");
-        if (document.body) {
-          if (savedTheme === "light") {
-            document.body.setAttribute("data-theme", "light");
-          } else {
-            document.body.setAttribute("data-theme", "dark");
-          }
+        if (savedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        } else {
+          document.documentElement.setAttribute("data-theme", "dark");
         }
       });
     </script>

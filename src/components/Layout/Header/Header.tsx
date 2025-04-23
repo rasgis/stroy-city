@@ -169,7 +169,7 @@ const Header: React.FC = () => {
                 className={styles.authLink}
                 onClick={closeMobileMenu}
               >
-                Вход / Регистрация
+                Вход
               </Link>
             </div>
           )}
