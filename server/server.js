@@ -4,12 +4,13 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
-import { authRoutes } from "./routes/auth.js";
+import authRoutes from "./routes/auth.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 // import emailRoutes from "./routes/emailRoutes.js";
 import { dirname } from "path";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 // Получаем текущую директорию
 const __filename = fileURLToPath(import.meta.url);
@@ -19,7 +20,7 @@ const __dirname = dirname(__filename);
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
 // Проверяем загрузку переменных окружения
-console.log("Environment variables:");
+console.log("Переменные окружения:");
 console.log("NODE_ENV:", process.env.NODE_ENV);
 console.log("PORT:", process.env.PORT);
 console.log("MONGO_URI:", process.env.MONGO_URI);
@@ -59,6 +60,10 @@ app.get("/api/health", (req, res) => {
   res.status(200).json({ message: "API работает корректно!" });
 });
 
+// Middleware для обработки ошибок
+app.use(notFound); // Обработка несуществующих маршрутов
+app.use(errorHandler); // Обработка ошибок
+
 // Для обработки путей в production (Vercel)
 if (process.env.NODE_ENV === "production") {
   // Путь к статическим файлам сборки
@@ -78,7 +83,7 @@ const PORT = process.env.PORT || 3001;
 // Запускаем сервер
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
-  console.log(`API endpoints available at http://localhost:${PORT}/api`);
+  console.log(`API доступно по адресу http://localhost:${PORT}/api`);
 });
 
 // Для Vercel экспортируем приложение

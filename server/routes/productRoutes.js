@@ -10,13 +10,26 @@ import { protect, admin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// GET /api/products - получение всех товаров
-// POST /api/products - создание товара (только админ)
+// Добавляем middleware для логирования запросов
+const logRequests = (req, res, next) => {
+  console.log(`[Product Routes] ${req.method} ${req.originalUrl}`);
+  next();
+};
+
+// Применяем middleware логирования ко всем маршрутам
+router.use(logRequests);
+
+// @desc    Получение всех товаров и создание нового товара
+// @route   GET /api/products
+// @route   POST /api/products
+// @access  Public (GET), Private/Admin (POST)
 router.route("/").get(getProducts).post(protect, admin, createProduct);
 
-// GET /api/products/:id - получение товара по ID
-// PUT /api/products/:id - обновление товара (только админ)
-// DELETE /api/products/:id - удаление товара (только админ)
+// @desc    Получение, обновление и удаление товара по ID
+// @route   GET /api/products/:id
+// @route   PUT /api/products/:id
+// @route   DELETE /api/products/:id
+// @access  Public (GET), Private/Admin (PUT, DELETE)
 router
   .route("/:id")
   .get(getProductById)

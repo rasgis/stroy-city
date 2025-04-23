@@ -202,43 +202,129 @@
   box-shadow: 0 0 10px rgba(var(--accent-primary-rgb), 0.6);
 }
 
-@media (max-width: 768px) {
+/* Планшеты */
+@media (max-width: 992px) {
   .sliderContainer {
-    height: 300px;
-    border-radius: 8px;
+    height: 400px;
   }
 
   .slideContent {
-    padding: 40px 20px 20px;
+    padding: 50px 30px 30px;
   }
 
   .slideContent h2 {
-    font-size: 1.6rem;
-    margin-bottom: 10px;
-    padding: 6px 12px;
-    max-width: 100%;
+    font-size: 1.8rem;
+    padding: 7px 15px;
   }
 
   .slideContent p {
     font-size: 1rem;
-    padding: 6px 12px;
+    padding: 8px 15px;
+    max-width: 90%;
+  }
+}
+
+/* Мобильные устройства */
+@media (max-width: 768px) {
+  .sliderContainer {
+    height: 350px;
+    border-radius: 8px;
+    margin: 15px 0;
+  }
+
+  .slideContent {
+    padding: 30px 20px 25px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .slideContent h2 {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    padding: 5px 10px;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .slideContent p {
+    font-size: 0.9rem;
+    padding: 5px 10px;
     max-width: 100%;
     margin-top: 5px;
+    margin-bottom: 15px;
+    text-align: center;
   }
 
   .navButton {
     width: 36px;
     height: 36px;
+    opacity: 0.7;
+  }
+
+  .sliderContainer:hover .navButton {
+    opacity: 0.7;
+  }
+
+  .prevButton {
+    left: 10px;
+  }
+
+  .nextButton {
+    right: 10px;
   }
 
   .dots {
     gap: 8px;
     padding: 8px 16px;
-    bottom: 15px;
+    bottom: 10px;
   }
 
   .dot {
     width: 8px;
     height: 8px;
+  }
+}
+
+/* Маленькие мобильные устройства */
+@media (max-width: 480px) {
+  .sliderContainer {
+    height: 280px;
+    border-radius: 6px;
+  }
+
+  .slideContent {
+    padding: 20px 15px 20px;
+  }
+
+  .slideContent h2 {
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+    padding: 4px 8px;
+    border-left-width: 2px;
+  }
+
+  .slideContent p {
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    border-left-width: 2px;
+  }
+
+  .navButton {
+    width: 32px;
+    height: 32px;
+  }
+
+  .dots {
+    gap: 6px;
+    padding: 6px 12px;
+    bottom: 8px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-width: 1px;
   }
 }

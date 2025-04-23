@@ -1,6 +1,18 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
+/**
+ * Схема пользователя в MongoDB
+ *
+ * @typedef {Object} User
+ * @property {string} name - Имя пользователя
+ * @property {string} email - Email пользователя (уникальный)
+ * @property {string} login - Логин пользователя (уникальный)
+ * @property {string} password - Хешированный пароль пользователя
+ * @property {string} role - Роль пользователя ("user" или "admin")
+ * @property {Date} createdAt - Дата создания записи
+ * @property {Date} updatedAt - Дата последнего обновления записи
+ */
 const userSchema = mongoose.Schema(
   {
     name: {
@@ -35,7 +47,10 @@ const userSchema = mongoose.Schema(
   }
 );
 
-// Хеширование пароля перед сохранением
+/**
+ * Middleware хеширования пароля перед сохранением
+ * Срабатывает только при изменении пароля
+ */
 userSchema.pre("save", async function (next) {
   // Если пароль не был изменен, пропускаем хеширование
   if (!this.isModified("password")) {
@@ -51,12 +66,17 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-// Метод для сравнения паролей
+/**
+ * Метод для проверки соответствия пароля хэшу
+ *
+ * @param {string} enteredPassword - Введенный пароль для проверки
+ * @returns {Promise<boolean>} - Результат проверки
+ */
 userSchema.methods.matchPassword = async function (enteredPassword) {
   try {
     return await bcrypt.compare(enteredPassword, this.password);
   } catch (error) {
-    console.error("Error comparing passwords:", error);
+    console.error("[User Model] Ошибка сравнения паролей:", error);
     return false;
   }
 };

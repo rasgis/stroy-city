@@ -56,7 +56,6 @@ const Profile: React.FC = () => {
           try {
             // Пытаемся получить данные профиля с сервера
             profileData = await authService.getUserProfile();
-            console.log("Получены данные пользователя с сервера:", profileData);
 
             // Обновляем Redux и localStorage актуальными данными
             dispatch(updateUserData(profileData));

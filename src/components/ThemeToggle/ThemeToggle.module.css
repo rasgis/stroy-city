@@ -1,6 +1,6 @@
 .toggleButton {
   background: none;
-  border: 2px solid var(--accent-primary);
+  border: none;
   cursor: pointer;
   width: 40px;
   height: 40px;

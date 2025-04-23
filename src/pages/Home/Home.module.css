@@ -190,6 +190,7 @@
   font-size: 1.1rem;
   position: relative;
   z-index: 1;
+  text-align: center;
 }
 
 .about {
@@ -248,8 +249,6 @@
   text-align: center;
   position: relative;
   z-index: 1;
-  font-weight: 400;
-  font-size: 1.1rem;
 }
 
 .materialsStore,
@@ -367,8 +366,8 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid rgba(var(--accent-primary-rgb), 0.3);
-  box-shadow: 0 6px 20px rgba(var(--accent-primary-rgb), 0.15);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.5);
+  box-shadow: 0 6px 20px rgba(var(--accent-primary-rgb), 0.5);
 }
 
 .partnerLogoContainer:hover {
@@ -537,29 +536,86 @@
   }
 }
 
+@media (max-width: 992px) {
+  .feature h3 {
+    font-size: 1.4rem;
+  }
+
+  .feature p {
+    font-size: 1rem;
+  }
+
+  .about h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .about p {
+    line-height: 1.8;
+    font-size: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1.4rem;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 0 1rem;
   }
 
+  .hero {
+    padding: 3rem 1rem;
+  }
+
   .title {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
   .subtitle {
     font-size: 1.2rem;
-  }
-
-  .features {
-    grid-template-columns: 1fr;
-  }
-
-  .feature {
-    max-width: 100%;
+    margin-bottom: 1.5rem;
   }
 
   .logo {
     max-width: 200px;
+  }
+
+  .features {
+    padding: 1.5rem;
+    gap: 1.5rem;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .feature {
+    max-width: 100%;
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  .feature h3 {
+    font-size: 1.3rem;
+  }
+
+  .feature p {
+    font-size: 0.95rem;
+  }
+
+  .about {
+    padding: 1.5rem 1rem;
+  }
+
+  .about h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .about p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    padding: 0 1rem;
   }
 
   .discountTitle {
@@ -567,26 +623,23 @@
   }
 
   .discountText {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .discountButton {
-    padding: 0.7rem 1.5rem;
+    padding: 0.8rem 1.5rem;
     font-size: 1rem;
   }
 
   .discountIcon {
-    font-size: 2.5rem !important;
+    width: 70px;
+    height: 70px;
   }
 
   .discountBanner::after,
-  .hero::after,
-  .features::after,
   .about::after,
-  .materialsStore::after,
-  .qualityAssurance::after,
-  .trustAndExperience::after,
-  .partners::after {
+  .hero::after,
+  .features::after {
     background: radial-gradient(
       circle at 50% 30%,
       rgba(var(--accent-primary-rgb), 0.1),
@@ -595,74 +648,138 @@
   }
 
   .discountFeatures {
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 1rem;
+    justify-content: center;
   }
 
   .discountFeature {
-    width: 100%;
-    padding: 1rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
   }
 
   .discountFeatureIcon {
-    font-size: 1.5rem !important;
+    margin-right: 0.5rem;
   }
 
   .discountFeature span {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .partnersGrid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
     padding: 1rem;
+    gap: 1rem;
   }
 
   .partnerLogoContainer {
-    padding: 0.8rem;
+    height: 100px;
   }
 
   .partnerLogo {
-    max-width: 100px;
+    max-width: 80%;
   }
 }
 
 @media (max-width: 480px) {
+  .hero {
+    padding: 2rem 0.8rem;
+  }
+
+  .logo {
+    max-width: 180px;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .ctaButton {
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+  }
+
+  .features {
+    padding: 1.2rem 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .feature {
+    padding: 1.2rem;
+  }
+
+  .feature h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .feature p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .about {
+    padding: 1.2rem 0.8rem;
+    margin: 1.5rem 0;
+  }
+
+  .about h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .about p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+
   .discountTitle {
     font-size: 1.5rem;
+    padding: 0 0.5rem;
   }
 
   .discountText {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    padding: 0 0.5rem;
+    text-align: center;
   }
 
   .discountButton {
-    padding: 0.6rem 1.2rem;
+    padding: 0.7rem 1.2rem;
     font-size: 0.9rem;
     width: 100%;
+    max-width: 250px;
   }
 
   .discountFeatures {
+    flex-direction: column;
+    align-items: center;
     width: 100%;
   }
 
   .discountFeature {
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 0.8rem;
-    text-align: left;
+    width: 100%;
+    max-width: 260px;
+    font-size: 0.85rem;
+    justify-content: center;
+  }
+
+  .discountFeature span {
+    font-size: 0.85rem;
   }
 
   .partnersGrid {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 0.8rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .partnerLogoContainer {
-    padding: 0.6rem;
+    height: 90px;
   }
 
   .partnerLogo {
-    max-width: 80px;
+    max-width: 75%;
   }
 }

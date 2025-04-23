@@ -1,33 +1,40 @@
 import express from "express";
-import { register, login } from "../controllers/authController.js";
-import { getUserProfile, updateUserProfile } from "../controllers/userController.js";
+import {
+  register,
+  login,
+  getUserProfile,
+  updateUserProfile,
+} from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
-export const authRoutes = express.Router();
+const router = express.Router();
 
 // Добавляем middleware для логирования запросов
 const logRequests = (req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  console.log(`[Auth Routes] ${req.method} ${req.originalUrl}`);
   next();
 };
 
 // Применяем middleware логирования ко всем маршрутам
-authRoutes.use(logRequests);
+router.use(logRequests);
 
-// Маршруты аутентификации
-authRoutes.post("/register", register);
-authRoutes.post("/login", login);
+// @desc    Регистрация нового пользователя
+// @route   POST /api/auth/register
+// @access  Public
+router.post("/register", register);
 
-// Отдельный обработчик для PUT /profile для отладки
-authRoutes.put("/profile", (req, res, next) => {
-  console.log("Получен запрос PUT /api/auth/profile");
-  console.log("Заголовки:", req.headers);
-  console.log("Тело запроса:", req.body);
-  protect(req, res, () => {
-    console.log("Пользователь аутентифицирован, передаем управление updateUserProfile");
-    updateUserProfile(req, res);
-  });
-});
+// @desc    Вход пользователя
+// @route   POST /api/auth/login
+// @access  Public
+router.post("/login", login);
 
-// Маршрут GET /profile
-authRoutes.get("/profile", protect, getUserProfile);
+// @desc    Получение и обновление профиля пользователя
+// @route   GET /api/auth/profile
+// @route   PUT /api/auth/profile
+// @access  Private
+router
+  .route("/profile")
+  .get(protect, getUserProfile)
+  .put(protect, updateUserProfile);
+
+export default router;

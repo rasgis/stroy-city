@@ -183,7 +183,6 @@ export const userService = {
   // Обновление профиля текущего пользователя
   async updateUserProfile(userData: UserUpdateData): Promise<User> {
     try {
-      console.log("Отправка запроса на обновление профиля:", userData);
       const token = authService.getToken();
 
       if (!token) {
@@ -213,8 +212,9 @@ export const userService = {
         userData
       );
 
-      // Изменяем маршрут на /api/users/profile вместо /api/auth/profile
-      const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USERS.BASE}/profile`;
+      // Обновлен маршрут после рефакторинга сервера от 2024-06-24
+      // Используем /api/auth/profile вместо /api/users/profile
+      const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.PROFILE}`;
       console.log("URL запроса:", url);
 
       const response = await axios.put(url, userData, {

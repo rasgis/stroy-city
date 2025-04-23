@@ -1,5 +1,11 @@
 import jwt from "jsonwebtoken";
 
+/**
+ * Генерирует JWT токен для пользователя
+ *
+ * @param {string} id - ID пользователя
+ * @returns {string} JWT токен
+ */
 const generateToken = (id) => {
   // Создаем payload с информацией о пользователе
   const payload = {
@@ -8,11 +14,11 @@ const generateToken = (id) => {
     },
   };
 
-  console.log("Генерация токена для пользователя:", id);
-  console.log("Payload токена:", payload);
+  console.log(`[Token Service] Генерация токена для пользователя: ${id}`);
 
+  // Создаем и возвращаем JWT токен
   return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "7d",
+    expiresIn: "7d", // Токен действителен 7 дней
   });
 };
 

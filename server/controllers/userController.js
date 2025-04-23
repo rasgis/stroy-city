@@ -2,79 +2,102 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
 
-// @desc    Авторизация пользователя и получение токена
-// @route   POST /api/users/login
-// @access  Public
+/**
+ * @desc    Аутентификация пользователя и получение токена
+ * @route   POST /api/users/login
+ * @access  Публичный
+ * @param   {string} req.body.email - Email пользователя
+ * @param   {string} req.body.password - Пароль пользователя
+ * @returns {Object} Данные пользователя и токен
+ */
 const authUser = asyncHandler(async (req, res) => {
-  const { identifier, password } = req.body;
+  const { email, password } = req.body;
 
-  // Проверяем, является ли identifier email или логином
-  const isEmail = identifier.includes("@");
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("Пожалуйста, заполните все поля");
+  }
 
-  // Поиск пользователя по email или логину
-  const user = isEmail
-    ? await User.findOne({ email: identifier })
-    : await User.findOne({ login: identifier });
+  const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
     res.json({
       _id: user._id,
       name: user.name,
-      email: user.email,
       login: user.login,
+      email: user.email,
       role: user.role,
       token: generateToken(user._id),
     });
   } else {
     res.status(401);
-    throw new Error("Неверный email/логин или пароль");
+    throw new Error("Неверный email или пароль");
   }
 });
 
-// @desc    Регистрация нового пользователя
-// @route   POST /api/users
-// @access  Public
+/**
+ * @desc    Регистрация нового пользователя
+ * @route   POST /api/users
+ * @access  Публичный
+ * @param   {string} req.body.name - Имя пользователя
+ * @param   {string} req.body.login - Логин пользователя
+ * @param   {string} req.body.email - Email пользователя
+ * @param   {string} req.body.password - Пароль пользователя
+ * @returns {Object} Данные созданного пользователя и токен
+ */
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, login, password } = req.body;
+  const { name, login, email, password } = req.body;
 
-  const emailExists = await User.findOne({ email });
-  const loginExists = await User.findOne({ login });
-
-  if (emailExists) {
+  // Проверка наличия всех полей
+  if (!name || !login || !email || !password) {
     res.status(400);
-    throw new Error("Пользователь с таким email уже существует");
+    throw new Error("Пожалуйста, заполните все поля");
   }
 
-  if (loginExists) {
-    res.status(400);
-    throw new Error("Пользователь с таким логином уже существует");
+  // Проверка существования пользователя с таким email
+  const userExists = await User.findOne({ $or: [{ email }, { login }] });
+
+  if (userExists) {
+    if (userExists.email === email) {
+      res.status(400);
+      throw new Error("Пользователь с таким email уже существует");
+    }
+    if (userExists.login === login) {
+      res.status(400);
+      throw new Error("Пользователь с таким логином уже существует");
+    }
   }
 
+  // Создание нового пользователя
   const user = await User.create({
     name,
-    email,
     login,
+    email,
     password,
   });
 
+  // Возвращение данных пользователя и токена
   if (user) {
     res.status(201).json({
       _id: user._id,
       name: user.name,
-      email: user.email,
       login: user.login,
+      email: user.email,
       role: user.role,
       token: generateToken(user._id),
     });
   } else {
     res.status(400);
-    throw new Error("Некорректные данные пользователя");
+    throw new Error("Ошибка при создании пользователя");
   }
 });
 
-// @desc    Получение профиля пользователя
-// @route   GET /api/users/profile
-// @access  Private
+/**
+ * @desc    Получение профиля пользователя
+ * @route   GET /api/users/profile
+ * @access  Приватный
+ * @returns {Object} Данные пользователя
+ */
 const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
@@ -82,8 +105,8 @@ const getUserProfile = asyncHandler(async (req, res) => {
     res.json({
       _id: user._id,
       name: user.name,
-      email: user.email,
       login: user.login,
+      email: user.email,
       role: user.role,
     });
   } else {
@@ -92,113 +115,118 @@ const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Обновление профиля пользователя
-// @route   PUT /api/users/profile
-// @access  Private
-const updateUserProfile = async (req, res) => {
-  try {
-    console.log("[UserController] Начало выполнения updateUserProfile");
-
-    // Проверка наличия пользователя
-    if (!req.user || !req.user._id) {
-      console.log("[UserController] Ошибка: Пользователь не аутентифицирован");
-      return res
-        .status(401)
-        .json({ message: "Пользователь не аутентифицирован" });
-    }
-
-    // Получаем данные из запроса
-    const { name, email, login, password, role } = req.body;
-    console.log("[UserController] Полученные данные:", {
-      name,
-      email,
-      login,
-      password: password ? "предоставлен" : "не предоставлен",
-      role: role, // Добавляем логирование попытки изменения роли
-    });
-
-    // Проверяем, не пытается ли пользователь изменить свою роль
-    if (role) {
-      console.log(
-        "[UserController] ВНИМАНИЕ: Попытка изменения роли через API профиля"
-      );
-      return res.status(403).json({
-        message: "Изменение роли через API профиля запрещено",
-      });
-    }
-
-    try {
-      // Поиск пользователя в базе
-      const user = await User.findById(req.user._id);
-      console.log("[UserController] Пользователь найден:", user ? "да" : "нет");
-
-      if (!user) {
-        console.log("[UserController] Ошибка: Пользователь не найден в базе");
-        return res.status(404).json({ message: "Пользователь не найден" });
-      }
-
-      // Обновляем поля пользователя
-      if (name) user.name = name;
-      if (email) user.email = email;
-      if (login) user.login = login;
-
-      // Обновляем пароль, если он предоставлен
-      // Хеширование будет выполнено автоматически в pre-save хуке модели
-      if (password) {
-        console.log("[UserController] Установка нового пароля");
-        user.password = password;
-      }
-
-      // Роль сохраняем неизменной - защита от повышения привилегий
-      // Явно игнорируем role из request.body
-
-      console.log("[UserController] Сохранение обновленного пользователя...");
-      const updatedUser = await user.save();
-      console.log("[UserController] Пользователь сохранен");
-
-      // Создаем токен
-      const token = generateToken(updatedUser._id);
-
-      // Возвращаем данные пользователя
-      return res.status(200).json({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        login: updatedUser.login,
-        role: updatedUser.role,
-        token,
-      });
-    } catch (dbError) {
-      console.error(
-        "[UserController] Ошибка при работе с базой данных:",
-        dbError
-      );
-      return res.status(500).json({
-        message: "Ошибка при обновлении профиля в базе данных",
-        error: dbError.message,
-      });
-    }
-  } catch (error) {
-    console.error("[UserController] Необработанная ошибка:", error);
-    return res.status(500).json({
-      message: "Внутренняя ошибка сервера",
-      error: error.message,
-    });
+/**
+ * @desc    Обновление профиля пользователя
+ * @route   PUT /api/users/profile
+ * @access  Приватный
+ * @param   {string} [req.body.name] - Новое имя пользователя
+ * @param   {string} [req.body.login] - Новый логин пользователя
+ * @param   {string} [req.body.email] - Новый email пользователя
+ * @param   {string} [req.body.password] - Новый пароль пользователя
+ * @returns {Object} Обновленные данные пользователя и токен
+ */
+const updateUserProfile = asyncHandler(async (req, res) => {
+  // Проверяем аутентификацию
+  if (!req.user) {
+    res.status(401);
+    throw new Error("Не авторизован");
   }
-};
 
-// @desc    Получение всех пользователей
-// @route   GET /api/users
-// @access  Private/Admin
+  // Получаем данные из запроса
+  const { name, login, email, password } = req.body;
+
+  console.log("Received data:", { name, login, email, password: "***" });
+
+  // Если пытаются изменить роль
+  if (req.body.role) {
+    console.log(`Attempt to change role detected for user ${req.user._id}`);
+    res.status(403);
+    throw new Error("Изменение роли не разрешено");
+  }
+
+  // Получаем текущего пользователя
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("Пользователь не найден");
+  }
+
+  // Проверяем, если пользователь меняет логин или email, нет ли уже таких значений у других пользователей
+  if (login && login !== user.login) {
+    const userWithSameLogin = await User.findOne({ login });
+    if (userWithSameLogin) {
+      res.status(400);
+      throw new Error("Пользователь с таким логином уже существует");
+    }
+  }
+
+  if (email && email !== user.email) {
+    const userWithSameEmail = await User.findOne({ email });
+    if (userWithSameEmail) {
+      res.status(400);
+      throw new Error("Пользователь с таким email уже существует");
+    }
+  }
+
+  // Обновляем данные пользователя
+  user.name = name || user.name;
+  user.login = login || user.login;
+  user.email = email || user.email;
+  if (password) {
+    user.password = password;
+  }
+
+  try {
+    // Сохраняем обновленного пользователя
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      login: updatedUser.login,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      token: generateToken(updatedUser._id),
+    });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500);
+    throw new Error(`Ошибка обновления пользователя: ${error.message}`);
+  }
+});
+
+/**
+ * @desc    Получение всех пользователей
+ * @route   GET /api/users
+ * @access  Приватный/Админ
+ * @returns {Array} Массив пользователей
+ */
 const getUsers = asyncHandler(async (req, res) => {
+  // Проверяем права доступа
+  if (!req.user || req.user.role !== "admin") {
+    res.status(403);
+    throw new Error("Доступ запрещен. Требуются права администратора.");
+  }
+
   const users = await User.find({}).select("-password");
   res.json(users);
 });
 
-// @desc    Получение пользователя по ID
-// @route   GET /api/users/:id
-// @access  Private/Admin
+/**
+ * @desc    Получение пользователя по ID
+ * @route   GET /api/users/:id
+ * @access  Приватный/Админ
+ * @param   {string} req.params.id - ID пользователя
+ * @returns {Object} Данные пользователя
+ */
 const getUserById = asyncHandler(async (req, res) => {
+  // Проверяем права доступа
+  if (!req.user || req.user.role !== "admin") {
+    res.status(403);
+    throw new Error("Доступ запрещен. Требуются права администратора.");
+  }
+
   const user = await User.findById(req.params.id).select("-password");
 
   if (user) {
@@ -209,57 +237,41 @@ const getUserById = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Обновление пользователя
-// @route   PUT /api/users/:id
-// @access  Private/Admin
+/**
+ * @desc    Обновление пользователя админом
+ * @route   PUT /api/users/:id
+ * @access  Приватный/Админ
+ * @param   {string} req.params.id - ID пользователя
+ * @param   {Object} req.body - Данные для обновления пользователя
+ * @returns {Object} Обновленные данные пользователя
+ */
 const updateUser = asyncHandler(async (req, res) => {
+  // Проверяем права доступа
+  if (!req.user || req.user.role !== "admin") {
+    res.status(403);
+    throw new Error("Доступ запрещен. Требуются права администратора.");
+  }
+
   const user = await User.findById(req.params.id);
 
   if (user) {
-    // Обновляем основную информацию
+    // Обновляем поля пользователя
     user.name = req.body.name || user.name;
+    user.login = req.body.login || user.login;
+    user.email = req.body.email || user.email;
 
-    // Проверяем уникальность email перед обновлением
-    if (req.body.email && req.body.email !== user.email) {
-      const emailExists = await User.findOne({ email: req.body.email });
-      if (emailExists && emailExists._id.toString() !== req.params.id) {
-        res.status(400);
-        throw new Error("Пользователь с таким email уже существует");
-      }
-      user.email = req.body.email;
-    }
-
-    // Проверяем уникальность логина перед обновлением
-    if (req.body.login && req.body.login !== user.login) {
-      const loginExists = await User.findOne({ login: req.body.login });
-      if (loginExists && loginExists._id.toString() !== req.params.id) {
-        res.status(400);
-        throw new Error("Пользователь с таким логином уже существует");
-      }
-      user.login = req.body.login;
-    }
-
-    // Обновляем роль пользователя, если она предоставлена
+    // Обновляем роль только если она предоставлена
     if (req.body.role) {
       user.role = req.body.role;
     }
 
-    // Обновляем пароль, если он предоставлен
-    // Пароль будет хеширован автоматически через pre-save хук в модели
-    if (req.body.password) {
-      console.log(`Обновление пароля для пользователя ${user._id}`);
-      user.password = req.body.password;
-    }
-
-    // Сохраняем обновленного пользователя
     const updatedUser = await user.save();
 
-    // Возвращаем обновленную информацию о пользователе (без пароля)
     res.json({
       _id: updatedUser._id,
       name: updatedUser.name,
-      email: updatedUser.email,
       login: updatedUser.login,
+      email: updatedUser.email,
       role: updatedUser.role,
     });
   } else {
@@ -268,17 +280,27 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Удаление пользователя
-// @route   DELETE /api/users/:id
-// @access  Private/Admin
+/**
+ * @desc    Удаление пользователя
+ * @route   DELETE /api/users/:id
+ * @access  Приватный/Админ
+ * @param   {string} req.params.id - ID пользователя для удаления
+ * @returns {Object} Сообщение об успешном удалении
+ */
 const deleteUser = asyncHandler(async (req, res) => {
+  // Проверяем права доступа
+  if (!req.user || req.user.role !== "admin") {
+    res.status(403);
+    throw new Error("Доступ запрещен. Требуются права администратора.");
+  }
+
   const user = await User.findById(req.params.id);
 
   if (user) {
-    // Запрещаем удалять самого себя
+    // Предотвращаем удаление себя (текущего админа)
     if (user._id.toString() === req.user._id.toString()) {
       res.status(400);
-      throw new Error("Нельзя удалить своего пользователя");
+      throw new Error("Невозможно удалить собственную учетную запись");
     }
 
     await user.deleteOne();

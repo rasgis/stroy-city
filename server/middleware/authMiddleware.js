@@ -2,135 +2,136 @@ import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 
-// Проверка JWT токена и установка пользователя в req.user
-const protect = async (req, res, next) => {
+/**
+ * Middleware для проверки аутентификации пользователя
+ * Проверяет JWT токен и добавляет пользователя в req.user
+ *
+ * @desc    Защита маршрутов, требующих авторизации
+ * @access  Private
+ */
+const protect = asyncHandler(async (req, res, next) => {
+  // Проверка наличия заголовка авторизации
+  if (
+    !req.headers.authorization ||
+    !req.headers.authorization.startsWith("Bearer ")
+  ) {
+    console.log(
+      "[Auth Middleware] Ошибка: Заголовок авторизации отсутствует или имеет неверный формат"
+    );
+    res.status(401);
+    throw new Error("Требуется авторизация");
+  }
+
+  // Извлечение токена
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) {
+    console.log("[Auth Middleware] Ошибка: Токен отсутствует");
+    res.status(401);
+    throw new Error("Токен не предоставлен");
+  }
+
   try {
-    console.log("Аутентификация запроса");
+    // Верификация токена
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("[Auth Middleware] Токен верифицирован");
 
-    // Проверка наличия заголовка авторизации
-    if (
-      !req.headers.authorization ||
-      !req.headers.authorization.startsWith("Bearer ")
-    ) {
+    // Определение ID пользователя из токена
+    let userId;
+    if (decoded.user && decoded.user.id) {
+      userId = decoded.user.id;
+    } else if (decoded.id) {
+      userId = decoded.id;
+    } else {
       console.log(
-        "Ошибка: Заголовок авторизации отсутствует или имеет неверный формат"
+        "[Auth Middleware] Ошибка: Невозможно извлечь ID пользователя из токена"
       );
-      return res.status(401).json({ message: "Требуется авторизация" });
+      res.status(401);
+      throw new Error("Недействительный токен");
     }
 
-    // Извлечение токена
-    const token = req.headers.authorization.split(" ")[1];
-    if (!token) {
-      console.log("Ошибка: Токен отсутствует");
-      return res.status(401).json({ message: "Токен не предоставлен" });
-    }
-
-    try {
-      // Верификация токена
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("Токен верифицирован:", decoded);
-
-      // Определение ID пользователя из токена
-      let userId;
-      if (decoded.user && decoded.user.id) {
-        userId = decoded.user.id;
-      } else if (decoded.id) {
-        userId = decoded.id;
-      } else {
-        console.log("Ошибка: Невозможно извлечь ID пользователя из токена");
-        return res.status(401).json({ message: "Недействительный токен" });
-      }
-
-      // Поиск пользователя в базе данных
-      const user = await User.findById(userId).select("-password");
-
-      if (!user) {
-        console.log("Ошибка: Пользователь не найден в базе данных");
-        return res.status(401).json({ message: "Пользователь не найден" });
-      }
-
-      // Проверка валидности роли пользователя (дополнительная защита)
-      if (user.role !== "user" && user.role !== "admin") {
-        console.error(
-          "ВНИМАНИЕ: Обнаружена недопустимая роль пользователя:",
-          user.role
-        );
-        console.log("Принудительно устанавливаем роль 'user'");
-
-        // В случае обнаружения недопустимой роли, устанавливаем роль по умолчанию
-        user.role = "user";
-
-        // Сохраняем обновленную роль
-        await User.findByIdAndUpdate(userId, { role: "user" });
-      }
-
-      // Установка пользователя в объект запроса
-      req.user = user;
+    // Поиск пользователя в базе данных
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
       console.log(
-        "Пользователь аутентифицирован:",
-        user._id,
-        "с ролью:",
+        "[Auth Middleware] Ошибка: Пользователь не найден в базе данных"
+      );
+      res.status(401);
+      throw new Error("Пользователь не найден");
+    }
+
+    // Проверка валидности роли пользователя (дополнительная защита)
+    if (user.role !== "user" && user.role !== "admin") {
+      console.error(
+        "[Auth Middleware] ВНИМАНИЕ: Обнаружена недопустимая роль пользователя:",
         user.role
       );
+      console.log("[Auth Middleware] Принудительно устанавливаем роль 'user'");
 
-      // Переход к следующему middleware
-      next();
-    } catch (jwtError) {
-      console.log("Ошибка верификации токена:", jwtError.message);
-      return res.status(401).json({ message: "Недействительный токен" });
-    }
-  } catch (error) {
-    console.error("Критическая ошибка в middleware аутентификации:", error);
-    return res.status(500).json({ message: "Ошибка сервера" });
-  }
-};
+      // В случае обнаружения недопустимой роли, устанавливаем роль по умолчанию
+      user.role = "user";
 
-// Middleware для проверки прав администратора
-const admin = async (req, res, next) => {
-  try {
-    console.log("Проверка прав администратора");
-
-    if (!req.user) {
-      console.log("Ошибка: Пользователь не аутентифицирован");
-      return res.status(401).json({ message: "Требуется авторизация" });
+      // Сохраняем обновленную роль
+      await User.findByIdAndUpdate(userId, { role: "user" });
     }
 
-    // Дополнительная проверка роли из базы данных для предотвращения подделки
-    const freshUserData = await User.findById(req.user._id).select("role");
-    if (!freshUserData) {
-      return res.status(401).json({ message: "Пользователь не найден" });
-    }
+    // Установка пользователя в объект запроса
+    req.user = user;
+    console.log(
+      `[Auth Middleware] Пользователь ${user._id} с ролью ${user.role} аутентифицирован`
+    );
 
-    const userRole = freshUserData.role;
-
-    if (userRole !== "admin") {
-      console.log(
-        "Ошибка: Недостаточно прав, пользователь не является администратором:",
-        userRole
-      );
-
-      // Ведение журнала попыток несанкционированного доступа
-      console.error(
-        "ВНИМАНИЕ: Попытка доступа к административным функциям пользователем без прав:",
-        {
-          userId: req.user._id,
-          userRole: userRole,
-          path: req.originalUrl,
-          method: req.method,
-        }
-      );
-
-      return res
-        .status(403)
-        .json({ message: "Доступ запрещен. Требуются права администратора" });
-    }
-
-    console.log("Доступ разрешен. Пользователь имеет права администратора.");
     next();
   } catch (error) {
-    console.error("Ошибка в middleware проверки прав:", error);
-    return res.status(500).json({ message: "Ошибка сервера" });
+    console.log("[Auth Middleware] Ошибка верификации токена:", error.message);
+    res.status(401);
+    throw new Error("Недействительный токен");
   }
-};
+});
+
+/**
+ * Middleware для проверки прав администратора
+ * Требует предварительного использования middleware protect
+ *
+ * @desc    Защита маршрутов, требующих права администратора
+ * @access  Private/Admin
+ */
+const admin = asyncHandler(async (req, res, next) => {
+  if (!req.user) {
+    console.log("[Auth Middleware] Ошибка: Пользователь не аутентифицирован");
+    res.status(401);
+    throw new Error("Требуется авторизация");
+  }
+
+  // Дополнительная проверка роли из базы данных для предотвращения подделки
+  const freshUserData = await User.findById(req.user._id).select("role");
+  if (!freshUserData) {
+    console.log(
+      "[Auth Middleware] Ошибка: Пользователь не найден при проверке прав админа"
+    );
+    res.status(401);
+    throw new Error("Пользователь не найден");
+  }
+
+  const userRole = freshUserData.role;
+
+  if (userRole !== "admin") {
+    console.error(
+      "[Auth Middleware] ВНИМАНИЕ: Попытка доступа к административным функциям пользователем без прав:",
+      {
+        userId: req.user._id,
+        userRole: userRole,
+        path: req.originalUrl,
+        method: req.method,
+      }
+    );
+    res.status(403);
+    throw new Error("Доступ запрещен. Требуются права администратора");
+  }
+
+  console.log(
+    `[Auth Middleware] Доступ разрешен. Пользователь ${req.user._id} имеет права администратора`
+  );
+  next();
+});
 
 export { protect, admin };

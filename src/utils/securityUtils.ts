@@ -166,8 +166,6 @@ export const auditSecurityAction = (
       details,
     };
 
-    console.warn("АУДИТ БЕЗОПАСНОСТИ:", auditEntry);
-
     // Здесь можно добавить отправку на сервер для логирования
   } catch (e) {
     console.error("Ошибка при аудите безопасности:", e);

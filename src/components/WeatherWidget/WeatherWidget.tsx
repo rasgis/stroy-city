@@ -188,52 +188,52 @@ export const WeatherWidget = () => {
     <div className={styles.weatherWidgetContainer}>
       {isVisible && (
         <div className={`${styles.weatherWidget} ${styles.visible}`}>
-          <button
-            className={styles.refreshButton}
-            onClick={(e) => {
-              e.stopPropagation(); // Предотвращаем всплытие события
-              refreshWeather();
-            }}
-            title="Обновить данные"
-          >
-            <Refresh style={{ width: "18px", height: "18px" }} />
-          </button>
-          <div className={styles.location}>
-            {editingCity ? (
-              <form onSubmit={handleSubmit} className={styles.cityEditForm}>
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={newCity}
-                  onChange={(e) => setNewCity(e.target.value)}
-                  placeholder="Введите город"
-                  className={styles.cityInput}
-                />
-                <button type="submit" className={styles.searchButton}>
-                  <Search fontSize="small" />
-                </button>
-              </form>
-            ) : (
-              <div className={styles.cityDisplay}>
-                <button
-                  className={styles.forecastButton}
-                  onClick={handleForecastClick}
-                  title="Прогноз на неделю"
-                >
-                  <CalendarMonth fontSize="small" />
-                </button>
-                <button
-                  className={styles.editCityButton}
-                  onClick={handleEditCity}
-                  title="Изменить город"
-                >
-                  <Edit fontSize="small" />
-                </button>
-                <h2>{weather.city}</h2>
+          {editingCity ? (
+            <form onSubmit={handleSubmit} className={styles.cityEditForm}>
+              <input
+                ref={inputRef}
+                type="text"
+                value={newCity}
+                onChange={(e) => setNewCity(e.target.value)}
+                placeholder="Введите город"
+                className={styles.cityInput}
+              />
+              <button type="submit" className={styles.searchButton}>
+                <Search fontSize="small" />
+              </button>
+            </form>
+          ) : (
+            <>
+              <div className={styles.widgetHeader}>
+                <h2 className={styles.cityName}>{weather.city}</h2>
+                <div className={styles.widgetControls}>
+                  <button
+                    className={styles.refreshButton}
+                    onClick={refreshWeather}
+                    title="Обновить данные"
+                  >
+                    <Refresh style={{ width: "18px", height: "18px" }} />
+                  </button>
+                  <button
+                    className={styles.forecastButton}
+                    onClick={handleForecastClick}
+                    title="Прогноз на неделю"
+                  >
+                    <CalendarMonth fontSize="small" />
+                  </button>
+                  <button
+                    className={styles.editCityButton}
+                    onClick={handleEditCity}
+                    title="Изменить город"
+                  >
+                    <Edit fontSize="small" />
+                  </button>
+                </div>
               </div>
-            )}
-            {error && <div className={styles.error}>{error}</div>}
-          </div>
+              {error && <div className={styles.error}>{error}</div>}
+            </>
+          )}
+
           <div className={styles.weatherInfo}>
             <div className={styles.mainInfo}>
               {getWeatherIcon(weather.condition)}
@@ -284,8 +284,12 @@ export const WeatherWidget = () => {
         </div>
       )}
 
-      <button className={styles.toggleButton} onClick={handleToggleWidget}>
-        {getWeatherIcon(weather.condition)}
+      <button
+        onClick={handleToggleWidget}
+        className={styles.toggleButton}
+        aria-label="Показать/скрыть погоду"
+      >
+        {getWeatherIcon("sunny")}
       </button>
 
       {isModalOpen && (
@@ -294,42 +298,27 @@ export const WeatherWidget = () => {
           onClick={() => setIsModalOpen(false)}
         >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <h3>Введите название города</h3>
-            <p className={styles.currentCity}>
-              Текущий город: <strong>{weather.city}</strong>
-            </p>
+            <h3>Изменить город</h3>
             <form onSubmit={handleSubmit}>
               <input
                 ref={inputRef}
                 type="text"
                 value={newCity}
                 onChange={(e) => setNewCity(e.target.value)}
-                placeholder="Например: Москва"
+                placeholder="Введите название города"
                 className={styles.input}
               />
               {error && <div className={styles.error}>{error}</div>}
               <div className={styles.modalButtons}>
-                <button type="submit" className={styles.submitButton}>
-                  Найти
-                </button>
                 <button
                   type="button"
+                  onClick={() => setIsModalOpen(false)}
                   className={styles.cancelButton}
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    setNewCity("");
-                    setError("");
-                    // Если была ошибка, проверяем сохраненный город
-                    if (error) {
-                      const savedCity = localStorage.getItem(STORAGE_KEY);
-                      if (savedCity) {
-                        // Если поиск был с ошибкой, возвращаемся к прежнему городу
-                        fetchWeather(savedCity);
-                      }
-                    }
-                  }}
                 >
                   Отмена
+                </button>
+                <button type="submit" className={styles.submitButton}>
+                  Сохранить
                 </button>
               </div>
             </form>
@@ -339,3 +328,5 @@ export const WeatherWidget = () => {
     </div>
   );
 };
+
+export default WeatherWidget;
