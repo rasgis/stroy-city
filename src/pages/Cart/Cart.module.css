@@ -60,6 +60,37 @@
   border-radius: 3px;
 }
 
+/* Информационная сноска */
+.infoNote {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--info-rgb), 0.1) 0%,
+    rgba(var(--info-rgb), 0.2) 100%
+  );
+  border: 1px solid rgba(var(--info-rgb), 0.3);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(var(--info-rgb), 0.1);
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.infoNote p {
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.priceNote {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
 .cartGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -182,6 +213,26 @@
   box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.3) !important;
 }
 
+.contactButton {
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary) 0%,
+    var(--accent-secondary) 100%
+  ) !important;
+  color: var(--background-primary) !important;
+  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.2) !important;
+}
+
+.contactButton:hover {
+  background: linear-gradient(
+    135deg,
+    var(--accent-secondary) 0%,
+    var(--accent-primary) 100%
+  ) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.3) !important;
+}
+
 .emptyIcon {
   font-size: 4rem !important;
   color: rgba(var(--accent-primary-rgb), 0.3);
@@ -259,10 +310,22 @@
   }
 
   .cart {
-    padding: 0.5rem;
+    padding: 1rem 0.5rem;
   }
 
   .cartSummary {
-    padding: 1.5rem;
+    padding: 1.2rem;
+  }
+
+  .infoNote {
+    padding: 0.8rem 1rem;
+  }
+
+  .infoNote p {
+    font-size: 0.9rem;
+  }
+
+  .priceNote {
+    font-size: 0.8rem;
   }
 }

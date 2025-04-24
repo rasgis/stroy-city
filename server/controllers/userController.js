@@ -135,11 +135,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   // Получаем данные из запроса
   const { name, login, email, password } = req.body;
 
-  console.log("Received data:", { name, login, email, password: "***" });
-
   // Если пытаются изменить роль
   if (req.body.role) {
-    console.log(`Attempt to change role detected for user ${req.user._id}`);
     res.status(403);
     throw new Error("Изменение роли не разрешено");
   }

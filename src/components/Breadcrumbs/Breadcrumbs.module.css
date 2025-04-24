@@ -73,3 +73,40 @@
     font-size: 0.7rem;
   }
 }
+
+@media (max-width: 430px) {
+  .breadcrumbs {
+    padding: 0.6rem 0.4rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .breadcrumbsList {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none; /* Для Firefox */
+    -ms-overflow-style: none; /* Для IE и Edge */
+  }
+
+  .breadcrumbsList::-webkit-scrollbar {
+    display: none; /* Для Chrome, Safari и Opera */
+  }
+
+  .breadcrumbLink,
+  .breadcrumbActive {
+    font-size: 0.75rem;
+  }
+
+  .separator {
+    margin: 0 0.2rem;
+    font-size: 0.6rem;
+  }
+
+  .homeIcon {
+    margin-right: 0.2rem;
+    font-size: 0.8rem;
+  }
+}

@@ -90,7 +90,6 @@ const UserList = () => {
   const renderUserRow = (user: User) => {
     return (
       <tr key={user._id}>
-        <td>{user._id}</td>
         <td>{user.name}</td>
         <td>{user.email}</td>
         <td>{user.login}</td>
@@ -142,7 +141,6 @@ const UserList = () => {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Имя</th>
                 <th>Email</th>
                 <th>Логин</th>

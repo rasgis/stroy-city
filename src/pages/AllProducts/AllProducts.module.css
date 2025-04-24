@@ -12,6 +12,14 @@
   background-color: transparent;
 }
 
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
 .content {
   width: 100%;
   display: flex;

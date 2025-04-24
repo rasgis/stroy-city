@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaShoppingCart, FaTrash, FaShoppingBag } from "react-icons/fa";
+import { FaShoppingCart, FaTrash, FaTelegram } from "react-icons/fa";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import {
   clearCart,
@@ -19,6 +19,9 @@ const Cart: React.FC = () => {
   const cartItems = useAppSelector((state) => state.cart.items);
   const total = useAppSelector((state) => state.cart.total);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isItemDeleteModalOpen, setIsItemDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+  const [itemNameToDelete, setItemNameToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     scrollToTop();
@@ -33,8 +36,24 @@ const Cart: React.FC = () => {
     dispatch(updateQuantity({ _id: id, quantity }));
   };
 
-  const handleRemoveItem = (id: string) => {
-    dispatch(removeFromCart(id));
+  const handleRemoveItemRequest = (id: string, name: string) => {
+    setItemToDelete(id);
+    setItemNameToDelete(name);
+    setIsItemDeleteModalOpen(true);
+  };
+
+  const handleRemoveItem = () => {
+    if (itemToDelete) {
+      dispatch(removeFromCart(itemToDelete));
+      setIsItemDeleteModalOpen(false);
+      setItemToDelete(null);
+      setItemNameToDelete(null);
+    }
+  };
+
+  const handleContactManager = () => {
+    // Ссылка на телеграм-бот магазина
+    window.open("https://t.me/stroycity_bot", "_blank");
   };
 
   return (
@@ -53,11 +72,21 @@ const Cart: React.FC = () => {
 
         <div className={styles.cart}>
           <h1 className={styles.title}>Корзина</h1>
+
+          {/* Информационная сноска о функционале корзины */}
+          <div className={styles.infoNote}>
+            <p>
+              Корзина носит информативный характер для расчета приблизительной
+              стоимости товаров. Для получения точного расчета и оформления
+              заказа, пожалуйста, свяжитесь с нашим специалистом.
+            </p>
+          </div>
+
           {cartItems.length === 0 ? (
             <div className={styles.emptyCart}>
               <FaShoppingCart className={styles.emptyIcon} />
               <h2>Корзина пуста</h2>
-              <p>Добавьте товары в корзину, чтобы оформить заказ</p>
+              <p>Добавьте товары в корзину, чтобы рассчитать стоимость</p>
             </div>
           ) : (
             <>
@@ -67,7 +96,7 @@ const Cart: React.FC = () => {
                     <CartItem
                       item={item}
                       onUpdateQuantity={handleUpdateQuantity}
-                      onRemove={handleRemoveItem}
+                      onRemove={(id) => handleRemoveItemRequest(id, item.name)}
                       maxQuantity={item.stock || 10}
                     />
                   </div>
@@ -81,10 +110,14 @@ const Cart: React.FC = () => {
                     {formatCurrency(total)}
                   </span>
                 </div>
+                <p className={styles.priceNote}>
+                  * Указанная цена является ориентировочной. Окончательная
+                  стоимость будет рассчитана нашим менеджером.
+                </p>
                 <div className={styles.actions}>
                   <Button
-                    type="delete"
-                    icon={<FaTrash />}
+                    variant="danger"
+                    startIcon={<FaTrash />}
                     onClick={() => setIsDeleteModalOpen(true)}
                     className={styles.clearButton}
                     title="Очистить корзину"
@@ -92,12 +125,13 @@ const Cart: React.FC = () => {
                     Очистить корзину
                   </Button>
                   <Button
-                    type="primary"
-                    icon={<FaShoppingBag />}
-                    className={styles.checkoutButton}
-                    title="Оформить заказ"
+                    variant="primary"
+                    startIcon={<FaTelegram />}
+                    className={styles.contactButton}
+                    title="Связаться с менеджером"
+                    onClick={handleContactManager}
                   >
-                    Оформить заказ
+                    Связаться с менеджером
                   </Button>
                 </div>
               </div>
@@ -106,6 +140,7 @@ const Cart: React.FC = () => {
         </div>
       </div>
 
+      {/* Модальное окно для очистки всей корзины */}
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
@@ -116,6 +151,18 @@ const Cart: React.FC = () => {
       >
         <p>Вы действительно хотите очистить корзину?</p>
         <p>Это действие нельзя будет отменить.</p>
+      </Modal>
+
+      {/* Модальное окно для удаления отдельного товара */}
+      <Modal
+        isOpen={isItemDeleteModalOpen}
+        onClose={() => setIsItemDeleteModalOpen(false)}
+        title="Удаление товара"
+        type="delete"
+        onConfirm={handleRemoveItem}
+        confirmText="Удалить"
+      >
+        <p>Вы действительно хотите удалить этот товар из корзины?</p>
       </Modal>
     </div>
   );

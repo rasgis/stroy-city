@@ -7,10 +7,7 @@ import User from "./models/userModel.js";
 import Category from "./models/categoryModel.js";
 import Product from "./models/productModel.js";
 
-// Инициализация переменных окружения
 dotenv.config();
-
-// Подключение к базе данных
 connectDB();
 
 const __filename = fileURLToPath(import.meta.url);

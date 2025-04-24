@@ -1,54 +1,281 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  background-color: #f5f5f5;
-  overflow-x: hidden;
-  width: 100%;
-  position: relative;
+@import "./theme.css";
+
+html {
+  scroll-behavior: smooth;
 }
 
-#root {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Roboto", "Arial", sans-serif;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  overflow-x: hidden;
+}
+
+/* Специальные классы для принудительного применения темы */
+body.theme-dark {
+  --background-primary: #1a1a1f;
+  --background-primary-rgb: 26, 26, 31;
+  --catalog-title-bg: #1d1e24;
+  --catalog-title-color: #d4ffea;
+  --catalog-card-bg: #1d1e24;
+  --catalog-card-border: rgba(39, 184, 140, 0.7);
+  --catalog-card-border-hover: rgba(31, 238, 176, 0.7);
+  --catalog-card-shadow: rgba(59, 134, 127, 0.2);
+  --catalog-card-shadow-hover: rgba(11, 224, 184, 0.5);
+  --catalog-card-text: #d4ffea;
+  --catalog-grid-bg: #1d1e24;
+  --catalog-grid-shadow: rgba(11, 224, 184, 0.2);
+}
+
+body.theme-light {
+  --background-primary: #f5f2eb;
+  --background-primary-rgb: 245, 242, 235;
+  --catalog-title-bg: #ffffff;
+  --catalog-title-color: #2c3e50;
+  --catalog-card-bg: #ffffff;
+  --catalog-card-border: rgba(63, 81, 181, 0.4);
+  --catalog-card-border-hover: rgba(63, 81, 181, 0.9);
+  --catalog-card-shadow: rgba(63, 81, 181, 0.15);
+  --catalog-card-shadow-hover: rgba(63, 81, 181, 0.4);
+  --catalog-card-text: #2c3e50;
+  --catalog-grid-bg: #f8f7f2;
+  --catalog-grid-shadow: rgba(63, 81, 181, 0.15);
+}
+
+/* Принудительные стили для категорий в обеих темах */
+body.theme-light [class*="categoryCard"] [class*="cardTitle"] {
+  color: #2c3e50 !important;
+  background-color: white !important;
+  font-weight: 600 !important;
+  visibility: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.theme-dark [class*="categoryCard"] [class*="cardTitle"] {
+  color: #d4ffea !important;
+  background-color: #1d1e24 !important;
+  font-weight: 600 !important;
+  visibility: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  line-height: 1.2;
 }
 
 main {
   flex: 1;
-  padding-top: 72px; /* Высота хедера */
-  box-sizing: border-box;
-  width: 100%;
-  position: relative;
-  z-index: 1;
-  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.pageContainer {
+.container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
-  min-height: calc(100vh - 72px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  box-sizing: border-box;
-  width: 100%;
-  overflow-x: hidden;
+  padding: 0 1rem;
 }
 
-.pageContent {
-  width: 100%;
+.pageTitle {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* Глобальные стили для формы */
+.form {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 550px;
+  padding: 1.5rem;
+}
+
+.formGroup {
   position: relative;
-  z-index: 1;
-  margin-top: 0;
-  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formLabel {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.formInput,
+.formTextarea,
+.formSelect {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  background-color: var(--input-background);
+  color: var(--input-text);
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.formInput:focus,
+.formTextarea:focus,
+.formSelect:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.2);
+}
+
+.formInput::placeholder,
+.formTextarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+.formOption {
+  background-color: var(--input-background);
+  color: var(--input-text);
+}
+
+.formError {
+  color: var(--error);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.formButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  background-color: var(--button-background);
+  color: var(--button-text);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  margin-top: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.formButton:hover:not(:disabled) {
+  background-color: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(var(--accent-primary-rgb), 0.4);
+}
+
+.formButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.formButton:disabled {
+  background-color: var(--button-disabled-background);
+  color: var(--button-disabled-text);
+  cursor: not-allowed;
+}
+
+/* Общие стили для секций */
+.section {
+  padding: 4rem 2rem;
+}
+
+.sectionTitle {
+  font-size: 2.25rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.sectionSubtitle {
+  font-size: 1.25rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.flexRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Медиа-запросы */
+@media (max-width: 768px) {
+  .section {
+    padding: 3rem 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.8rem;
+  }
+
+  .sectionSubtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: 2rem 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+
+  .form {
+    padding: 1rem;
+  }
 }

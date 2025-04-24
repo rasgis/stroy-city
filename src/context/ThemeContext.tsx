@@ -66,13 +66,40 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     // Применяем тему к документу и сохраняем в localStorage
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
+
+    // Принудительное применение темы: добавляем класс на верхний уровень
+    document.body.classList.remove("theme-light", "theme-dark");
+    document.body.classList.add(`theme-${theme}`);
+
+    // Обновляем мета-тег
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute(
+        "content",
+        theme === "dark" ? "#1a1a1f" : "#f5f2eb"
+      );
+    } else {
+      const meta = document.createElement("meta");
+      meta.name = "theme-color";
+      meta.content = theme === "dark" ? "#1a1a1f" : "#f5f2eb";
+      document.head.appendChild(meta);
+    }
   }, [theme]);
 
   /**
    * Переключает тему между светлой и темной
    */
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    setTheme((prevTheme) => {
+      const newTheme = prevTheme === "light" ? "dark" : "light";
+
+      // Принудительно устанавливаем атрибут для ускорения отклика
+      document.documentElement.setAttribute("data-theme", newTheme);
+      document.body.classList.remove("theme-light", "theme-dark");
+      document.body.classList.add(`theme-${newTheme}`);
+
+      return newTheme;
+    });
   };
 
   return (

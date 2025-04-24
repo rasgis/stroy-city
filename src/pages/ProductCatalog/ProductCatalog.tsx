@@ -26,20 +26,8 @@ const ProductCatalog: React.FC = () => {
 
   if (categoriesLoading) {
     return (
-      <div className={styles.container}>
-        <Breadcrumbs
-          items={[
-            {
-              _id: "catalog",
-              name: "Каталог товаров",
-              url: ROUTES.CATALOG,
-            },
-          ]}
-        />
-        <h1 className={styles.title}>Каталог товаров</h1>
-        <div className={styles.loading}>
-          <Loader message="Загрузка категорий..." />
-        </div>
+      <div className={styles.loaderContainer}>
+        <Loader message="Загрузка категорий..." />
       </div>
     );
   }

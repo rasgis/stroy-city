@@ -864,3 +864,54 @@
 .filterButton {
   margin-right: 10px;
 }
+
+/* Стили для адаптивной таблицы */
+.tableResponsive {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  /* Существующие стили для мобильных устройств */
+  .adminContainer {
+    padding: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .header h2 {
+    font-size: 1.8rem;
+  }
+
+  .tableContainer {
+    padding: 0.5rem;
+  }
+
+  .table {
+    min-width: 650px; /* Минимальная ширина таблицы чтобы обеспечить прокрутку */
+    font-size: 0.9rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .actions {
+    flex-direction: row;
+    gap: 0.25rem;
+  }
+
+  .tableResponsive {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--background-card);
+    padding: 0.5rem;
+  }
+}

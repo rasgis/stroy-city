@@ -380,54 +380,56 @@
 
 @media (max-width: 480px) {
   .logo {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
   }
 
   .logoText {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   .navLink,
   .adminLink,
-  .cartLink,
-  .authLink {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.85rem;
+  .cartLink {
+    padding: 6px 8px;
+    font-size: 0.9rem;
   }
 
   .navIcon,
   .adminIcon,
-  .cartIcon,
-  .userIcon {
+  .cartIcon {
     font-size: 16px;
   }
 
   .leftSection {
-    position: relative;
-    padding-right: 40px;
+    gap: 0.3rem;
   }
 
   .mobileActions {
-    gap: 0.25rem;
+    gap: 0.3rem;
   }
 
   .auth {
-    display: flex;
-    flex-wrap: nowrap;
+    font-size: 0.9rem;
   }
 
   .userInfo {
-    padding: 4px 6px;
-    gap: 0.2rem;
+    gap: 0.3rem;
   }
 
   .logoutButton {
-    padding: 4px 6px;
+    padding: 6px 8px;
   }
 
   .userName {
-    max-width: 60px;
+    display: none;
+  }
+}
+
+/* Скрывать название магазина при ширине экрана менее 430px */
+@media (max-width: 429px) {
+  .logoText {
+    display: none;
   }
 }
 
@@ -473,4 +475,19 @@
   background-color: var(--accent-focus);
   transform: translateX(-3px);
   color: var(--accent-hover);
+}
+
+/* Добавляем медиа-запрос для скрытия имени пользователя при ширине экрана менее 550px */
+@media (max-width: 550px) {
+  .userName {
+    display: none;
+  }
+
+  .userLink {
+    gap: 0;
+  }
+
+  .userInfo {
+    padding: 8px;
+  }
 }

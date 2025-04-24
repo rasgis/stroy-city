@@ -197,13 +197,13 @@
 
   /* Каталог */
   --catalog-title-bg: #ffffff;
-  --catalog-title-color: #1a237e;
+  --catalog-title-color: #2c3e50;
   --catalog-card-bg: #ffffff;
   --catalog-card-border: rgba(63, 81, 181, 0.4);
   --catalog-card-border-hover: rgba(63, 81, 181, 0.9);
   --catalog-card-shadow: rgba(63, 81, 181, 0.15);
   --catalog-card-shadow-hover: rgba(63, 81, 181, 0.4);
-  --catalog-card-text: #1a237e;
+  --catalog-card-text: #2c3e50;
   --catalog-grid-bg: #f8f7f2;
   --catalog-grid-shadow: rgba(63, 81, 181, 0.15);
   --catalog-error-color: #f44336;
@@ -211,14 +211,14 @@
   /* Хлебные крошки */
   --breadcrumb-bg: linear-gradient(
     135deg,
-    rgba(63, 81, 181, 0.07) 0%,
-    rgba(92, 107, 192, 0.1) 100%
+    rgba(255, 255, 255, 0.7),
+    rgba(240, 236, 228, 0.7)
   );
   --breadcrumb-border: rgba(63, 81, 181, 0.2);
-  --breadcrumb-shadow: rgba(63, 81, 181, 0.05);
-  --breadcrumb-link: #5c6bc0;
+  --breadcrumb-shadow: rgba(63, 81, 181, 0.1);
+  --breadcrumb-link: rgba(63, 81, 181, 0.8);
   --breadcrumb-link-hover: #3f51b5;
-  --breadcrumb-active: #1a237e;
+  --breadcrumb-active: #2c3e50;
   --breadcrumb-separator: rgba(63, 81, 181, 0.4);
 
   /* Transition */

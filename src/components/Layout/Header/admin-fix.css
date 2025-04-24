@@ -1,0 +1,9 @@
+/* Фикс для админ-меню в мобильной версии */
+.admin-nav-fix {
+  position: relative;
+  z-index: 1000 !important;
+}
+.admin-link-fix {
+  position: relative;
+  z-index: 1001 !important;
+}

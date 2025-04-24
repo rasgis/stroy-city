@@ -14,8 +14,6 @@ const generateToken = (id) => {
     },
   };
 
-  console.log(`[Token Service] Генерация токена для пользователя: ${id}`);
-
   // Создаем и возвращаем JWT токен
   return jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: "7d", // Токен действителен 7 дней

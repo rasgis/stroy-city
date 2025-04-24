@@ -27,7 +27,6 @@ const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({
           console.warn("Проверка безопасности не пройдена:", message);
           // Если проверка не пройдена и есть пользователь, выполняем выход
           if (localStorage.getItem("token")) {
-            console.log("Данные повреждены, выполняем выход из системы");
             authService.clearAuthData();
           }
         } else if (user) {
@@ -60,7 +59,6 @@ const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({
     // Добавляем обработчик для проверки при возвращении на вкладку
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        console.log("Вкладка активирована, проверяем безопасность...");
         performSecurityCheck();
       }
     };
@@ -73,7 +71,6 @@ const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({
         event.key &&
         ["token", "user", "role", "SAVED_USER_PROFILE"].includes(event.key)
       ) {
-        console.log(`Обнаружены изменения в localStorage: ${event.key}`);
         performSecurityCheck();
       }
     };

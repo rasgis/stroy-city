@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import {
-  Container,
-  Typography,
-  Box,
-} from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { fetchCategories, selectFilteredCategories } from "../../reducers/categories";
+import {
+  fetchCategories,
+  selectFilteredCategories,
+} from "../../reducers/categories";
 import { fetchProducts, selectFilteredProducts } from "../../reducers/products";
-import { Loader, ProductCard, SearchBar, Breadcrumbs, CategoryGrid } from "../../components";
+import {
+  Loader,
+  ProductCard,
+  SearchBar,
+  Breadcrumbs,
+  CategoryGrid,
+} from "../../components";
 import { ROUTES } from "../../constants/routes";
 import { Category, Product } from "../../types";
 import { categoryService } from "../../services/categoryService";
@@ -20,16 +25,18 @@ const CategoryPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   // Используем мемоизированные селекторы вместо прямого доступа к state
   const categories = useAppSelector(selectFilteredCategories);
-  const categoriesLoading = useAppSelector((state) => state.categoriesList.loading);
+  const categoriesLoading = useAppSelector(
+    (state) => state.categoriesList.loading
+  );
   const categoriesError = useAppSelector((state) => state.categoriesList.error);
-  
+
   const products = useAppSelector(selectFilteredProducts);
   const productsLoading = useAppSelector((state) => state.productsList.loading);
   const productsError = useAppSelector((state) => state.productsList.error);
-  
+
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
@@ -42,16 +49,18 @@ const CategoryPage: React.FC = () => {
 
   if (categoriesLoading || productsLoading) {
     return (
-      <Container className={styles.container}>
+      <div className={styles.loaderContainer}>
         <Loader message="Загрузка категории и товаров..." />
-      </Container>
+      </div>
     );
   }
 
   if (categoriesError || productsError) {
     return (
       <Container className={styles.container}>
-        <Typography color="error">{categoriesError || productsError}</Typography>
+        <Typography color="error">
+          {categoriesError || productsError}
+        </Typography>
       </Container>
     );
   }
@@ -113,18 +122,18 @@ const CategoryPage: React.FC = () => {
   return (
     <Container className={styles.container}>
       <Box className={styles.content}>
-        <Breadcrumbs 
+        <Breadcrumbs
           items={[
             {
               _id: "catalog",
               name: "Каталог",
-              url: ROUTES.CATALOG
+              url: ROUTES.CATALOG,
             },
-            ...categoryPath.map(category => ({
+            ...categoryPath.map((category) => ({
               _id: category._id,
               name: category.name,
-              url: ROUTES.CATEGORY.replace(":categoryId", category._id)
-            }))
+              url: ROUTES.CATEGORY.replace(":categoryId", category._id),
+            })),
           ]}
           className={styles.breadcrumbs}
         />
@@ -188,10 +197,8 @@ const CategoryPage: React.FC = () => {
 
         {categoryProducts.length === 0 && (
           <div className={styles.emptyMessage}>
-            <BsExclamationCircle size={32} style={{ marginBottom: '1rem' }} />
-            <Typography>
-              В данной категории пока нет товаров
-            </Typography>
+            <BsExclamationCircle size={32} style={{ marginBottom: "1rem" }} />
+            <Typography>В данной категории пока нет товаров</Typography>
             <Link to={ROUTES.CATALOG} className={styles.returnLink}>
               Вернуться в каталог
             </Link>

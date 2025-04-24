@@ -4,7 +4,7 @@
   overflow: hidden;
   transition: all 0.3s ease;
   background: var(--background-card);
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid var(--border-color);
   box-shadow: var(--card-shadow);
   height: 100%;
@@ -39,14 +39,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   border-bottom: 1px solid var(--border-color);
   min-height: 60px;
 }
 
 .cardTitle {
   color: var(--text-primary);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
   display: -webkit-box;
@@ -66,7 +66,7 @@
 /* Содержимое карточки */
 .cardContent {
   flex-grow: 1;
-  padding: 1.5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
 }
@@ -77,16 +77,17 @@
   justify-content: flex-end;
   align-items: center;
   gap: 0.5rem;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   border-top: 1px solid var(--border-color);
   margin-top: auto;
+  background: rgba(0, 0, 0, 0.03);
 }
 
 /* Изображение */
 .imageContainer {
   position: relative;
   width: 100%;
-  padding-top: 70%;
+  padding-top: 60%;
   overflow: hidden;
   background-color: var(--background-tertiary);
 }
@@ -102,7 +103,8 @@
   will-change: transform;
 }
 
-.card:hover .image {
+.cardLink:hover .image,
+.clickable:hover .image {
   transform: scale(1.05);
 }
 
@@ -214,10 +216,31 @@
   font-size: 1rem;
   background: var(--catalog-card-bg);
   border-top: 1px solid var(--catalog-card-border);
+  color: var(--catalog-card-text) !important;
+  font-weight: 600;
 }
 
 .categoryCard:hover .cardTitle {
-  color: var(--accent-primary);
+  color: var(--accent-primary) !important;
+}
+
+/* Специальные стили для светлой темы */
+[data-theme="light"] .categoryCard .cardTitle {
+  color: #2c3e50 !important;
+  font-weight: 600;
+  background-color: white !important;
+  border-top: 1px solid rgba(63, 81, 181, 0.4);
+  text-shadow: 0 1px 0 #fff;
+}
+
+body.theme-light .categoryCard .cardTitle {
+  color: #2c3e50 !important;
+  background-color: white !important;
+}
+
+[data-theme="light"] .productCard .cardTitle {
+  color: var(--catalog-card-text);
+  font-weight: 600;
 }
 
 /* Специфические стили для CartCard */
@@ -291,10 +314,6 @@
 
 .cartCard:hover .cardTitle {
   color: var(--accent-primary);
-}
-
-.cartCard .cardFooter {
-  margin-top: auto;
 }
 
 /* Специфические стили для AdminCard */

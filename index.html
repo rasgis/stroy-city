@@ -20,15 +20,86 @@
     <meta name="geo.position" content="43.04032506796697;44.69781736097994" />
     <meta name="geo.placename" content="Владикавказ" />
     <meta name="geo.region" content="Республика Северная Осетия-Алания" />
+
+    <!-- Предзагрузка фоновых изображений для секции features -->
+    <link rel="preload" href="/background/1.png" as="image" />
+    <link rel="preload" href="/background/2.png" as="image" />
+    <link rel="preload" href="/background/3.png" as="image" />
+
+    <!-- Встроенные стили для исправления видимости текста категорий -->
+    <style>
+      /* Исправление проблемы с текстом категорий в светлой теме */
+      [data-theme="light"] [class*="categoryCard"] [class*="cardTitle"] {
+        color: #2c3e50 !important;
+        background-color: white !important;
+        font-weight: 600 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      [data-theme="dark"] [class*="categoryCard"] [class*="cardTitle"] {
+        color: #d4ffea !important;
+        background-color: #1d1e24 !important;
+        font-weight: 600 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      /* Для фиксированных className */
+      [data-theme="light"] .categoryCard .cardTitle {
+        color: #2c3e50 !important;
+        background-color: white !important;
+        font-weight: 600 !important;
+      }
+
+      [data-theme="dark"] .categoryCard .cardTitle {
+        color: #d4ffea !important;
+        background-color: #1d1e24 !important;
+        font-weight: 600 !important;
+      }
+    </style>
+
     <script>
       // Применяем тему из локального хранилища при загрузке страницы
       document.addEventListener("DOMContentLoaded", function () {
         const savedTheme = localStorage.getItem("theme");
         if (savedTheme === "light") {
           document.documentElement.setAttribute("data-theme", "light");
+          document.body.classList.add("theme-light");
+          document.body.classList.remove("theme-dark");
         } else {
           document.documentElement.setAttribute("data-theme", "dark");
+          document.body.classList.add("theme-dark");
+          document.body.classList.remove("theme-light");
         }
+
+        // Принудительное применение стилей через некоторое время после загрузки
+        setTimeout(function () {
+          const currentTheme =
+            document.documentElement.getAttribute("data-theme");
+
+          // Применяем стили для карточек категорий
+          const categoryTitles = document.querySelectorAll(
+            '[class*="categoryCard"] [class*="cardTitle"]'
+          );
+          categoryTitles.forEach((title) => {
+            if (currentTheme === "light") {
+              title.style.color = "#2c3e50";
+              title.style.backgroundColor = "white";
+              title.style.fontWeight = "600";
+            } else {
+              title.style.color = "#d4ffea";
+              title.style.backgroundColor = "#1d1e24";
+              title.style.fontWeight = "600";
+            }
+          });
+        }, 500);
       });
     </script>
   </head>

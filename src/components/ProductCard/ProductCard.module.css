@@ -14,6 +14,11 @@
   height: 2.4em; /* Фиксированная высота для описания */
 }
 
+[data-theme="light"] .description {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
 .category {
   color: var(--text-secondary);
   font-size: 0.8rem;
@@ -28,6 +33,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+[data-theme="light"] .category {
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .category:hover {

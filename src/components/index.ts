@@ -1,4 +1,3 @@
-export * from "./AnimationText/AnimationText";
 export * from "./Breadcrumbs/Breadcrumbs";
 export * from "./Button/Button";
 export * from "./CartItem/CartItem";

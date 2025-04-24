@@ -21,7 +21,22 @@ const ThemeToggle: React.FC = () => {
    */
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
     toggleTheme();
+
+    // Проверяем принудительно применение темы
+    setTimeout(() => {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+
+      // Если атрибут не изменился, устанавливаем принудительно
+      if (currentTheme !== (theme === "light" ? "dark" : "light")) {
+        console.warn("ThemeToggle: Theme attribute mismatch, forcing update");
+        document.documentElement.setAttribute(
+          "data-theme",
+          theme === "light" ? "dark" : "light"
+        );
+      }
+    }, 100);
 
     // Убираем фокус с кнопки после клика
     if (buttonRef.current) {

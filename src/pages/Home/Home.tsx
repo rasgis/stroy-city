@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { WeatherWidget, Slider, AnimationText } from "../../components";
+import { WeatherWidget, Slider } from "../../components";
 import { sliderData } from "./data/sliderData";
 import {
   LocalOffer,
@@ -26,16 +26,90 @@ const Home: React.FC = () => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
+  const [activeFeature, setActiveFeature] = useState<number | null>(null);
+  const [lastActiveFeature, setLastActiveFeature] = useState<number | null>(
+    null
+  );
+  const featuresRef = useRef<HTMLElement | null>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const [particlesCreated, setParticlesCreated] = useState(false);
 
   const handlePartnerClick = (url: string) => {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  const handleFeatureMouseEnter = (index: number) => {
+    setActiveFeature(index);
+    setLastActiveFeature(index);
+  };
+
+  const handleFeatureMouseLeave = () => {
+    setActiveFeature(null);
+  };
+
+  // Функция для создания анимированных частиц в hero секции
+  useEffect(() => {
+    if (heroRef.current && !particlesCreated) {
+      const createParticles = () => {
+        const hero = heroRef.current;
+        if (!hero) return;
+
+        // Очищаем предыдущие частицы
+        const existingParticles = hero.querySelectorAll(".particle");
+        existingParticles.forEach((particle) => particle.remove());
+
+        // Количество частиц зависит от ширины экрана
+        const isMobile = window.innerWidth <= 768;
+        const particleCount = isMobile ? 10 : 20;
+
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement("div");
+          particle.classList.add("particle");
+
+          // Случайные стили и размеры
+          const size = Math.random() * 8 + 2; // 2-10px
+          const left = Math.random() * 100; // 0-100%
+          const delay = Math.random() * 20; // 0-20s
+          const duration = Math.random() * 10 + 10; // 10-20s
+
+          // Настраиваем стили
+          particle.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            background: rgba(var(--accent-primary-rgb), ${
+              Math.random() * 0.2 + 0.1
+            });
+            border-radius: 50%;
+            left: ${left}%;
+            bottom: 0;
+            opacity: 0;
+            z-index: 0;
+            animation: floatParticle ${duration}s ease-in-out ${delay}s infinite;
+          `;
+
+          hero.appendChild(particle);
+        }
+      };
+
+      createParticles();
+      setParticlesCreated(true);
+
+      // Пересоздаем частицы при изменении размера окна
+      const handleResize = () => {
+        createParticles();
+      };
+
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, [particlesCreated]);
+
   return (
     <div className={styles.container}>
       <WeatherWidget />
       <Slider slides={sliderData} autoPlayInterval={5000} />
-      <section className={styles.hero}>
+      <section className={styles.hero} ref={heroRef}>
         <div className={styles.logoContainer}>
           <img
             src="/logo-stroy.png"
@@ -43,7 +117,7 @@ const Home: React.FC = () => {
             className={styles.logo}
           />
         </div>
-        <AnimationText />
+        <h1 className={styles.welcomeTitle}>Добро пожаловать в Stroy City!</h1>
         <p className={styles.subtitle}>
           Лучшие строительные и кровельные материалы по доступным ценам
         </p>
@@ -83,16 +157,37 @@ const Home: React.FC = () => {
         </section>
       )}
 
-      <section className={styles.features}>
-        <div className={styles.feature}>
+      <section
+        className={`${styles.features} ${
+          activeFeature !== null
+            ? styles[`featuresBg${activeFeature + 1}`]
+            : lastActiveFeature !== null
+            ? styles[`featuresBg${lastActiveFeature + 1}`]
+            : ""
+        }`}
+        ref={featuresRef}
+      >
+        <div
+          className={styles.feature}
+          onMouseEnter={() => handleFeatureMouseEnter(0)}
+          onMouseLeave={handleFeatureMouseLeave}
+        >
           <h3>Широкий выбор</h3>
           <p>Большой ассортимент строительных материалов различных категорий</p>
         </div>
-        <div className={styles.feature}>
+        <div
+          className={styles.feature}
+          onMouseEnter={() => handleFeatureMouseEnter(1)}
+          onMouseLeave={handleFeatureMouseLeave}
+        >
           <h3>Быстрая доставка</h3>
           <p>Доставка по всей республике в кратчайшие сроки</p>
         </div>
-        <div className={styles.feature}>
+        <div
+          className={styles.feature}
+          onMouseEnter={() => handleFeatureMouseEnter(2)}
+          onMouseLeave={handleFeatureMouseLeave}
+        >
           <h3>Гарантия качества</h3>
           <p>Все товары проходят строгий контроль качества</p>
         </div>

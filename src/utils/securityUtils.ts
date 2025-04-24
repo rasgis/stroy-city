@@ -125,7 +125,6 @@ export const clearAllAuthData = (): void => {
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(ROLE_KEY);
     localStorage.removeItem(SAVED_PROFILE_KEY);
-    console.log("Все данные аутентификации успешно очищены");
   } catch (error) {
     console.error("Ошибка при очистке данных аутентификации:", error);
   }

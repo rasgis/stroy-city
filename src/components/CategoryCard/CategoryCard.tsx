@@ -3,6 +3,7 @@ import { ROUTES } from "../../constants/routes";
 import { Category } from "../../types";
 import { scrollToTop } from "../../utils/scroll";
 import { BaseCard } from "../BaseCard";
+import "./fixCategory.css";
 
 interface CategoryCardProps {
   category: Category;
@@ -24,7 +25,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = React.memo(
     return (
       <BaseCard
         variant="category"
-        title={category.name}
+        title={<div className="category-title-fix">{category.name}</div>}
         image={category.image || "/placeholder.jpg"}
         imageAlt={category.name}
         fallbackImage="/placeholder.jpg"

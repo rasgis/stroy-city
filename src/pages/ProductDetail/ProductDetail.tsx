@@ -63,7 +63,7 @@ const ProductDetail: React.FC = () => {
 
   if (productLoading || categoriesLoading) {
     return (
-      <div className={styles.container}>
+      <div className={styles.loaderContainer}>
         <Loader message="Загрузка информации о продукте..." />
       </div>
     );

@@ -15,9 +15,6 @@ const protect = asyncHandler(async (req, res, next) => {
     !req.headers.authorization ||
     !req.headers.authorization.startsWith("Bearer ")
   ) {
-    console.log(
-      "[Auth Middleware] Ошибка: Заголовок авторизации отсутствует или имеет неверный формат"
-    );
     res.status(401);
     throw new Error("Требуется авторизация");
   }
@@ -25,7 +22,6 @@ const protect = asyncHandler(async (req, res, next) => {
   // Извлечение токена
   const token = req.headers.authorization.split(" ")[1];
   if (!token) {
-    console.log("[Auth Middleware] Ошибка: Токен отсутствует");
     res.status(401);
     throw new Error("Токен не предоставлен");
   }
@@ -33,7 +29,6 @@ const protect = asyncHandler(async (req, res, next) => {
   try {
     // Верификация токена
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("[Auth Middleware] Токен верифицирован");
 
     // Определение ID пользователя из токена
     let userId;
@@ -42,9 +37,6 @@ const protect = asyncHandler(async (req, res, next) => {
     } else if (decoded.id) {
       userId = decoded.id;
     } else {
-      console.log(
-        "[Auth Middleware] Ошибка: Невозможно извлечь ID пользователя из токена"
-      );
       res.status(401);
       throw new Error("Недействительный токен");
     }
@@ -52,9 +44,6 @@ const protect = asyncHandler(async (req, res, next) => {
     // Поиск пользователя в базе данных
     const user = await User.findById(userId).select("-password");
     if (!user) {
-      console.log(
-        "[Auth Middleware] Ошибка: Пользователь не найден в базе данных"
-      );
       res.status(401);
       throw new Error("Пользователь не найден");
     }
@@ -65,7 +54,6 @@ const protect = asyncHandler(async (req, res, next) => {
         "[Auth Middleware] ВНИМАНИЕ: Обнаружена недопустимая роль пользователя:",
         user.role
       );
-      console.log("[Auth Middleware] Принудительно устанавливаем роль 'user'");
 
       // В случае обнаружения недопустимой роли, устанавливаем роль по умолчанию
       user.role = "user";
@@ -76,13 +64,9 @@ const protect = asyncHandler(async (req, res, next) => {
 
     // Установка пользователя в объект запроса
     req.user = user;
-    console.log(
-      `[Auth Middleware] Пользователь ${user._id} с ролью ${user.role} аутентифицирован`
-    );
 
     next();
   } catch (error) {
-    console.log("[Auth Middleware] Ошибка верификации токена:", error.message);
     res.status(401);
     throw new Error("Недействительный токен");
   }
@@ -97,7 +81,6 @@ const protect = asyncHandler(async (req, res, next) => {
  */
 const admin = asyncHandler(async (req, res, next) => {
   if (!req.user) {
-    console.log("[Auth Middleware] Ошибка: Пользователь не аутентифицирован");
     res.status(401);
     throw new Error("Требуется авторизация");
   }
@@ -105,9 +88,6 @@ const admin = asyncHandler(async (req, res, next) => {
   // Дополнительная проверка роли из базы данных для предотвращения подделки
   const freshUserData = await User.findById(req.user._id).select("role");
   if (!freshUserData) {
-    console.log(
-      "[Auth Middleware] Ошибка: Пользователь не найден при проверке прав админа"
-    );
     res.status(401);
     throw new Error("Пользователь не найден");
   }
@@ -128,9 +108,6 @@ const admin = asyncHandler(async (req, res, next) => {
     throw new Error("Доступ запрещен. Требуются права администратора");
   }
 
-  console.log(
-    `[Auth Middleware] Доступ разрешен. Пользователь ${req.user._id} имеет права администратора`
-  );
   next();
 });
 

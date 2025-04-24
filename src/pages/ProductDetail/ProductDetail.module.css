@@ -12,6 +12,14 @@
   background-color: var(--background-primary);
 }
 
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
 .product {
   display: flex;
   flex-direction: column;
@@ -160,5 +168,91 @@
 
   .price {
     font-size: 1.5rem;
+  }
+}
+
+/* Добавляем медиа-запрос для узких мобильных экранов (менее 430px) */
+@media (max-width: 430px) {
+  .container {
+    padding: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .product {
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .breadcrumbs {
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .content {
+    padding: 0.75rem;
+    gap: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  .image {
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+    object-fit: contain;
+  }
+
+  .imageContainer {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .info {
+    width: 100%;
+    gap: 0.75rem;
+    padding: 0;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    word-break: break-word;
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+
+  .description {
+    font-size: 0.9rem;
+    word-break: break-word;
+    hyphens: auto;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+  }
+
+  .price {
+    font-size: 1.1rem;
+  }
+
+  .addToCartButton {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    width: 100%;
+  }
+
+  .snackbar {
+    width: 85%;
+    max-width: 280px;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+
+  .closeButton {
+    font-size: 1rem;
   }
 }

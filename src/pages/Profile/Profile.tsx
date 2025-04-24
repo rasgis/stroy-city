@@ -76,7 +76,6 @@ const Profile: React.FC = () => {
 
             // Используем резервные данные из authUser
             profileData = authUser;
-            console.log("Используем резервные данные из Redux");
           }
 
           // Приводим данные к формату User

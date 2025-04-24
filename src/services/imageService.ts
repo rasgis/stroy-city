@@ -1,6 +1,5 @@
-import axios from "axios";
 import { API_CONFIG } from "../config/api";
-import { authService } from "./authService";
+import { BaseService } from "./common/BaseService";
 
 // Тип для данных изображения
 export interface ImageInfo {
@@ -15,14 +14,8 @@ export interface ImageInfo {
 // Тип изображения для использования в интерфейсе
 export type ImageType = "product" | "category" | "other";
 
-class ImageService {
-  private getHeaders() {
-    const token = authService.getToken();
-    return {
-      ...API_CONFIG.HEADERS,
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    };
-  }
+class ImageService extends BaseService {
+  private readonly endpoint = "/api/images";
 
   /**
    * Получает список всех изображений с сервера
@@ -30,12 +23,11 @@ class ImageService {
    * @returns Массив информации об изображениях
    */
   async getImages(type?: ImageType): Promise<ImageInfo[]> {
+    const queryParams = type ? `?type=${type}` : "";
+    const url = `${this.endpoint}${queryParams}`;
+
     try {
-      const url = `${API_CONFIG.BASE_URL}/api/images${
-        type ? `?type=${type}` : ""
-      }`;
-      const response = await axios.get(url, { headers: this.getHeaders() });
-      return response.data;
+      return this.get<ImageInfo[]>(url);
     } catch (error) {
       console.error("Ошибка при получении списка изображений:", error);
       return [];
@@ -47,13 +39,7 @@ class ImageService {
    * @param imageId ID изображения для удаления
    */
   async deleteImage(imageId: string): Promise<void> {
-    try {
-      const url = `${API_CONFIG.BASE_URL}/api/images/${imageId}`;
-      await axios.delete(url, { headers: this.getHeaders() });
-    } catch (error) {
-      console.error("Ошибка при удалении изображения:", error);
-      throw new Error("Не удалось удалить изображение");
-    }
+    return this.delete<void>(`${this.endpoint}/${imageId}`);
   }
 
   /**

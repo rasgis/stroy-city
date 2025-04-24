@@ -56,9 +56,9 @@ const AllProducts: React.FC = () => {
 
   if (productsLoading) {
     return (
-      <Container className={styles.container}>
+      <div className={styles.loaderContainer}>
         <Loader message="Загрузка товаров..." />
-      </Container>
+      </div>
     );
   }
 

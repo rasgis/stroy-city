@@ -1,116 +1,51 @@
-import axios from "axios";
 import { Category, CategoryFormData } from "../types/category";
-import { authService } from "./authService";
-import { prepareDataForApi } from "../utils/apiUtils";
+import { BaseService } from "./common/BaseService";
+import { API_CONFIG } from "../config/api";
 
 export interface CategoryWithChildren extends Category {
   children?: CategoryWithChildren[];
 }
 
-const API_URL = "http://localhost:3001/api";
-
-class CategoryService {
-  private getAuthHeaders() {
-    const token = authService.getToken();
-    return token ? { Authorization: `Bearer ${token}` } : {};
-  }
+class CategoryService extends BaseService {
+  private readonly endpoint = API_CONFIG.ENDPOINTS.CATEGORIES.BASE;
 
   async getCategories(): Promise<Category[]> {
-    try {
-      const response = await axios.get(`${API_URL}/categories`, {
-        headers: this.getAuthHeaders(),
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      throw new Error("Ошибка при загрузке категорий");
-    }
+    return this.get<Category[]>(this.endpoint);
   }
 
   async getCategoryById(id: string): Promise<Category> {
-    const response = await axios.get(`${API_URL}/categories/${id}`, {
-      headers: this.getAuthHeaders(),
-    });
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch category");
-    }
-    return response.data;
+    return this.get<Category>(`${this.endpoint}/${id}`);
   }
 
   async createCategory(categoryData: CategoryFormData): Promise<Category> {
-    try {
-      // Подготавливаем данные с использованием общей утилиты
-      const data = prepareDataForApi({
-        name: categoryData.name,
-        description: categoryData.description,
-        parentId: categoryData.parentId,
-        isActive: categoryData.isActive,
-        image: categoryData.image,
-      });
+    const data = {
+      name: categoryData.name,
+      description: categoryData.description,
+      parentId: categoryData.parentId,
+      isActive: categoryData.isActive,
+      image: categoryData.image,
+    };
 
-      const response = await axios.post(`${API_URL}/categories`, data, {
-        headers: {
-          ...this.getAuthHeaders(),
-          "Content-Type": "application/json",
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      console.error("Error creating category:", error);
-      if (axios.isAxiosError(error) && error.response) {
-        console.error("Response data:", error.response.data);
-        console.error("Response status:", error.response.status);
-      }
-      throw error;
-    }
+    return this.post<Category>(this.endpoint, data);
   }
 
   async updateCategory(
     id: string,
     categoryData: CategoryFormData
   ): Promise<Category> {
-    try {
-      // Подготавливаем данные с использованием общей утилиты
-      const data = prepareDataForApi({
-        name: categoryData.name,
-        description: categoryData.description,
-        parentId: categoryData.parentId,
-        isActive: categoryData.isActive,
-        image: categoryData.image,
-      });
+    const data = {
+      name: categoryData.name,
+      description: categoryData.description,
+      parentId: categoryData.parentId,
+      isActive: categoryData.isActive,
+      image: categoryData.image,
+    };
 
-      const response = await axios.put(`${API_URL}/categories/${id}`, data, {
-        headers: {
-          ...this.getAuthHeaders(),
-          "Content-Type": "application/json",
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      console.error("Error updating category:", error);
-      if (axios.isAxiosError(error) && error.response) {
-        console.error("Response data:", error.response.data);
-        console.error("Response status:", error.response.status);
-      }
-      throw error;
-    }
+    return this.put<Category>(`${this.endpoint}/${id}`, data);
   }
 
   async deleteCategory(id: string): Promise<void> {
-    try {
-      await axios.delete(`${API_URL}/categories/${id}`, {
-        headers: this.getAuthHeaders(),
-      });
-    } catch (error) {
-      console.error("Error deleting category:", error);
-      if (axios.isAxiosError(error) && error.response) {
-        console.error("Response data:", error.response.data);
-        console.error("Response status:", error.response.status);
-      }
-      throw error;
-    }
+    return this.delete<void>(`${this.endpoint}/${id}`);
   }
 
   buildCategoryTree(categories: Category[]): Category[] {

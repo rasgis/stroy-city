@@ -112,6 +112,47 @@ export const BaseCard: React.FC<BaseCardProps> = ({
     }
   };
 
+  // Особая обработка заголовка для карточек категорий
+  const renderTitle = () => {
+    // Если это категория, обрабатываем особым образом
+    if (variant === "category") {
+      // Если заголовок уже ReactNode (div или другой элемент), используем его
+      if (typeof title !== "string") {
+        return title;
+      }
+      // Если заголовок - строка, обертываем его в div с принудительными стилями
+      return (
+        <div
+          className={styles.cardTitle}
+          style={{
+            color:
+              document.documentElement.getAttribute("data-theme") === "light"
+                ? "#2c3e50"
+                : "#d4ffea",
+            background:
+              document.documentElement.getAttribute("data-theme") === "light"
+                ? "white"
+                : "#1d1e24",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+          }}
+        >
+          {title}
+        </div>
+      );
+    }
+
+    // Для других типов карточек
+    return typeof title === "string" ? (
+      <h3 className={styles.cardTitle}>{title}</h3>
+    ) : (
+      title
+    );
+  };
+
   const renderCardContent = () => (
     <>
       {image && (
@@ -128,12 +169,7 @@ export const BaseCard: React.FC<BaseCardProps> = ({
 
       {(title || headerActions) && (
         <div className={styles.cardHeader}>
-          {title &&
-            (typeof title === "string" ? (
-              <h3 className={styles.cardTitle}>{title}</h3>
-            ) : (
-              title
-            ))}
+          {title && renderTitle()}
           {headerActions && (
             <div className={styles.headerActions}>{headerActions}</div>
           )}
