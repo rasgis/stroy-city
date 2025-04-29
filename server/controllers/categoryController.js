@@ -76,7 +76,7 @@ export const createCategory = asyncHandler(async (req, res) => {
     // Проверка существования родительской категории
     const parentIdObj =
       parentId && parentId !== ""
-        ? new mongoose.Types.ObjectId(parentId)
+        ? mongoose.Types.ObjectId.createFromHexString(parentId)
         : null;
 
     if (parentIdObj) {

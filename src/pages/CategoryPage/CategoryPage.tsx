@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Container, Typography, Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import {
@@ -27,6 +27,7 @@ const ITEMS_PER_PAGE = 20; // Количество товаров на стра�
 const CategoryPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -177,7 +178,17 @@ const CategoryPage: React.FC = () => {
               Подкатегории
             </Typography>
             <Box className={styles.categoriesContainer}>
-              <CategoryGrid categories={subcategories} showChildren={false} />
+              <CategoryGrid
+                categories={subcategories}
+                showChildren={false}
+                onCategoryClick={(category) => {
+                  // Перенаправление на страницу подкатегории при клике
+                  navigate(
+                    ROUTES.CATEGORY.replace(":categoryId", category._id)
+                  );
+                  scrollToTop(); // Прокручиваем страницу вверх при переходе
+                }}
+              />
             </Box>
           </Box>
         )}
