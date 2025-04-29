@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { User, LoginCredentials, RegisterCredentials } from "../types/auth";
+import { LoginCredentials, RegisterCredentials } from "../types/auth";
+import { User } from "../types/user";
 import { authService } from "../services/authService";
 import { loadCart, clearCart } from "./cartSlice";
 
@@ -50,11 +51,37 @@ export const register = createAsyncThunk(
       return user;
     } catch (error) {
       console.error("Ошибка в thunk register:", error);
-      // Проверяем, имеет ли ошибка сообщение и возвращаем его для более информативного вывода
+
+      // Улучшенная обработка ошибок
       if (error instanceof Error) {
-        return rejectWithValue(error.message);
+        const errorMessage = error.message;
+
+        // Улучшаем сообщения об ошибках для пользователя
+        if (errorMessage.includes("email уже существует")) {
+          return rejectWithValue(
+            "Пользователь с таким email уже зарегистрирован. Используйте другой email или войдите в систему."
+          );
+        }
+
+        if (errorMessage.includes("логином уже существует")) {
+          return rejectWithValue(
+            "Пользователь с таким логином уже зарегистрирован. Пожалуйста, выберите другой логин."
+          );
+        }
+
+        // Общие ошибки валидации
+        if (errorMessage.includes("заполните все поля")) {
+          return rejectWithValue(
+            "Пожалуйста, заполните все обязательные поля."
+          );
+        }
+
+        return rejectWithValue(errorMessage);
       }
-      return rejectWithValue("Ошибка при регистрации");
+
+      return rejectWithValue(
+        "Произошла ошибка при регистрации. Пожалуйста, попробуйте еще раз."
+      );
     }
   }
 );
@@ -78,28 +105,48 @@ const authSlice = createSlice({
     updateUserData: (state, action) => {
       // Если у нас уже есть пользователь, сохраняем его роль
       const currentUserRole = state.user?.role;
+      // Сохраняем текущее имя пользователя
+      const currentUserName = state.user?.name || "";
 
-      // Обновляем данные пользователя
-      state.user = action.payload;
+      // Обновляем данные пользователя, сохраняя текущую роль если она не указана
+      if (state.user && action.payload) {
+        // Проверяем, что в новых данных есть имя и оно не "Профиль"
+        const newName = action.payload.name;
+        const validName =
+          newName && newName !== "Профиль" ? newName : currentUserName;
 
-      // Проверка безопасности: если роль в новых данных отличается от текущей,
-      // и пользователь уже был авторизован, это может быть попытка повышения привилегий
-      if (
-        currentUserRole &&
-        state.user &&
-        state.isAuthenticated &&
-        state.user.role !== currentUserRole
-      ) {
-        console.error(
-          "КРИТИЧЕСКАЯ ОШИБКА БЕЗОПАСНОСТИ: Обнаружена попытка изменения роли пользователя",
-          {
-            previousRole: currentUserRole,
-            attemptedNewRole: state.user.role,
-          }
-        );
+        // Создаем новый объект с данными пользователя
+        state.user = {
+          ...action.payload,
+          // Гарантируем что имя пользователя не будет "Профиль"
+          name: validName,
+          // Если роль не указана в новых данных, сохраняем текущую
+          role: action.payload.role || currentUserRole,
+        };
 
-        // Восстанавливаем правильную роль
-        state.user.role = currentUserRole;
+        // Проверка безопасности: если роль в новых данных отличается от текущей,
+        // и пользователь уже был авторизован, это может быть попытка повышения привилегий
+        if (
+          currentUserRole &&
+          state.isAuthenticated &&
+          action.payload.role &&
+          action.payload.role !== currentUserRole &&
+          state.user
+        ) {
+          console.error(
+            "КРИТИЧЕСКАЯ ОШИБКА БЕЗОПАСНОСТИ: Обнаружена попытка изменения роли пользователя",
+            {
+              previousRole: currentUserRole,
+              attemptedNewRole: action.payload.role,
+            }
+          );
+
+          // Восстанавливаем правильную роль
+          state.user.role = currentUserRole;
+        }
+      } else {
+        // Если новых данных нет, просто сохраняем текущие
+        state.user = action.payload;
       }
     },
   },

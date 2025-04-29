@@ -41,6 +41,59 @@
   flex-direction: column;
 }
 
+.categoryWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease-in-out;
+  border-radius: 8px;
+}
+
+.expandButton {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: var(--accent-primary);
+  color: var(--text-light);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+  opacity: 0.8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.expandButton:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.subcategoriesContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--background-card);
+  border-radius: 8px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.subcategory {
+  transform: scale(0.95);
+}
+
 .emptyMessage {
   text-align: center;
   font-size: 1.2rem;
@@ -67,6 +120,10 @@
   .categoryGrid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .subcategoriesContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 600px) {
@@ -81,6 +138,18 @@
 
   .gridItem {
     padding: 0.25rem;
+  }
+
+  .subcategoriesContainer {
+    grid-template-columns: repeat(1, 1fr);
+    padding: 0.5rem;
+  }
+
+  .expandButton {
+    width: 25px;
+    height: 25px;
+    bottom: 8px;
+    right: 8px;
   }
 }
 

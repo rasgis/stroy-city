@@ -4,6 +4,7 @@ import {
   getUserById,
   updateUser,
   deleteUser,
+  registerUser,
 } from "../controllers/userController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 
@@ -22,6 +23,11 @@ router.use(logRequests);
 // @route   GET /api/users
 // @access  Private/Admin
 router.route("/").get(protect, admin, getUsers);
+
+// @desc    Создание нового пользователя (только для администраторов)
+// @route   POST /api/users
+// @access  Private/Admin
+router.route("/").post(protect, admin, registerUser);
 
 // @desc    Получение, обновление и удаление пользователя по ID
 // @route   GET /api/users/:id

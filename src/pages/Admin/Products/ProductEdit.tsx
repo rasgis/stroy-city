@@ -3,7 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../../constants/routes";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { productService } from "../../../services/productService";
-import { fetchCategories, selectFilteredCategories } from "../../../reducers/categories";
+import {
+  fetchCategories,
+  selectFilteredCategories,
+} from "../../../reducers/categories";
 import { Loader, WeatherWidget } from "../../../components";
 import ProductForm from "./ProductForm";
 import { Product, ProductFormData } from "../../../types/product";
@@ -13,13 +16,15 @@ const ProductEdit: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  
+
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const categories = useAppSelector(selectFilteredCategories);
-  const categoriesLoading = useAppSelector((state) => state.categoriesList.loading);
+  const categoriesLoading = useAppSelector(
+    (state) => state.categoriesList.loading
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,10 +83,13 @@ const ProductEdit: React.FC = () => {
     description: product.description,
     price: product.price,
     image: product.image || "",
-    category: typeof product.category === "object" ? product.category._id : product.category,
+    category:
+      typeof product.category === "object"
+        ? product.category._id
+        : product.category,
     unitOfMeasure: product.unitOfMeasure,
     stock: product.stock || 0,
-    isActive: product.isActive !== undefined ? product.isActive : true
+    isActive: product.isActive !== undefined ? product.isActive : true,
   };
 
   return (

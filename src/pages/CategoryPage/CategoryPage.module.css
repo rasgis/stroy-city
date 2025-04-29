@@ -179,7 +179,7 @@
 /* Медиа-запросы */
 @media (max-width: 768px) {
   .container {
-    padding: 72px 1rem 0;
+    padding: 80px 1rem 2rem;
   }
 
   .breadcrumbs {
@@ -200,19 +200,26 @@
   }
 
   .sectionTitle {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     margin-bottom: 1.5rem;
-    padding: 0.8rem;
   }
 
   .productGrid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1rem;
-    padding: 0.5rem;
   }
 
   .returnLink {
     padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
+  }
+
+  .description {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .descriptionText {
+    font-size: 1rem;
   }
 }

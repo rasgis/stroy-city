@@ -152,6 +152,16 @@
   font-weight: 500;
 }
 
+.inactiveLabel {
+  padding: 0.2rem 0.5rem;
+  background: rgba(255, 82, 82, 0.1);
+  color: var(--error);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-left: 1rem;
+  border: 1px solid rgba(255, 82, 82, 0.3);
+}
+
 .categoryImage {
   width: 60px;
   height: 60px;

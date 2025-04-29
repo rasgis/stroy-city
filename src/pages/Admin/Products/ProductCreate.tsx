@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../constants/routes";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { productService } from "../../../services/productService";
-import { fetchCategories, selectFilteredCategories } from "../../../reducers/categories";
+import {
+  fetchCategories,
+  selectFilteredCategories,
+} from "../../../reducers/categories";
 import { ProductFormData } from "../../../types/product";
 import { Loader, WeatherWidget } from "../../../components";
 import ProductForm from "./ProductForm";
@@ -13,7 +16,9 @@ const ProductCreate: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const categories = useAppSelector(selectFilteredCategories);
-  const categoriesLoading = useAppSelector((state) => state.categoriesList.loading);
+  const categoriesLoading = useAppSelector(
+    (state) => state.categoriesList.loading
+  );
 
   useEffect(() => {
     if (categories.length === 0 && !categoriesLoading) {
@@ -43,15 +48,15 @@ const ProductCreate: React.FC = () => {
     category: "",
     unitOfMeasure: "шт",
     stock: 0,
-    isActive: true
+    isActive: true,
   };
 
   return (
     <div className={styles.container}>
       <WeatherWidget />
       <h2 className={styles.title}>Создание нового товара</h2>
-      <ProductForm 
-        initialValues={emptyProduct} 
+      <ProductForm
+        initialValues={emptyProduct}
         onSubmit={handleSubmit}
         categories={categories}
       />

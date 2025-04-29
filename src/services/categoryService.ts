@@ -48,8 +48,25 @@ class CategoryService extends BaseService {
     return this.delete<void>(`${this.endpoint}/${id}`);
   }
 
+  async hideCategory(id: string): Promise<void> {
+    return this.put<void>(`${this.endpoint}/${id}/hide`, {});
+  }
+
+  async restoreCategory(id: string): Promise<Category> {
+    return this.put<Category>(`${this.endpoint}/${id}/restore`, {});
+  }
+
   buildCategoryTree(categories: Category[]): Category[] {
-    return categories.filter((category) => !category.parentId);
+    return categories.filter((category) => {
+      // Проверяем, что это корневая категория (без родителя)
+      const isRoot = !category.parentId || category.parentId === "";
+
+      // Проверяем активность категории
+      // Если isActive явно false, то фильтруем, иначе оставляем (undefined или true)
+      const isActive = category.isActive !== false;
+
+      return isRoot && isActive;
+    });
   }
 
   // Построить полное дерево категорий с вложенными подкатегориями
@@ -58,7 +75,24 @@ class CategoryService extends BaseService {
     parentId?: string
   ): CategoryWithChildren[] {
     return categories
-      .filter((category) => category.parentId === parentId)
+      .filter((category) => {
+        // Проверяем соответствие parentId
+        let parentMatch = false;
+
+        if (parentId) {
+          // Если есть parentId, ищем категории с таким родителем
+          parentMatch = category.parentId === parentId;
+        } else {
+          // Если parentId не указан, ищем корневые категории
+          parentMatch = !category.parentId || category.parentId === "";
+        }
+
+        // Проверяем активность категории
+        // Если isActive явно false, то фильтруем, иначе оставляем (undefined или true)
+        const activeMatch = category.isActive !== false;
+
+        return parentMatch && activeMatch;
+      })
       .map((category) => ({
         ...category,
         children: this.buildFullCategoryTree(categories, category._id),

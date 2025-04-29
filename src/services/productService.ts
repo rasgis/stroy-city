@@ -58,10 +58,7 @@ class ProductService extends BaseService {
   }
 
   async restoreProduct(id: string): Promise<Product> {
-    return this.put<Product>(
-      `${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(id)}/restore`,
-      {}
-    );
+    return this.put<Product>(`${this.endpoint}/restore/${id}`, {});
   }
 
   private convertFormDataToProduct(

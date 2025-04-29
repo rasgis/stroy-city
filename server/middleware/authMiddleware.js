@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
+import { requireAdmin } from "../utils/controllerUtils/index.js";
 
 /**
  * Middleware для проверки аутентификации пользователя
@@ -10,65 +11,40 @@ import User from "../models/userModel.js";
  * @access  Private
  */
 const protect = asyncHandler(async (req, res, next) => {
-  // Проверка наличия заголовка авторизации
+  let token;
+
   if (
-    !req.headers.authorization ||
-    !req.headers.authorization.startsWith("Bearer ")
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
   ) {
-    res.status(401);
-    throw new Error("Требуется авторизация");
+    try {
+      token = req.headers.authorization.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      // Получаем id пользователя из вложенного объекта user
+      const userId = decoded.user ? decoded.user.id : null;
+
+      if (!userId) {
+        throw new Error("Некорректная структура токена");
+      }
+
+      req.user = await User.findById(userId).select("-password");
+
+      if (!req.user) {
+        throw new Error("Пользователь не найден");
+      }
+
+      next();
+    } catch (error) {
+      console.error("Ошибка аутентификации:", error);
+      res.status(401);
+      throw new Error("Не авторизован, токен недействителен");
+    }
   }
 
-  // Извлечение токена
-  const token = req.headers.authorization.split(" ")[1];
   if (!token) {
     res.status(401);
-    throw new Error("Токен не предоставлен");
-  }
-
-  try {
-    // Верификация токена
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Определение ID пользователя из токена
-    let userId;
-    if (decoded.user && decoded.user.id) {
-      userId = decoded.user.id;
-    } else if (decoded.id) {
-      userId = decoded.id;
-    } else {
-      res.status(401);
-      throw new Error("Недействительный токен");
-    }
-
-    // Поиск пользователя в базе данных
-    const user = await User.findById(userId).select("-password");
-    if (!user) {
-      res.status(401);
-      throw new Error("Пользователь не найден");
-    }
-
-    // Проверка валидности роли пользователя (дополнительная защита)
-    if (user.role !== "user" && user.role !== "admin") {
-      console.error(
-        "[Auth Middleware] ВНИМАНИЕ: Обнаружена недопустимая роль пользователя:",
-        user.role
-      );
-
-      // В случае обнаружения недопустимой роли, устанавливаем роль по умолчанию
-      user.role = "user";
-
-      // Сохраняем обновленную роль
-      await User.findByIdAndUpdate(userId, { role: "user" });
-    }
-
-    // Установка пользователя в объект запроса
-    req.user = user;
-
-    next();
-  } catch (error) {
-    res.status(401);
-    throw new Error("Недействительный токен");
+    throw new Error("Не авторизован, токен отсутствует");
   }
 });
 
@@ -79,36 +55,8 @@ const protect = asyncHandler(async (req, res, next) => {
  * @desc    Защита маршрутов, требующих права администратора
  * @access  Private/Admin
  */
-const admin = asyncHandler(async (req, res, next) => {
-  if (!req.user) {
-    res.status(401);
-    throw new Error("Требуется авторизация");
-  }
-
-  // Дополнительная проверка роли из базы данных для предотвращения подделки
-  const freshUserData = await User.findById(req.user._id).select("role");
-  if (!freshUserData) {
-    res.status(401);
-    throw new Error("Пользователь не найден");
-  }
-
-  const userRole = freshUserData.role;
-
-  if (userRole !== "admin") {
-    console.error(
-      "[Auth Middleware] ВНИМАНИЕ: Попытка доступа к административным функциям пользователем без прав:",
-      {
-        userId: req.user._id,
-        userRole: userRole,
-        path: req.originalUrl,
-        method: req.method,
-      }
-    );
-    res.status(403);
-    throw new Error("Доступ запрещен. Требуются права администратора");
-  }
-
-  next();
-});
+const admin = (req, res, next) => {
+  requireAdmin(req, res, next);
+};
 
 export { protect, admin };

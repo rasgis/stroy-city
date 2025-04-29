@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Box, Grid, Pagination } from "@mui/material";
+import { Container, Typography, Box, Grid } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchProducts, selectFilteredProducts } from "../../reducers/products";
-import { SearchBar, Loader, ProductCard, Breadcrumbs } from "../../components";
+import {
+  SearchBar,
+  Loader,
+  ProductCard,
+  Breadcrumbs,
+  PaginationBlock,
+} from "../../components";
 import { scrollToTop } from "../../utils/scroll";
 import { ROUTES } from "../../constants/routes";
 import styles from "./AllProducts.module.css";
@@ -39,18 +45,12 @@ const AllProducts: React.FC = () => {
     setSearchQuery(query);
   };
 
-  // --- Логика пагинации ---
-  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    page: number
-  ) => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    scrollToTop(); // Скролл вверх при смене страницы
   };
   // --- Конец логики пагинации ---
 
@@ -92,28 +92,27 @@ const AllProducts: React.FC = () => {
               : "Нет доступных товаров."}
           </Typography>
         ) : (
-          <Grid container spacing={3} className={styles.productGrid}>
-            {currentProducts.map((product) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
-                <ProductCard
-                  product={product}
-                  isAuthenticated={isAuthenticated}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        )}
+          <>
+            <Grid container spacing={3} className={styles.productGrid}>
+              {currentProducts.map((product) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
+                  <ProductCard
+                    product={product}
+                    isAuthenticated={isAuthenticated}
+                  />
+                </Grid>
+              ))}
+            </Grid>
 
-        {totalPages > 1 && (
-          <Box className={styles.paginationContainer}>
-            <Pagination
-              count={totalPages}
-              page={currentPage}
-              onChange={handlePageChange}
-              variant="outlined"
-              shape="rounded"
-            />
-          </Box>
+            <Box sx={{ width: "100%", mt: 4, mb: 4 }}>
+              <PaginationBlock
+                totalItems={filteredProducts.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
+            </Box>
+          </>
         )}
       </Box>
     </Container>

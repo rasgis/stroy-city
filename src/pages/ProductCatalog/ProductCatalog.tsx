@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import {
   fetchCategories,
-  selectFilteredCategories,
+  selectAllCategories,
 } from "../../reducers/categories";
 import { CategoryGrid, Loader, Breadcrumbs } from "../../components";
 import { categoryService } from "../../services/categoryService";
@@ -10,10 +10,13 @@ import { ROUTES } from "../../constants/routes";
 import { scrollToTop } from "../../utils/scroll";
 import { MdError } from "react-icons/md";
 import styles from "./ProductCatalog.module.css";
+import { useNavigate } from "react-router-dom";
+import { Category } from "../../types";
 
 const ProductCatalog: React.FC = () => {
   const dispatch = useAppDispatch();
-  const categories = useAppSelector(selectFilteredCategories);
+  const navigate = useNavigate();
+  const categories = useAppSelector(selectAllCategories);
   const categoriesLoading = useAppSelector(
     (state) => state.categoriesList.loading
   );
@@ -23,6 +26,10 @@ const ProductCatalog: React.FC = () => {
     dispatch(fetchCategories());
     scrollToTop();
   }, [dispatch]);
+
+  const handleCategoryClick = (category: Category) => {
+    navigate(ROUTES.CATEGORY.replace(":categoryId", category._id));
+  };
 
   if (categoriesLoading) {
     return (
@@ -75,7 +82,11 @@ const ProductCatalog: React.FC = () => {
         </div>
       ) : (
         <div className={styles.categories}>
-          <CategoryGrid categories={rootCategories} />
+          <CategoryGrid
+            categories={rootCategories}
+            showChildren={false}
+            onCategoryClick={handleCategoryClick}
+          />
         </div>
       )}
     </div>

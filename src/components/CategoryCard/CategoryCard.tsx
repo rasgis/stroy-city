@@ -16,6 +16,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = React.memo(
       (e: React.MouseEvent) => {
         if (onClick) {
           onClick();
+          e.preventDefault();
         }
         scrollToTop();
       },

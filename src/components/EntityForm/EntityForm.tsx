@@ -6,6 +6,7 @@ import styles from "./EntityForm.module.css";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloseIcon from "@mui/icons-material/Close";
+import ErrorIcon from "@mui/icons-material/Error";
 import {
   createProduct,
   updateProduct,
@@ -264,15 +265,11 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                 role: role,
               };
 
-              try {
-                const result = await userService.createUser(userData);
-                onClose();
-              } catch (error) {
-                console.error("Ошибка при создании пользователя:", error);
-                throw error;
-              }
-            } catch (createError) {
-              throw createError;
+              const result = await userService.createUser(userData);
+              onClose();
+            } catch (error) {
+              // Поднимаем ошибку на уровень выше для общей обработки ошибок
+              throw error;
             }
           }
         }
@@ -281,10 +278,23 @@ export const EntityForm: React.FC<EntityFormProps> = ({
           afterSubmit();
         }
       } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : `Ошибка при сохранении ${entityType}`;
+        // Получаем понятное сообщение об ошибке для пользователя
+        let errorMessage: string;
+
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (
+          typeof error === "object" &&
+          error !== null &&
+          "message" in error
+        ) {
+          // Случай, когда ошибка - объект с полем message
+          errorMessage = (error as { message: string }).message;
+        } else {
+          // Общее сообщение об ошибке
+          errorMessage = `Ошибка при сохранении ${entityType}`;
+        }
+
         setError(errorMessage);
       } finally {
         setLoading(false);
@@ -395,7 +405,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({
           </button>
         </div>
 
-        {error && <div className={styles.formError}>{error}</div>}
+        {error && (
+          <div className={styles.formError}>
+            <ErrorIcon className={styles.errorIcon} />
+            <span>{error}</span>
+          </div>
+        )}
 
         <form onSubmit={formik.handleSubmit} className={styles.form}>
           {ENTITY_FIELDS[entityType].map((field) => renderField(field))}

@@ -4,6 +4,7 @@ import {
   login,
   getUserProfile,
   updateUserProfile,
+  deleteUserProfile,
 } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -31,10 +32,12 @@ router.post("/login", login);
 // @desc    Получение и обновление профиля пользователя
 // @route   GET /api/auth/profile
 // @route   PUT /api/auth/profile
+// @route   DELETE /api/auth/profile
 // @access  Private
 router
   .route("/profile")
   .get(protect, getUserProfile)
-  .put(protect, updateUserProfile);
+  .put(protect, updateUserProfile)
+  .delete(protect, deleteUserProfile);
 
 export default router;

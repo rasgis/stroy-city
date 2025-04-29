@@ -11,6 +11,7 @@ interface CategoriesListState {
   filters: {
     searchTerm: string;
     isActive: boolean | null;
+    showInactive: boolean;
   };
 }
 
@@ -21,6 +22,7 @@ const initialState: CategoriesListState = {
   filters: {
     searchTerm: "",
     isActive: null,
+    showInactive: true,
   },
 };
 
@@ -40,11 +42,30 @@ export const deleteCategory = createAsyncThunk(
   }
 );
 
+export const hideCategory = createAsyncThunk(
+  "categoriesList/hideCategory",
+  async (id: string) => {
+    await categoryService.hideCategory(id);
+    return id;
+  }
+);
+
+export const restoreCategory = createAsyncThunk(
+  "categoriesList/restoreCategory",
+  async (id: string) => {
+    const restoredCategory = await categoryService.restoreCategory(id);
+    return restoredCategory;
+  }
+);
+
 const categoriesListSlice = createSlice({
   name: "categoriesList",
   initialState,
   reducers: {
-    setFilters: (state, action: PayloadAction<Partial<CategoriesListState["filters"]>>) => {
+    setFilters: (
+      state,
+      action: PayloadAction<Partial<CategoriesListState["filters"]>>
+    ) => {
       state.filters = { ...state.filters, ...action.payload };
     },
     resetFilters: (state) => {
@@ -80,15 +101,36 @@ const categoriesListSlice = createSlice({
       // Delete Category
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.items = state.items.filter((item) => item._id !== action.payload);
+      })
+      // Hide Category
+      .addCase(hideCategory.fulfilled, (state, action) => {
+        const index = state.items.findIndex(
+          (item) => item._id === action.payload
+        );
+        if (index !== -1) {
+          state.items[index].isActive = false;
+        }
+      })
+      // Restore Category
+      .addCase(restoreCategory.fulfilled, (state, action) => {
+        const index = state.items.findIndex(
+          (item) => item._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
       });
   },
 });
 
 // Базовые селекторы
 const selectCategoriesList = (state: RootState) => state.categoriesList.items;
-const selectCategoriesListLoading = (state: RootState) => state.categoriesList.loading;
-const selectCategoriesListError = (state: RootState) => state.categoriesList.error;
-const selectCategoriesFilters = (state: RootState) => state.categoriesList.filters;
+const selectCategoriesListLoading = (state: RootState) =>
+  state.categoriesList.loading;
+const selectCategoriesListError = (state: RootState) =>
+  state.categoriesList.error;
+const selectCategoriesFilters = (state: RootState) =>
+  state.categoriesList.filters;
 
 // Мемоизированные селекторы
 export const selectFilteredCategories = createSelector(
@@ -98,17 +140,29 @@ export const selectFilteredCategories = createSelector(
       // Фильтрация по поисковому запросу
       if (
         filters.searchTerm &&
-        !category.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-        !(category.description && category.description.toLowerCase().includes(filters.searchTerm.toLowerCase()))
+        !category.name
+          .toLowerCase()
+          .includes(filters.searchTerm.toLowerCase()) &&
+        !(
+          category.description &&
+          category.description
+            .toLowerCase()
+            .includes(filters.searchTerm.toLowerCase())
+        )
       ) {
         return false;
       }
-      
-      // Фильтрация по активности
+
+      // Фильтрация по активности только если она явно указана
       if (filters.isActive !== null && category.isActive !== filters.isActive) {
         return false;
       }
-      
+
+      // Фильтрация по активности (показывать/скрывать неактивные)
+      if (!filters.showInactive && category.isActive === false) {
+        return false;
+      }
+
       return true;
     });
   }
@@ -116,18 +170,27 @@ export const selectFilteredCategories = createSelector(
 
 export const selectCategoryById = createSelector(
   [selectCategoriesList, (_, categoryId: string) => categoryId],
-  (categories, categoryId) => categories.find(category => category._id === categoryId) || null
+  (categories, categoryId) =>
+    categories.find((category) => category._id === categoryId) || null
 );
 
 export const selectActiveCategoriesForDropdown = createSelector(
   [selectCategoriesList],
-  (categories) => categories
-    .filter(category => category.isActive)
-    .map(category => ({
-      value: category._id,
-      label: category.name
-    }))
+  (categories) =>
+    categories
+      .filter((category) => category.isActive)
+      .map((category) => ({
+        value: category._id,
+        label: category.name,
+      }))
 );
 
-export const { setFilters, resetFilters, addCategory, updateCategoryInList } = categoriesListSlice.actions;
-export default categoriesListSlice.reducer; 
+// Селектор для получения всех категорий (включая неактивные)
+export const selectAllCategories = createSelector(
+  [selectCategoriesList],
+  (categories) => categories
+);
+
+export const { setFilters, resetFilters, addCategory, updateCategoryInList } =
+  categoriesListSlice.actions;
+export default categoriesListSlice.reducer;

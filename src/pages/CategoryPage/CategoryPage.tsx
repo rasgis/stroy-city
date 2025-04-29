@@ -4,7 +4,7 @@ import { Container, Typography, Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import {
   fetchCategories,
-  selectFilteredCategories,
+  selectAllCategories,
 } from "../../reducers/categories";
 import { fetchProducts, selectFilteredProducts } from "../../reducers/products";
 import {
@@ -13,6 +13,7 @@ import {
   SearchBar,
   Breadcrumbs,
   CategoryGrid,
+  PaginationBlock,
 } from "../../components";
 import { ROUTES } from "../../constants/routes";
 import { Category, Product } from "../../types";
@@ -21,13 +22,16 @@ import { scrollToTop } from "../../utils/scroll";
 import styles from "./CategoryPage.module.css";
 import { BsExclamationCircle } from "react-icons/bs";
 
+const ITEMS_PER_PAGE = 20; // Количество товаров на странице
+
 const CategoryPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Используем мемоизированные селекторы вместо прямого доступа к state
-  const categories = useAppSelector(selectFilteredCategories);
+  const categories = useAppSelector(selectAllCategories);
   const categoriesLoading = useAppSelector(
     (state) => state.categoriesList.loading
   );
@@ -46,6 +50,11 @@ const CategoryPage: React.FC = () => {
       scrollToTop();
     }
   }, [dispatch, categoryId]);
+
+  // Сбрасываем страницу пагинации при изменении категории
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [categoryId]);
 
   if (categoriesLoading || productsLoading) {
     return (
@@ -77,13 +86,15 @@ const CategoryPage: React.FC = () => {
 
   // Фильтруем только подкатегории текущей категории
   const subcategories = categories.filter(
-    (category: Category) => category.parentId === categoryId
+    (category: Category) =>
+      category.parentId === categoryId && category.isActive !== false
   );
 
   // Получаем ID всех подкатегорий (включая все уровни вложенности)
   const getAllSubcategoryIds = (parentCategoryId: string): string[] => {
     const directSubcategories = categories.filter(
-      (category) => category.parentId === parentCategoryId
+      (category) =>
+        category.parentId === parentCategoryId && category.isActive !== false
     );
 
     if (directSubcategories.length === 0) {
@@ -115,8 +126,18 @@ const CategoryPage: React.FC = () => {
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+    setCurrentPage(1); // Сбрасываем страницу при поиске
   };
 
   return (
@@ -156,7 +177,7 @@ const CategoryPage: React.FC = () => {
               Подкатегории
             </Typography>
             <Box className={styles.categoriesContainer}>
-              <CategoryGrid categories={subcategories} />
+              <CategoryGrid categories={subcategories} showChildren={false} />
             </Box>
           </Box>
         )}
@@ -178,7 +199,7 @@ const CategoryPage: React.FC = () => {
               />
             </Box>
             <div className={styles.productGrid}>
-              {filteredProducts.map((product: Product) => (
+              {currentProducts.map((product: Product) => (
                 <div key={product._id} className={styles.productGridItem}>
                   <ProductCard
                     product={product}
@@ -192,6 +213,21 @@ const CategoryPage: React.FC = () => {
                 По вашему запросу ничего не найдено
               </Typography>
             )}
+
+            {/* Пагинация в выделенном блоке с более явными стилями */}
+            <Box
+              sx={{
+                width: "100%",
+                mt: 4,
+              }}
+            >
+              <PaginationBlock
+                totalItems={filteredProducts.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
+            </Box>
           </Box>
         )}
 

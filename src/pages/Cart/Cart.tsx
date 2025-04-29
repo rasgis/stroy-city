@@ -52,8 +52,7 @@ const Cart: React.FC = () => {
   };
 
   const handleContactManager = () => {
-    // Ссылка на телеграм-бот магазина
-    window.open("https://t.me/stroycity_bot", "_blank");
+    window.open("https://t.me", "_blank");
   };
 
   return (
@@ -73,7 +72,6 @@ const Cart: React.FC = () => {
         <div className={styles.cart}>
           <h1 className={styles.title}>Корзина</h1>
 
-          {/* Информационная сноска о функционале корзины */}
           <div className={styles.infoNote}>
             <p>
               Корзина носит информативный характер для расчета приблизительной
@@ -140,7 +138,6 @@ const Cart: React.FC = () => {
         </div>
       </div>
 
-      {/* Модальное окно для очистки всей корзины */}
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
@@ -153,7 +150,6 @@ const Cart: React.FC = () => {
         <p>Это действие нельзя будет отменить.</p>
       </Modal>
 
-      {/* Модальное окно для удаления отдельного товара */}
       <Modal
         isOpen={isItemDeleteModalOpen}
         onClose={() => setIsItemDeleteModalOpen(false)}

@@ -6,20 +6,24 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { login, clearError } from "../../reducers/authSlice";
 import { ROUTES } from "../../constants/routes";
 import styles from "./Auth.module.css";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 const validationSchema = Yup.object({
-  identifier: Yup.string()
-    .required("Обязательное поле")
-    .min(3, "Минимум 3 символа"),
-  password: Yup.string()
-    .required("Обязательное поле")
-    .min(6, "Минимум 6 символов"),
+  identifier: Yup.string().required("Введите email или логин"),
+  password: Yup.string().required("Введите пароль"),
 });
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { loading, error } = useAppSelector((state) => state.auth);
+
+  // Очищаем ошибку при размонтировании компонента
+  React.useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   const formik = useFormik({
     initialValues: {
@@ -32,27 +36,28 @@ const Login: React.FC = () => {
         await dispatch(login(values)).unwrap();
         navigate(ROUTES.HOME);
       } catch (error) {
-        console.error("Ошибка входа:", error);
         // Ошибка уже обработана в authSlice и установлена в state.error
       }
     },
   });
 
-  // Очищаем ошибку при размонтировании компонента
+  // Очищаем ошибку при изменении полей формы
   React.useEffect(() => {
-    return () => {
+    if (error) {
       dispatch(clearError());
-    };
-  }, [dispatch]);
+    }
+  }, [formik.values, dispatch, error]);
 
   return (
     <div className={styles.authContainer}>
       <div className={styles.authCard}>
-        <h2>Вход</h2>
-        {error && <div className={styles.error}>{error}</div>}
+        <h2>Вход в систему</h2>
+
+        {error && <ErrorMessage message={error} />}
+
         <form onSubmit={formik.handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
-            <label htmlFor="identifier">Email или логин</label>
+            <label htmlFor="identifier">Email или Логин</label>
             <input
               id="identifier"
               name="identifier"
@@ -65,7 +70,6 @@ const Login: React.FC = () => {
                   ? styles.error
                   : ""
               }
-              placeholder="Введите email или логин"
             />
             {formik.touched.identifier && formik.errors.identifier && (
               <div className={styles.errorMessage}>
@@ -88,7 +92,6 @@ const Login: React.FC = () => {
                   ? styles.error
                   : ""
               }
-              placeholder="Введите пароль"
             />
             {formik.touched.password && formik.errors.password && (
               <div className={styles.errorMessage}>

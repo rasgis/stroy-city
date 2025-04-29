@@ -3,40 +3,63 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import {
   fetchCategories,
   deleteCategory,
-  selectFilteredCategories,
+  selectAllCategories,
+  hideCategory,
+  restoreCategory,
+  setFilters,
 } from "../../../reducers/categories";
-import { Loader, EntityForm, WeatherWidget, Modal, Button } from "../../../components";
+import {
+  Loader,
+  EntityForm,
+  WeatherWidget,
+  Modal,
+  Button,
+} from "../../../components";
 import { Category } from "../../../types";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
-import { MdExpandLess as ExpandLessIcon, MdExpandMore as ExpandMoreIcon } from "react-icons/md";
+import {
+  FaEdit,
+  FaTrash,
+  FaPlus,
+  FaEye,
+  FaEyeSlash,
+  FaRedoAlt,
+} from "react-icons/fa";
+import {
+  MdExpandLess as ExpandLessIcon,
+  MdExpandMore as ExpandMoreIcon,
+} from "react-icons/md";
 import styles from "./CategoryList.module.css";
 
 // Временная типизация для преобразования Category в CategoryFormValues
 const categoryToFormValues = (category: Category | null) => {
   if (!category) return undefined;
-  
+
   return {
     _id: category._id,
     name: category.name,
-    description: category.description || '',
-    image: category.image || '',
-    parentId: category.parentId || '',
-    isActive: category.isActive
+    description: category.description || "",
+    image: category.image || "",
+    parentId: category.parentId || "",
+    isActive: category.isActive,
   };
 };
 
 const CategoryListContainer: React.FC = () => {
   const dispatch = useAppDispatch();
-  const categories = useAppSelector(selectFilteredCategories);
+  const categories = useAppSelector(selectAllCategories);
   const loading = useAppSelector((state) => state.categoriesList.loading);
   const error = useAppSelector((state) => state.categoriesList.error);
+  const showInactive = useAppSelector(
+    (state) => state.categoriesList.filters.showInactive
+  );
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isHideModalOpen, setIsHideModalOpen] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
-  const [deleteCategoryId, setDeleteCategoryId] = useState<string | null>(null);
+  const [actionCategoryId, setActionCategoryId] = useState<string | null>(null);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set()
   );
@@ -56,15 +79,32 @@ const CategoryListContainer: React.FC = () => {
   };
 
   const handleDeleteCategory = (categoryId: string) => {
-    setDeleteCategoryId(categoryId);
+    setActionCategoryId(categoryId);
     setIsDeleteModalOpen(true);
   };
 
+  const handleHideCategory = (categoryId: string) => {
+    setActionCategoryId(categoryId);
+    setIsHideModalOpen(true);
+  };
+
+  const handleRestoreCategory = async (categoryId: string) => {
+    await dispatch(restoreCategory(categoryId));
+  };
+
   const handleDeleteConfirm = async () => {
-    if (deleteCategoryId) {
-      await dispatch(deleteCategory(deleteCategoryId));
+    if (actionCategoryId) {
+      await dispatch(deleteCategory(actionCategoryId));
       setIsDeleteModalOpen(false);
-      setDeleteCategoryId(null);
+      setActionCategoryId(null);
+    }
+  };
+
+  const handleHideConfirm = async () => {
+    if (actionCategoryId) {
+      await dispatch(hideCategory(actionCategoryId));
+      setIsHideModalOpen(false);
+      setActionCategoryId(null);
     }
   };
 
@@ -75,6 +115,10 @@ const CategoryListContainer: React.FC = () => {
 
   const handleFormSubmit = () => {
     dispatch(fetchCategories());
+  };
+
+  const toggleShowInactive = () => {
+    dispatch(setFilters({ showInactive: !showInactive }));
   };
 
   // Построение дерева категорий
@@ -136,6 +180,9 @@ const CategoryListContainer: React.FC = () => {
               />
             )}
             <h3>{category.name}</h3>
+            {category.isActive === false && (
+              <span className={styles.inactiveLabel}>Неактивна</span>
+            )}
           </div>
           <div className={styles.actions}>
             <Button
@@ -145,6 +192,25 @@ const CategoryListContainer: React.FC = () => {
               onClick={() => handleEditCategory(category)}
               className={styles.editButton}
             />
+
+            {category.isActive !== false ? (
+              <Button
+                variant="danger"
+                size="small"
+                startIcon={<FaEyeSlash />}
+                onClick={() => handleHideCategory(category._id)}
+                className={styles.hideButton}
+              />
+            ) : (
+              <Button
+                variant="success"
+                size="small"
+                startIcon={<FaRedoAlt />}
+                onClick={() => handleRestoreCategory(category._id)}
+                className={styles.restoreButton}
+              />
+            )}
+
             <Button
               variant="danger"
               size="small"
@@ -180,18 +246,28 @@ const CategoryListContainer: React.FC = () => {
   return (
     <div>
       <WeatherWidget />
-      
+
       <div className={styles.container}>
         <div className={styles.header}>
           <h2>Управление категориями</h2>
-          <Button
-            variant="primary"
-            onClick={handleAddCategory}
-            className={styles.addButton}
-            startIcon={<FaPlus className={styles.addIcon} />}
-          >
-            Добавить категорию
-          </Button>
+          <div className={styles.actions}>
+            <Button
+              variant="secondary"
+              startIcon={showInactive ? <FaEyeSlash /> : <FaEye />}
+              onClick={toggleShowInactive}
+              className={styles.filterButton}
+            >
+              {showInactive ? "Скрыть неактивные" : "Показать все"}
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleAddCategory}
+              className={styles.addButton}
+              startIcon={<FaPlus className={styles.addIcon} />}
+            >
+              Добавить категорию
+            </Button>
+          </div>
         </div>
 
         <div className={styles.list}>
@@ -213,6 +289,21 @@ const CategoryListContainer: React.FC = () => {
       >
         <p>Вы действительно хотите удалить эту категорию?</p>
         <p>Это действие нельзя будет отменить.</p>
+      </Modal>
+
+      <Modal
+        isOpen={isHideModalOpen}
+        onClose={() => setIsHideModalOpen(false)}
+        title="Подтверждение скрытия категории"
+        type="default"
+        onConfirm={handleHideConfirm}
+        confirmText="Скрыть"
+      >
+        <p>Вы уверены, что хотите скрыть эту категорию?</p>
+        <p>
+          Категория будет скрыта для покупателей, но вы сможете восстановить ее
+          позже.
+        </p>
       </Modal>
 
       <EntityForm

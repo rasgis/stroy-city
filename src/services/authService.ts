@@ -29,8 +29,9 @@ class AuthService extends BaseService {
 
     // Проверка безопасности: если пользователь пытается изменить роль
     if (currentUser && userProfile && currentRole) {
-      // Если роль пытаются изменить или роль не указана - блокируем изменение
-      if (userProfile.role !== currentRole) {
+      // Если роль пытаются изменить, будем блокировать изменение
+      // Но если роль не указана, мы не должны блокировать обновление
+      if (userProfile.role && userProfile.role !== currentRole) {
         console.warn("БЛОКИРОВАНА ПОПЫТКА ИЗМЕНЕНИЯ РОЛИ через setAuthData", {
           currentRole,
           attemptedRole: userProfile.role || "не указана",
@@ -39,6 +40,9 @@ class AuthService extends BaseService {
         });
 
         // Принудительно восстанавливаем правильную роль
+        userProfile.role = currentRole;
+      } else if (!userProfile.role) {
+        // Если роль не указана в обновленных данных, сохраняем текущую роль
         userProfile.role = currentRole;
       }
 
@@ -69,6 +73,8 @@ class AuthService extends BaseService {
       id: userProfile._id || userProfile.id || "",
       // Гарантируем, что имя будет установлено
       name: userProfile.name || "",
+      // Сохраняем роль, если не указана явно
+      role: userProfile.role || currentRole || "user",
     };
 
     localStorage.setItem(TOKEN_KEY, token);
@@ -163,41 +169,79 @@ class AuthService extends BaseService {
    * @returns Данные созданного пользователя
    */
   async register(credentials: RegisterCredentials): Promise<User> {
-    // Явно задаем роль "user" для нового пользователя
-    const userData = {
-      name: credentials.name,
-      email: credentials.email,
-      login: credentials.login,
-      password: credentials.password,
-      role: "user", // Принудительно устанавливаем роль "user"
-    };
+    try {
+      // Явно задаем роль "user" для нового пользователя
+      const userData = {
+        name: credentials.name,
+        email: credentials.email,
+        login: credentials.login,
+        password: credentials.password,
+        role: "user", // Принудительно устанавливаем роль "user"
+      };
 
-    const response = await this.post<AuthResponse>(
-      API_CONFIG.ENDPOINTS.AUTH.REGISTER,
-      userData
-    );
+      const response = await this.post<AuthResponse>(
+        API_CONFIG.ENDPOINTS.AUTH.REGISTER,
+        userData
+      );
 
-    // Проверяем, что response содержит все необходимые поля
-    if (!response || !response.token) {
-      throw new Error("Неверный формат ответа от сервера");
+      // Проверяем, что response содержит все необходимые поля
+      if (!response || !response.token) {
+        throw new Error("Неверный формат ответа от сервера");
+      }
+
+      const { token, user } = response;
+
+      // Сохраняем данные пользователя, включая _id или id
+      const userToSave = {
+        ...user,
+        id: user._id || user.id || "", // Сохраняем _id или id
+        name: user.name || credentials.name || "", // Используем имя из ответа или из отправленных данных
+        email: user.email || credentials.email || "",
+        login: user.login || credentials.login || "",
+        role: user.role || "user",
+      };
+
+      // Сохраняем данные авторизации
+      this.setAuthData(token, userToSave);
+
+      return userToSave;
+    } catch (error) {
+      // Улучшенная обработка ошибок для удобного чтения пользователями
+      if (error instanceof Error) {
+        const message = error.message;
+
+        // Проверка на существующий email
+        if (message.includes("email уже существует")) {
+          throw new Error(
+            "Пользователь с таким email уже зарегистрирован. Пожалуйста, используйте другой email или выполните вход."
+          );
+        }
+
+        // Проверка на существующий логин
+        if (message.includes("логином уже существует")) {
+          throw new Error(
+            "Пользователь с таким логином уже зарегистрирован. Пожалуйста, выберите другой логин."
+          );
+        }
+
+        // Другие типичные ошибки при регистрации
+        if (message.includes("заполните все поля")) {
+          throw new Error(
+            "Пожалуйста, заполните все обязательные поля для регистрации."
+          );
+        }
+
+        // Сложность пароля
+        if (message.includes("пароль") && message.includes("символов")) {
+          throw new Error(
+            "Пароль должен содержать как минимум 6 символов, включая буквы и цифры."
+          );
+        }
+      }
+
+      // Если не смогли обработать ошибку более конкретно, пробрасываем исходную
+      throw error;
     }
-
-    const { token, user } = response;
-
-    // Сохраняем данные пользователя, включая _id или id
-    const userToSave = {
-      ...user,
-      id: user._id || user.id || "", // Сохраняем _id или id
-      name: user.name || credentials.name || "", // Используем имя из ответа или из отправленных данных
-      email: user.email || credentials.email || "",
-      login: user.login || credentials.login || "",
-      role: user.role || "user",
-    };
-
-    // Сохраняем данные авторизации
-    this.setAuthData(token, userToSave);
-
-    return userToSave;
   }
 
   /**
@@ -223,15 +267,29 @@ class AuthService extends BaseService {
   }
 
   /**
-   * Обновление данных пользователя в localStorage
-   * @param user Данные пользователя для обновления
+   * Обновление хранимых данных пользователя без запроса к серверу
+   * @param user Обновленные данные пользователя
    */
   updateUserData(user: any) {
+    const currentUser = this.getUser();
+    const currentRole = currentUser?.role;
     const token = this.getToken();
-    if (token && user) {
-      // Обновляем данные пользователя в localStorage
-      this.setAuthData(token, user);
+
+    if (!token || !currentUser) {
+      console.error("Невозможно обновить данные: пользователь не авторизован");
+      return;
     }
+
+    // Объединяем данные, сохраняя роль
+    const updatedUser = {
+      ...currentUser,
+      ...user,
+      // Сохраняем текущую роль, если она не указана в обновленных данных
+      role: user.role || currentRole,
+    };
+
+    // Обновляем данные через основной метод
+    this.setAuthData(token, updatedUser);
   }
 
   /**

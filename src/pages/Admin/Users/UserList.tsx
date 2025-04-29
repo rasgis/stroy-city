@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { FaEdit, FaTrash, FaPlus, FaUserCog } from "react-icons/fa";
 import { User } from "../../../types/user";
 import { userService } from "../../../services/userService";
 import styles from "../Products/Admin.module.css";
-import { Loader, EntityForm } from "../../../components";
+import { Loader } from "../../../components";
 import { Modal } from "../../../components/Modal/Modal";
+
+// Инлайн-стили для отключения эффектов наведения
+const tableStyles = {
+  tr: {
+    transition: "none",
+  },
+  td: {
+    transition: "none",
+  },
+  trHover: {
+    transform: "none",
+    background: "none",
+    boxShadow: "none",
+  },
+};
 
 const UserList = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -12,8 +27,8 @@ const UserList = () => {
   const [error, setError] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isFormModalOpen, setIsFormModalOpen] = useState<boolean>(false);
-  const [userToEdit, setUserToEdit] = useState<User | null>(null);
+  const [showRoleModal, setShowRoleModal] = useState<boolean>(false);
+  const [selectedRole, setSelectedRole] = useState<"user" | "admin">("user");
 
   // Загрузка пользователей
   const fetchUsers = async () => {
@@ -37,29 +52,32 @@ const UserList = () => {
     fetchUsers();
   }, []);
 
-  // Обработчик открытия модального окна для добавления пользователя
-  const handleAddUser = () => {
-    setUserToEdit(null);
-    setIsFormModalOpen(true);
+  // Обработчик открытия модального окна для изменения роли
+  const handleRoleClick = (user: User) => {
+    setSelectedUser(user);
+    setSelectedRole(user.role);
+    setShowRoleModal(true);
   };
 
-  // Обработчик открытия модального окна для редактирования пользователя
-  const handleEditUser = (user: User) => {
-    setUserToEdit(user);
-    setIsFormModalOpen(true);
-  };
+  // Обработчик изменения роли пользователя
+  const handleRoleChange = async () => {
+    if (!selectedUser) return;
 
-  // Обработчик закрытия модального окна формы
-  const handleFormClose = () => {
-    setIsFormModalOpen(false);
-    setUserToEdit(null);
-  };
-
-  // Обработчик успешного сохранения пользователя
-  const handleUserSaved = () => {
-    fetchUsers();
-    setIsFormModalOpen(false);
-    setUserToEdit(null);
+    try {
+      await userService.updateUser(selectedUser._id, {
+        ...selectedUser,
+        role: selectedRole,
+      });
+      setShowRoleModal(false);
+      setSelectedUser(null);
+      fetchUsers(); // Перезагрузка списка пользователей
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Произошла ошибка при изменении роли пользователя");
+      }
+    }
   };
 
   // Обработчик открытия модального окна удаления
@@ -89,11 +107,11 @@ const UserList = () => {
   // Рендеринг строки таблицы для пользователя
   const renderUserRow = (user: User) => {
     return (
-      <tr key={user._id}>
-        <td>{user.name}</td>
-        <td>{user.email}</td>
-        <td>{user.login}</td>
-        <td>
+      <tr key={user._id} style={tableStyles.tr}>
+        <td style={tableStyles.td}>{user.name}</td>
+        <td style={tableStyles.td}>{user.email}</td>
+        <td style={tableStyles.td}>{user.login}</td>
+        <td style={tableStyles.td}>
           <span
             className={
               user.role === "admin" ? styles.adminRole : styles.userRole
@@ -102,17 +120,19 @@ const UserList = () => {
             {user.role === "admin" ? "Администратор" : "Пользователь"}
           </span>
         </td>
-        <td>
+        <td style={tableStyles.td}>
           <div className={styles.actions}>
             <button
               className={styles.editButton}
-              onClick={() => handleEditUser(user)}
+              onClick={() => handleRoleClick(user)}
+              title="Изменить роль"
             >
-              <FaEdit />
+              <FaUserCog />
             </button>
             <button
               className={styles.deleteButton}
               onClick={() => handleDeleteClick(user)}
+              title="Удалить пользователя"
             >
               <FaTrash />
             </button>
@@ -126,10 +146,6 @@ const UserList = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>Управление пользователями</h2>
-        <button onClick={handleAddUser} className={styles.addButton}>
-          <FaPlus className={styles.addIcon} />
-          Добавить пользователя
-        </button>
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
@@ -138,7 +154,7 @@ const UserList = () => {
         <Loader message="Загрузка пользователей..." />
       ) : (
         <div className={styles.tableResponsive}>
-          <table className={styles.table}>
+          <table className={`${styles.table} ${styles.userList}`}>
             <thead>
               <tr>
                 <th>Имя</th>
@@ -177,24 +193,38 @@ const UserList = () => {
         <p>Это действие нельзя будет отменить.</p>
       </Modal>
 
-      <EntityForm
-        isOpen={isFormModalOpen}
-        onClose={handleFormClose}
-        entityType="user"
-        entityData={
-          userToEdit
-            ? {
-                name: userToEdit.name,
-                email: userToEdit.email,
-                login: userToEdit.login,
-                password: userToEdit._id ? "" : "", // Пустой пароль при редактировании
-                role: userToEdit.role,
-                _id: userToEdit._id,
-              }
-            : undefined
-        }
-        afterSubmit={handleUserSaved}
-      />
+      <Modal
+        isOpen={showRoleModal}
+        onClose={() => setShowRoleModal(false)}
+        title="Изменение роли пользователя"
+        type="default"
+        onConfirm={handleRoleChange}
+        confirmText="Сохранить"
+      >
+        <p>Выберите роль для пользователя: {selectedUser?.email}</p>
+        <div className={styles.roleSelector}>
+          <label className={styles.roleLabel}>
+            <input
+              type="radio"
+              name="role"
+              value="user"
+              checked={selectedRole === "user"}
+              onChange={() => setSelectedRole("user")}
+            />
+            Пользователь
+          </label>
+          <label className={styles.roleLabel}>
+            <input
+              type="radio"
+              name="role"
+              value="admin"
+              checked={selectedRole === "admin"}
+              onChange={() => setSelectedRole("admin")}
+            />
+            Администратор
+          </label>
+        </div>
+      </Modal>
     </div>
   );
 };

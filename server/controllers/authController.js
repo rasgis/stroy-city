@@ -1,98 +1,27 @@
 import User from "../models/userModel.js";
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
+import {
+  sendSuccess,
+  sendCreated,
+  sendError,
+  sendBadRequest,
+  sendUnauthorized,
+  sendNotFound,
+  sendForbidden,
+  checkEntityExistsOrFail,
+  checkUniqueness,
+} from "../utils/controllerUtils/index.js";
 
-// @desc    Регистрация пользователя
-// @route   POST /api/auth/register
-// @access  Public
-export const register = asyncHandler(async (req, res) => {
-  const { name, email, login, password, role } = req.body;
+// Обработка ошибок для контроллеров аутентификации
+const handleAuthError = (res, operation, error) => {
+  console.error(`Ошибка при ${operation}:`, error);
+  sendError(res, `Ошибка при ${operation}: ${error.message}`);
+};
 
-  // Проверка на наличие всех необходимых полей
-  if (!name || !email || !login || !password) {
-    res.status(400);
-    throw new Error(
-      "Все поля (имя, email, логин, пароль) обязательны для заполнения"
-    );
-  }
-
-  // Проверка существования пользователя по email
-  const emailExists = await User.findOne({ email });
-  if (emailExists) {
-    res.status(400);
-    throw new Error("Пользователь с таким email уже существует");
-  }
-
-  // Проверка существования пользователя по логину
-  const loginExists = await User.findOne({ login });
-  if (loginExists) {
-    res.status(400);
-    throw new Error("Пользователь с таким логином уже существует");
-  }
-
-  // Создание нового пользователя
-  const user = new User({
-    name,
-    email,
-    login,
-    password, // Пароль будет автоматически хеширован pre-save хуком
-    role: "user", // Для регистрации всегда устанавливаем роль "user"
-  });
-
-  // Сохраняем пользователя - хеширование произойдет автоматически в pre-save хуке
-  await user.save();
-
-  // Подготовка данных о пользователе для отправки клиенту
-  const userData = {
-    _id: user._id,
-    id: user._id,
-    name: user.name,
-    email: user.email,
-    login: user.login,
-    role: user.role,
-  };
-
-  // Генерируем токен с помощью утилиты generateToken
-  const token = generateToken(user._id);
-
-  res.status(201).json({
-    token,
-    user: userData,
-  });
-});
-
-// @desc    Вход пользователя
-// @route   POST /api/auth/login
-// @access  Public
-export const login = asyncHandler(async (req, res) => {
-  const { identifier, password } = req.body;
-
-  if (!identifier || !password) {
-    res.status(400);
-    throw new Error("Необходимо указать логин/email и пароль");
-  }
-
-  // Поиск пользователя по email или login
-  const user = await User.findOne({
-    $or: [{ email: identifier }, { login: identifier }],
-  });
-
-  if (!user) {
-    res.status(401);
-    throw new Error("Неверные учетные данные");
-  }
-
-  // Проверка пароля
-  const isMatch = await user.matchPassword(password);
-  if (!isMatch) {
-    res.status(401);
-    throw new Error("Неверные учетные данные");
-  }
-
-  // Генерируем токен с помощью утилиты generateToken
-  const token = generateToken(user._id);
-
-  res.json({
+// Форматирование данных пользователя для ответа
+const formatUserResponse = (user, token) => {
+  return {
     token,
     user: {
       _id: user._id,
@@ -102,17 +31,103 @@ export const login = asyncHandler(async (req, res) => {
       login: user.login,
       role: user.role,
     },
-  });
+  };
+};
+
+// Регистрация пользователя
+export const register = asyncHandler(async (req, res) => {
+  try {
+    const { name, email, login, password } = req.body;
+
+    // Проверка на наличие всех необходимых полей
+    if (!name || !email || !login || !password) {
+      return sendBadRequest(
+        res,
+        "Все поля (имя, email, логин, пароль) обязательны для заполнения"
+      );
+    }
+
+    // Проверка уникальности email
+    const isEmailUnique = await checkUniqueness(
+      User,
+      { email },
+      res,
+      "Пользователь с таким email уже существует"
+    );
+
+    if (!isEmailUnique) return;
+
+    // Проверка уникальности логина
+    const isLoginUnique = await checkUniqueness(
+      User,
+      { login },
+      res,
+      "Пользователь с таким логином уже существует"
+    );
+
+    if (!isLoginUnique) return;
+
+    // Создание нового пользователя
+    const user = await User.create({
+      name,
+      email,
+      login,
+      password,
+      role: "user",
+    });
+
+    const token = generateToken(user._id);
+    sendCreated(res, formatUserResponse(user, token));
+  } catch (error) {
+    handleAuthError(res, "регистрации пользователя", error);
+  }
 });
 
-// @desc    Получение профиля пользователя
-// @route   GET /api/auth/profile
-// @access  Private
-export const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+// Вход пользователя
+export const login = asyncHandler(async (req, res) => {
+  try {
+    const { identifier, password } = req.body;
 
-  if (user) {
-    res.json({
+    if (!identifier || !password) {
+      return sendBadRequest(res, "Необходимо указать логин/email и пароль");
+    }
+
+    // Поиск пользователя по email или логину
+    const user = await User.findOne({
+      $or: [{ email: identifier }, { login: identifier }],
+    });
+
+    if (!user) {
+      return sendUnauthorized(res, "Неверные учетные данные");
+    }
+
+    // Проверка пароля
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      return sendUnauthorized(res, "Неверные учетные данные");
+    }
+
+    const token = generateToken(user._id);
+    sendSuccess(res, formatUserResponse(user, token));
+  } catch (error) {
+    handleAuthError(res, "входе пользователя", error);
+  }
+});
+
+// Получение профиля пользователя
+export const getUserProfile = asyncHandler(async (req, res) => {
+  try {
+    const user = await checkEntityExistsOrFail(
+      res,
+      User,
+      req.user._id,
+      {},
+      "Пользователь"
+    );
+
+    if (!user) return;
+
+    sendSuccess(res, {
       _id: user._id,
       id: user._id,
       name: user.name,
@@ -120,82 +135,70 @@ export const getUserProfile = asyncHandler(async (req, res) => {
       login: user.login,
       role: user.role,
     });
-  } else {
-    res.status(404);
-    throw new Error("Пользователь не найден");
+  } catch (error) {
+    handleAuthError(res, "получении профиля", error);
   }
 });
 
-// @desc    Обновление профиля пользователя
-// @route   PUT /api/auth/profile
-// @access  Private
+// Обновление профиля пользователя
 export const updateUserProfile = asyncHandler(async (req, res) => {
-  // Проверка наличия пользователя
-  if (!req.user || !req.user._id) {
-    res.status(401);
-    throw new Error("Пользователь не аутентифицирован");
-  }
-
-  // Получаем данные из запроса
-  const { name, email, login, password, role } = req.body;
-
-  // Проверяем, не пытается ли пользователь изменить свою роль
-  if (role) {
-    res.status(403);
-    throw new Error("Изменение роли через API профиля запрещено");
-  }
-
-  // Поиск пользователя в базе
-  const user = await User.findById(req.user._id);
-
-  if (!user) {
-    res.status(404);
-    throw new Error("Пользователь не найден");
-  }
-
-  // Обновляем поля пользователя
-  if (name) user.name = name;
-
-  // Проверка уникальности email
-  if (email && email !== user.email) {
-    const emailExists = await User.findOne({ email });
-    if (emailExists) {
-      res.status(400);
-      throw new Error("Пользователь с таким email уже существует");
+  try {
+    if (!req.user || !req.user._id) {
+      return sendUnauthorized(res, "Пользователь не аутентифицирован");
     }
-    user.email = email;
-  }
 
-  // Проверка уникальности логина
-  if (login && login !== user.login) {
-    const loginExists = await User.findOne({ login });
-    if (loginExists) {
-      res.status(400);
-      throw new Error("Пользователь с таким логином уже существует");
+    const { name, password, role } = req.body;
+
+    // Запрет на изменение роли через API профиля
+    if (role) {
+      return sendForbidden(res, "Изменение роли через API профиля запрещено");
     }
-    user.login = login;
+
+    const user = await checkEntityExistsOrFail(
+      res,
+      User,
+      req.user._id,
+      {},
+      "Пользователь"
+    );
+
+    if (!user) return;
+
+    // Обновление разрешенных полей
+    if (name) user.name = name;
+    if (password) user.password = password;
+
+    const updatedUser = await user.save();
+    const token = generateToken(updatedUser._id);
+
+    sendSuccess(res, formatUserResponse(updatedUser, token));
+  } catch (error) {
+    handleAuthError(res, "обновлении профиля", error);
   }
+});
 
-  // Обновляем пароль, если он предоставлен
-  if (password) {
-    user.password = password;
+// Удаление профиля пользователя
+export const deleteUserProfile = asyncHandler(async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return sendUnauthorized(res, "Пользователь не аутентифицирован");
+    }
+
+    const user = await checkEntityExistsOrFail(
+      res,
+      User,
+      req.user._id,
+      {},
+      "Пользователь"
+    );
+
+    if (!user) return;
+
+    // Удаляем пользователя из базы данных
+    await user.deleteOne();
+
+    sendSuccess(res, { message: "Ваш аккаунт был успешно удален" });
+  } catch (error) {
+    handleAuthError(res, "удалении профиля", error);
   }
-
-  // Роль сохраняем неизменной - защита от повышения привилегий
-
-  const updatedUser = await user.save();
-
-  // Создаем новый токен
-  const token = generateToken(updatedUser._id);
-
-  // Возвращаем данные пользователя
-  res.json({
-    _id: updatedUser._id,
-    id: updatedUser._id,
-    name: updatedUser.name,
-    email: updatedUser.email,
-    login: updatedUser.login,
-    role: updatedUser.role,
-    token,
-  });
 });

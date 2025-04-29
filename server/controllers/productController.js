@@ -1,117 +1,110 @@
-import asyncHandler from "express-async-handler";
-import mongoose from "mongoose";
 import Product from "../models/productModel.js";
 import Category from "../models/categoryModel.js";
+import {
+  sendSuccess,
+  sendCreated,
+  sendMessage,
+  sendError,
+  sendNotFound,
+  sendBadRequest,
+  checkEntityExistsOrFail,
+  checkUniqueness,
+} from "../utils/controllerUtils/index.js";
+import asyncHandler from "express-async-handler";
 
-/**
- * @desc    Получение всех активных продуктов
- * @route   GET /api/products
- * @access  Публичный
- * @returns {Array} Массив активных продуктов
- */
-export const getProducts = async (req, res) => {
+// Базовая обработка ошибок для контроллеров
+const handleControllerError = (res, operation, error) => {
+  console.error(`Ошибка при ${operation} продукта:`, error);
+  sendError(res, `Ошибка при ${operation} продукта: ${error.message}`);
+};
+
+// Получение всех активных продуктов для клиентов
+export const getProducts = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find({ isActive: true })
       .populate("category", "name")
       .sort({ createdAt: -1 });
-    res.status(200).json(products);
-  } catch (error) {
-    res.status(500).json({
-      message: `Ошибка при получении продуктов: ${error.message}`,
-    });
-  }
-};
 
-/**
- * @desc    Получение продукта по ID
- * @route   GET /api/products/:id
- * @access  Публичный
- * @param   {string} req.params.id - ID продукта
- * @returns {Object} Данные продукта
- */
-export const getProductById = async (req, res) => {
+    sendSuccess(res, products);
+  } catch (error) {
+    handleControllerError(res, "получении", error);
+  }
+});
+
+// Получение продукта по ID
+export const getProductById = asyncHandler(async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate(
-      "category",
-      "name"
+    const product = await checkEntityExistsOrFail(
+      res,
+      Product,
+      req.params.id,
+      { populate: { path: "category", select: "name" } },
+      "Продукт"
     );
-    if (!product) {
-      return res.status(404).json({ message: "Продукт не найден" });
-    }
-    res.status(200).json(product);
+
+    if (!product) return;
+
+    sendSuccess(res, product);
   } catch (error) {
-    res.status(500).json({
-      message: `Ошибка при получении продукта: ${error.message}`,
-    });
+    handleControllerError(res, "получении", error);
   }
-};
+});
 
-/**
- * @desc    Создание нового продукта
- * @route   POST /api/products
- * @access  Приватный/Админ
- * @param   {Object} req.body - Данные продукта
- * @returns {Object} Данные созданного продукта
- */
-export const createProduct = async (req, res) => {
+// Создание нового продукта (только для админов)
+export const createProduct = asyncHandler(async (req, res) => {
   try {
-    // Проверяем права доступа
+    // Проверка прав доступа
     if (!req.user || req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Доступ запрещен. Требуются права администратора." });
+      return sendError(
+        res,
+        "Доступ запрещен. Требуются права администратора.",
+        403
+      );
     }
 
-    // Проверяем существование категории
+    // Проверка существования категории
     const categoryExists = await Category.findById(req.body.category);
     if (!categoryExists) {
-      return res
-        .status(400)
-        .json({ message: "Указанная категория не найдена" });
+      return sendBadRequest(res, "Указанная категория не найдена");
     }
 
     const newProduct = await Product.create(req.body);
-    res.status(201).json(newProduct);
+    sendCreated(res, newProduct);
   } catch (error) {
-    res.status(500).json({
-      message: `Ошибка при создании продукта: ${error.message}`,
-    });
+    handleControllerError(res, "создании", error);
   }
-};
+});
 
-/**
- * @desc    Обновление существующего продукта
- * @route   PUT /api/products/:id
- * @access  Приватный/Админ
- * @param   {string} req.params.id - ID продукта
- * @param   {Object} req.body - Данные для обновления
- * @returns {Object} Обновленные данные продукта
- */
-export const updateProduct = async (req, res) => {
+// Обновление продукта (только для админов)
+export const updateProduct = asyncHandler(async (req, res) => {
   try {
-    // Проверяем права доступа
+    // Проверка прав доступа
     if (!req.user || req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Доступ запрещен. Требуются права администратора." });
+      return sendError(
+        res,
+        "Доступ запрещен. Требуются права администратора.",
+        403
+      );
     }
 
-    // Проверяем существование продукта
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: "Продукт не найден" });
-    }
+    const product = await checkEntityExistsOrFail(
+      res,
+      Product,
+      req.params.id,
+      {},
+      "Продукт"
+    );
 
-    // Если категория меняется, проверяем её существование
+    if (!product) return;
+
+    // Проверка существования категории при изменении
     if (
       req.body.category &&
       req.body.category !== product.category.toString()
     ) {
       const categoryExists = await Category.findById(req.body.category);
       if (!categoryExists) {
-        return res
-          .status(400)
-          .json({ message: "Указанная категория не найдена" });
+        return sendBadRequest(res, "Указанная категория не найдена");
       }
     }
 
@@ -121,154 +114,132 @@ export const updateProduct = async (req, res) => {
       { new: true }
     ).populate("category", "name");
 
-    res.status(200).json(updatedProduct);
+    sendSuccess(res, updatedProduct);
   } catch (error) {
-    res.status(500).json({
-      message: `Ошибка при обновлении продукта: ${error.message}`,
-    });
+    handleControllerError(res, "обновлении", error);
   }
-};
+});
 
-/**
- * @desc    Скрытие продукта (soft delete - установка isActive: false)
- * @route   DELETE /api/products/:id
- * @access  Приватный/Админ
- * @param   {string} req.params.id - ID продукта
- * @returns {Object} Сообщение об успешном скрытии
- */
-export const deleteProduct = async (req, res) => {
+// Скрытие продукта (soft delete)
+export const deleteProduct = asyncHandler(async (req, res) => {
   try {
-    // Проверяем права доступа
+    // Проверка прав доступа
     if (!req.user || req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Доступ запрещен. Требуются права администратора." });
+      return sendError(
+        res,
+        "Доступ запрещен. Требуются права администратора.",
+        403
+      );
     }
 
-    // Проверяем существование продукта
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: "Продукт не найден" });
-    }
+    const product = await checkEntityExistsOrFail(
+      res,
+      Product,
+      req.params.id,
+      {},
+      "Продукт"
+    );
 
-    // Soft delete - устанавливаем isActive в false вместо физического удаления
+    if (!product) return;
+
     product.isActive = false;
     await product.save();
 
-    res.status(200).json({ message: "Продукт успешно скрыт" });
+    sendMessage(res, "Продукт успешно скрыт");
   } catch (error) {
-    res.status(500).json({
-      message: `Ошибка при скрытии продукта: ${error.message}`,
-    });
+    handleControllerError(res, "скрытии", error);
   }
-};
+});
 
-/**
- * @desc    Полное удаление продукта из базы данных
- * @route   DELETE /api/products/:id/permanent
- * @access  Приватный/Админ
- * @param   {string} req.params.id - ID продукта
- * @returns {Object} Сообщение об успешном удалении
- */
-export const permanentDeleteProduct = async (req, res) => {
+// Полное удаление продукта из базы данных
+export const permanentDeleteProduct = asyncHandler(async (req, res) => {
   try {
-    // Проверяем права доступа
+    // Проверка прав доступа
     if (!req.user || req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Доступ запрещен. Требуются права администратора." });
+      return sendError(
+        res,
+        "Доступ запрещен. Требуются права администратора.",
+        403
+      );
     }
 
-    // Проверяем существование продукта
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: "Продукт не найден" });
-    }
+    const product = await checkEntityExistsOrFail(
+      res,
+      Product,
+      req.params.id,
+      {},
+      "Продукт"
+    );
 
-    // Физически удаляем продукт из базы данных
+    if (!product) return;
+
     await Product.findByIdAndDelete(req.params.id);
 
-    res.status(200).json({ message: "Продукт успешно удален из базы данных" });
+    sendMessage(res, "Продукт успешно удален из базы данных");
   } catch (error) {
-    res.status(500).json({
-      message: `Ошибка при удалении продукта: ${error.message}`,
-    });
+    handleControllerError(res, "удалении", error);
   }
-};
+});
 
-/**
- * @desc    Восстановление скрытого продукта (установка isActive: true)
- * @route   PUT /api/products/:id/restore
- * @access  Приватный/Админ
- * @param   {string} req.params.id - ID продукта
- * @returns {Object} Восстановленный продукт
- */
-export const restoreProduct = async (req, res) => {
+// Восстановление скрытого продукта
+export const restoreProduct = asyncHandler(async (req, res) => {
   try {
-    // Проверяем права доступа
+    // Проверка прав доступа
     if (!req.user || req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Доступ запрещен. Требуются права администратора." });
+      return sendError(
+        res,
+        "Доступ запрещен. Требуются права администратора.",
+        403
+      );
     }
 
-    // Проверяем существование продукта
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: "Продукт не найден" });
-    }
+    const product = await checkEntityExistsOrFail(
+      res,
+      Product,
+      req.params.id,
+      {},
+      "Продукт"
+    );
 
-    // Восстанавливаем продукт
+    if (!product) return;
+
     product.isActive = true;
     const restoredProduct = await product.save();
 
-    res.status(200).json(restoredProduct);
+    sendSuccess(res, restoredProduct);
   } catch (error) {
-    res.status(500).json({
-      message: `Ошибка при восстановлении продукта: ${error.message}`,
-    });
+    handleControllerError(res, "восстановлении", error);
   }
-};
+});
 
-/**
- * @desc    Получение всех продуктов (включая неактивные) для админ-панели
- * @route   GET /api/products/admin/all
- * @access  Приватный/Админ
- * @returns {Array} Массив всех продуктов
- */
-export const getAllProductsAdmin = async (req, res) => {
+// Получение всех продуктов для админ-панели
+export const getAllProductsAdmin = asyncHandler(async (req, res) => {
   try {
-    // Проверяем права доступа
+    // Проверка прав доступа
     if (!req.user || req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Доступ запрещен. Требуются права администратора." });
+      return sendError(
+        res,
+        "Доступ запрещен. Требуются права администратора.",
+        403
+      );
     }
 
     const products = await Product.find({})
       .populate("category", "name")
       .sort({ createdAt: -1 });
-    res.status(200).json(products);
-  } catch (error) {
-    res.status(500).json({
-      message: `Ошибка при получении продуктов: ${error.message}`,
-    });
-  }
-};
 
-/**
- * @desc    Получение продуктов по категории
- * @route   GET /api/products/category/:categoryId
- * @access  Публичный
- * @param   {string} req.params.categoryId - ID категории
- * @returns {Array} Массив продуктов указанной категории
- */
-export const getProductsByCategory = async (req, res) => {
+    sendSuccess(res, products);
+  } catch (error) {
+    handleControllerError(res, "получении", error);
+  }
+});
+
+// Получение продуктов по категории
+export const getProductsByCategory = asyncHandler(async (req, res) => {
   try {
-    // Проверяем существование категории
     const categoryExists = await Category.findById(req.params.categoryId);
     if (!categoryExists) {
-      return res.status(404).json({ message: "Категория не найдена" });
+      return sendNotFound(res, "Категория не найдена");
     }
 
     const products = await Product.find({
@@ -276,10 +247,8 @@ export const getProductsByCategory = async (req, res) => {
       isActive: true,
     }).populate("category", "name");
 
-    res.status(200).json(products);
+    sendSuccess(res, products);
   } catch (error) {
-    res.status(500).json({
-      message: `Ошибка при получении продуктов по категории: ${error.message}`,
-    });
+    handleControllerError(res, "получении продуктов по категории", error);
   }
-};
+});

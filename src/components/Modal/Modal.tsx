@@ -12,7 +12,7 @@ interface ModalProps {
   onCancel?: () => void;
   confirmText?: string;
   cancelText?: string;
-  type?: "default" | "delete";
+  type?: "default" | "delete" | "success";
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -56,7 +56,13 @@ export const Modal: React.FC<ModalProps> = ({
             <Button
               onClick={onConfirm}
               className={styles.confirmButton}
-              variant={type === "delete" ? "danger" : "primary"}
+              variant={
+                type === "delete"
+                  ? "danger"
+                  : type === "success"
+                  ? "success"
+                  : "primary"
+              }
             >
               {confirmText}
             </Button>

@@ -144,6 +144,33 @@
   text-align: center;
 }
 
+.readOnlyLabel {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-style: italic;
+  margin-left: 5px;
+}
+
+.readOnlyField {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.readOnlyInput {
+  background-color: var(--background-light);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  cursor: not-allowed;
+}
+
+.readOnlyIcon {
+  position: absolute;
+  right: 10px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 0 1rem;

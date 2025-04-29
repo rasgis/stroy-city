@@ -5,6 +5,8 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
+  hideCategory,
+  restoreCategory,
 } from "../controllers/categoryController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 
@@ -35,5 +37,15 @@ router
   .get(getCategoryById)
   .put(protect, admin, updateCategory)
   .delete(protect, admin, deleteCategory);
+
+// @desc    Скрытие категории (soft delete)
+// @route   PUT /api/categories/:id/hide
+// @access  Private/Admin
+router.route("/:id/hide").put(protect, admin, hideCategory);
+
+// @desc    Восстановление скрытой категории
+// @route   PUT /api/categories/:id/restore
+// @access  Private/Admin
+router.route("/:id/restore").put(protect, admin, restoreCategory);
 
 export default router;

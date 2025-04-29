@@ -48,49 +48,6 @@
   margin-top: 1.5rem;
 }
 
-/* Контейнер пагинации */
-.paginationContainer {
-  display: flex;
-  justify-content: center;
-  margin-top: 2.5rem;
-  padding-bottom: 1rem;
-}
-
-/* Переопределение стилей MUI Pagination */
-:global(.MuiPaginationItem-root) {
-  color: rgba(212, 255, 234, 0.7); /* Цвет текста кнопок */
-  border-color: rgba(11, 224, 184, 0.3); /* Цвет рамки */
-  background-color: rgba(255, 255, 255, 0.03); /* Легкий фон */
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-:global(.MuiPaginationItem-root:hover) {
-  background-color: rgba(11, 224, 184, 0.1); /* Фон при наведении */
-  border-color: rgba(11, 224, 184, 0.7);
-  color: #d4ffea;
-}
-
-:global(.MuiPaginationItem-root.Mui-selected) {
-  background-color: #0be0b8; /* Фон активной кнопки */
-  color: #1a1a1f; /* Цвет текста активной кнопки */
-  border-color: #0be0b8;
-  font-weight: 700;
-}
-
-:global(.MuiPaginationItem-root.Mui-selected:hover) {
-  background-color: #0acda3; /* Фон активной кнопки при наведении */
-  border-color: #0acda3;
-}
-
-/* Стили для стрелок */
-:global(.MuiPaginationItem-icon) {
-  color: rgba(212, 255, 234, 0.7);
-}
-:global(.MuiPaginationItem-root:hover .MuiPaginationItem-icon) {
-  color: #d4ffea;
-}
-
 /* Медиа-запросы для мобильных устройств */
 @media (max-width: 768px) {
   .container {

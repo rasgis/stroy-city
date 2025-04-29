@@ -53,12 +53,29 @@ class UserService extends BaseService {
       delete userData.role;
     }
 
+    // Удаляем логин и email, так как их изменение запрещено
+    if (userData.login) {
+      console.warn("Попытка изменить логин через API профиля - игнорируем");
+      delete userData.login;
+    }
+
+    if (userData.email) {
+      console.warn("Попытка изменить email через API профиля - игнорируем");
+      delete userData.email;
+    }
+
     // Обновлен маршрут после рефакторинга сервера от 2024-06-24
     // Используем /api/auth/profile вместо /api/users/profile
     const url = API_CONFIG.ENDPOINTS.AUTH.PROFILE;
     const response = await this.put<User>(url, userData);
 
     return response;
+  }
+
+  // Удаление текущего пользователя
+  async deleteCurrentUser(): Promise<{ message: string }> {
+    // Используем тот же эндпоинт что и для обновления профиля, но с методом DELETE
+    return this.delete<{ message: string }>(API_CONFIG.ENDPOINTS.AUTH.PROFILE);
   }
 }
 

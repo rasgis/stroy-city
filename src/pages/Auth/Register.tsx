@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { register, clearError } from "../../reducers/authSlice";
 import { ROUTES } from "../../constants/routes";
 import styles from "./Auth.module.css";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Обязательное поле").min(2, "Минимум 2 символа"),
@@ -28,7 +29,7 @@ const Register: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { loading, error } = useAppSelector((state) => state.auth);
-  
+
   // Очищаем ошибку при размонтировании компонента
   React.useEffect(() => {
     return () => {
@@ -51,17 +52,25 @@ const Register: React.FC = () => {
         await dispatch(register(registerData)).unwrap();
         navigate(ROUTES.HOME);
       } catch (error) {
-        console.error("Ошибка регистрации:", error);
         // Ошибка уже обработана в authSlice и установлена в state.error
       }
     },
   });
 
+  // Очищаем ошибку при изменении полей формы
+  React.useEffect(() => {
+    if (error) {
+      dispatch(clearError());
+    }
+  }, [formik.values, dispatch, error]);
+
   return (
     <div className={styles.authContainer}>
       <div className={styles.authCard}>
         <h2>Регистрация</h2>
-        {error && <div className={styles.error}>{error}</div>}
+
+        {error && <ErrorMessage message={error} />}
+
         <form onSubmit={formik.handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="name">Имя</label>
@@ -172,7 +181,10 @@ const Register: React.FC = () => {
         </form>
 
         <div className={styles.switchAuth}>
-          Уже есть аккаунт? <Link to={ROUTES.LOGIN} onClick={() => dispatch(clearError())}>Войти</Link>
+          Уже есть аккаунт?{" "}
+          <Link to={ROUTES.LOGIN} onClick={() => dispatch(clearError())}>
+            Войти
+          </Link>
         </div>
       </div>
     </div>

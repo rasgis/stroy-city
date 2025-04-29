@@ -8,14 +8,14 @@ interface CategoryDetailsState {
   selectedCategory: Category | null;
   loading: boolean;
   error: string | null;
-  saveStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+  saveStatus: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const initialState: CategoryDetailsState = {
   selectedCategory: null,
   loading: false,
   error: null,
-  saveStatus: 'idle',
+  saveStatus: "idle",
 };
 
 export const fetchCategoryById = createAsyncThunk(
@@ -31,17 +31,23 @@ export const createCategory = createAsyncThunk(
   async (category: CategoryFormData, { dispatch }) => {
     const newCategory = await categoryService.createCategory(category);
     // Заполняем список категорий в другом слайсе
-    dispatch({ type: 'categoriesList/addCategory', payload: newCategory });
+    dispatch({ type: "categoriesList/addCategory", payload: newCategory });
     return newCategory;
   }
 );
 
 export const updateCategory = createAsyncThunk(
   "categoryDetails/update",
-  async ({ id, category }: { id: string; category: CategoryFormData }, { dispatch }) => {
+  async (
+    { id, category }: { id: string; category: CategoryFormData },
+    { dispatch }
+  ) => {
     const updatedCategory = await categoryService.updateCategory(id, category);
     // Обновляем в списке категорий
-    dispatch({ type: 'categoriesList/updateCategoryInList', payload: updatedCategory });
+    dispatch({
+      type: "categoriesList/updateCategoryInList",
+      payload: updatedCategory,
+    });
     return updatedCategory;
   }
 );
@@ -56,7 +62,7 @@ const categoryDetailsSlice = createSlice({
     resetCategoryDetails: (state) => {
       state.selectedCategory = null;
       state.error = null;
-      state.saveStatus = 'idle';
+      state.saveStatus = "idle";
     },
   },
   extraReducers: (builder) => {
@@ -76,28 +82,28 @@ const categoryDetailsSlice = createSlice({
       })
       // Create Category
       .addCase(createCategory.pending, (state) => {
-        state.saveStatus = 'loading';
+        state.saveStatus = "loading";
         state.error = null;
       })
       .addCase(createCategory.fulfilled, (state, action) => {
-        state.saveStatus = 'succeeded';
+        state.saveStatus = "succeeded";
         state.selectedCategory = action.payload;
       })
       .addCase(createCategory.rejected, (state, action) => {
-        state.saveStatus = 'failed';
+        state.saveStatus = "failed";
         state.error = action.error.message || "Не удалось создать категорию";
       })
       // Update Category
       .addCase(updateCategory.pending, (state) => {
-        state.saveStatus = 'loading';
+        state.saveStatus = "loading";
         state.error = null;
       })
       .addCase(updateCategory.fulfilled, (state, action) => {
-        state.saveStatus = 'succeeded';
+        state.saveStatus = "succeeded";
         state.selectedCategory = action.payload;
       })
       .addCase(updateCategory.rejected, (state, action) => {
-        state.saveStatus = 'failed';
+        state.saveStatus = "failed";
         state.error = action.error.message || "Не удалось обновить категорию";
       });
   },
@@ -127,5 +133,6 @@ export const selectCategorySaveStatus = createSelector(
   (details) => details.saveStatus
 );
 
-export const { setSelectedCategory, resetCategoryDetails } = categoryDetailsSlice.actions;
-export default categoryDetailsSlice.reducer; 
+export const { setSelectedCategory, resetCategoryDetails } =
+  categoryDetailsSlice.actions;
+export default categoryDetailsSlice.reducer;

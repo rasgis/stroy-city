@@ -6,7 +6,6 @@ import { authService } from "../../services/authService";
 import { userService } from "../../services/userService";
 import { logoutUser, updateUserData } from "../../reducers/authSlice";
 import { ROUTES } from "../../constants/routes";
-import { User as AuthUser } from "../../types/auth";
 import { User, UserUpdateData } from "../../types/user";
 import { Loader, Modal } from "../../components";
 import styles from "./Profile.module.css";
@@ -27,6 +26,8 @@ const Profile: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [successDeleteMessage, setSuccessDeleteMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -48,8 +49,8 @@ const Profile: React.FC = () => {
           return;
         }
 
-        // Проверяем, получен ли корректный пользователь из Redux
-        if (authUser._id || authUser.id) {
+        // Проверяем наличие хотя бы одного идентификатора (более мягкая проверка)
+        if (authUser) {
           // Получаем актуальные данные с сервера
           let profileData;
 
@@ -62,7 +63,7 @@ const Profile: React.FC = () => {
 
             // Если роль с сервера отличается от роли в localStorage,
             // это может быть признаком атаки. Обновляем все данные.
-            if (profileData.role !== authUser.role) {
+            if (profileData && profileData.role !== authUser.role) {
               console.warn(
                 "БЕЗОПАСНОСТЬ: Роль на сервере отличается от локальной, выполняется синхронизация",
                 {
@@ -78,16 +79,21 @@ const Profile: React.FC = () => {
             profileData = authUser;
           }
 
-          // Приводим данные к формату User
+          // Приводим данные к формату User, используя данные из Redux при необходимости
           const userObj: User = {
-            _id: profileData._id || profileData.id || "",
-            name: profileData.name || "",
-            email: profileData.email || "",
-            login: profileData.login || "",
-            role: profileData.role as "user" | "admin",
+            _id:
+              profileData?._id ||
+              profileData?.id ||
+              authUser?._id ||
+              authUser?.id ||
+              "",
+            name: profileData?.name || authUser?.name || "",
+            email: profileData?.email || authUser?.email || "",
+            login: profileData?.login || authUser?.login || "",
+            role: (profileData?.role || authUser?.role) as "user" | "admin",
           };
 
-          setUser(userObj as User);
+          setUser(userObj);
           setName(userObj.name || "");
           setEmail(userObj.email || "");
           setLogin(userObj.login || "");
@@ -98,7 +104,22 @@ const Profile: React.FC = () => {
           // Отмечаем, что профиль был загружен
           profileFetchedRef.current = true;
         } else {
-          throw new Error("Неверный формат данных пользователя");
+          console.error("Отсутствует пользователь в состоянии Redux");
+          // Попробуем восстановить из localStorage
+          const savedProfile = authService.loadSavedProfile();
+
+          if (savedProfile) {
+            setUser(savedProfile);
+            setName(savedProfile.name || "");
+            setEmail(savedProfile.email || "");
+            setLogin(savedProfile.login || "");
+
+            dispatch(updateUserData(savedProfile));
+            profileFetchedRef.current = true;
+          } else {
+            navigate(ROUTES.LOGIN);
+            throw new Error("Не удалось восстановить данные пользователя");
+          }
         }
       } catch (error) {
         console.error("Ошибка при загрузке профиля:", error);
@@ -131,8 +152,6 @@ const Profile: React.FC = () => {
       // Создаем объект с обновленными данными
       const userData: UserUpdateData = {
         name,
-        email,
-        login,
       };
 
       // Добавляем пароль только если он был введен
@@ -144,17 +163,18 @@ const Profile: React.FC = () => {
         // Обновляем профиль через API
         const updatedUser = await userService.updateUserProfile(userData);
 
-        // Обновляем локальное состояние и Redux
+        // Создаем объект с обновленными данными, гарантируя что имя будет установлено
         const userObj: User = {
           _id: updatedUser._id || "",
-          name: updatedUser.name || "",
-          email: updatedUser.email || "",
-          login: updatedUser.login || "",
+          name, // Используем текущее имя из состояния компонента
+          email: updatedUser.email || email, // Используем email из состояния, если с сервера не пришел
+          login: updatedUser.login || login, // Используем login из состояния, если с сервера не пришел
           role: updatedUser.role as "user" | "admin",
         };
 
+        // Обновляем как локальное состояние, так и Redux
         setUser(userObj);
-        dispatch(updateUserData(updatedUser));
+        dispatch(updateUserData(userObj)); // Отправляем в Redux объект с гарантированно указанным именем
 
         // Убедимся, что флаг остается установленным, чтобы избежать повторной загрузки
         profileFetchedRef.current = true;
@@ -185,29 +205,43 @@ const Profile: React.FC = () => {
     try {
       setIsLoading(true);
       setError(null);
+      setIsDeleteModalOpen(false); // Закрываем модальное окно сразу
 
-      if (user && user._id) {
-        // Используем метод удаления пользователя
-        await userService.deleteUser(user._id);
+      // Используем новый метод для удаления текущего пользователя
+      await userService.deleteCurrentUser();
 
-        // Сбрасываем флаг загрузки профиля перед выходом
-        profileFetchedRef.current = false;
+      // Сбрасываем флаг загрузки профиля
+      profileFetchedRef.current = false;
 
-        // Выходим из системы
-        dispatch(logoutUser());
+      // Очищаем все локальные состояния
+      setUser(null);
+      setName("");
+      setEmail("");
+      setLogin("");
+      setPassword("");
+      setConfirmPassword("");
 
-        // Перенаправляем на главную страницу
-        navigate(ROUTES.HOME);
-      }
+      // Показываем модальное окно с сообщением об успехе
+      setSuccessDeleteMessage("Ваш аккаунт был успешно удален");
+      setIsSuccessModalOpen(true);
+
+      // После закрытия модалки выход и перенаправление произойдут
+      // автоматически при нажатии кнопки "ОК" (см. обработчик onConfirm в модальном окне)
+
+      // Отключаем состояние загрузки
+      setIsLoading(false);
     } catch (error) {
       console.error("Ошибка при удалении аккаунта:", error);
+
+      // Отображаем ошибку
       if (error instanceof Error) {
         setError(error.message);
       } else {
         setError("Произошла ошибка при удалении аккаунта");
       }
+
+      // Сбрасываем состояние загрузки
       setIsLoading(false);
-      setIsDeleteModalOpen(false);
     }
   };
 
@@ -249,30 +283,38 @@ const Profile: React.FC = () => {
 
           <div className={styles.formGroup}>
             <label htmlFor="email" className={styles.label}>
-              Email
+              Email{" "}
+              <span className={styles.readOnlyLabel}>(Не редактируется)</span>
             </label>
-            <input
-              id="email"
-              type="email"
-              className={styles.input}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <div className={styles.readOnlyField}>
+              <input
+                id="email"
+                type="email"
+                className={`${styles.input} ${styles.readOnlyInput}`}
+                value={email}
+                readOnly
+                disabled
+              />
+              <span className={styles.readOnlyIcon}>🔒</span>
+            </div>
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="login" className={styles.label}>
-              Логин
+              Логин{" "}
+              <span className={styles.readOnlyLabel}>(Не редактируется)</span>
             </label>
-            <input
-              id="login"
-              type="text"
-              className={styles.input}
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
-              required
-            />
+            <div className={styles.readOnlyField}>
+              <input
+                id="login"
+                type="text"
+                className={`${styles.input} ${styles.readOnlyInput}`}
+                value={login}
+                readOnly
+                disabled
+              />
+              <span className={styles.readOnlyIcon}>🔒</span>
+            </div>
           </div>
 
           <div className={styles.formGroup}>
@@ -335,6 +377,25 @@ const Profile: React.FC = () => {
         <p>
           Это действие нельзя будет отменить, и все ваши данные будут удалены.
         </p>
+      </Modal>
+
+      <Modal
+        isOpen={isSuccessModalOpen}
+        onClose={() => {
+          setIsSuccessModalOpen(false);
+          dispatch(logoutUser());
+          navigate(ROUTES.LOGIN);
+        }}
+        title="Операция выполнена"
+        type="success"
+        onConfirm={() => {
+          setIsSuccessModalOpen(false);
+          dispatch(logoutUser());
+          navigate(ROUTES.LOGIN);
+        }}
+        confirmText="OK"
+      >
+        <p>{successDeleteMessage}</p>
       </Modal>
     </Container>
   );

@@ -140,6 +140,21 @@
   box-shadow: var(--card-shadow);
 }
 
+/* Полностью отключаем эффекты при наведении для таблицы пользователей */
+.userList tr {
+  transition: none !important;
+}
+
+.userList tr:hover td {
+  background: var(--table-row-odd) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.userList tr:nth-child(even):hover td {
+  background: var(--table-row-even) !important;
+}
+
 .table tr:first-child td:first-child {
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
@@ -850,19 +865,91 @@
 }
 
 .hideButton {
-  background: rgba(255, 152, 0, 0.1);
-  color: #ff9800;
-  border: 1px solid rgba(255, 152, 0, 0.3);
+  background: rgba(82, 82, 255, 0.1);
+  color: #5252ff;
+  border: 1px solid rgba(82, 82, 255, 0.3);
 }
 
 .hideButton:hover {
-  background: rgba(255, 152, 0, 0.2);
-  border-color: #ff9800;
+  background: rgba(82, 82, 255, 0.2);
+  border-color: #5252ff;
   transform: translateY(-1px);
 }
 
 .filterButton {
-  margin-right: 10px;
+  margin-bottom: 20px;
+}
+
+/* Стили для селектора ролей */
+.roleSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--background-tertiary);
+  border-radius: 8px;
+}
+
+.roleLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--background-card);
+}
+
+.roleLabel:hover {
+  background: var(--background-secondary);
+}
+
+.roleLabel input[type="radio"] {
+  margin: 0;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--accent-primary);
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.roleLabel input[type="radio"]:checked::before {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.adminRole {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+  border: 1px solid rgba(255, 82, 82, 0.3);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.userRole {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: rgba(11, 224, 184, 0.1);
+  color: #0be0b8;
+  border: 1px solid rgba(11, 224, 184, 0.3);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 /* Стили для адаптивной таблицы */

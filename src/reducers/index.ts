@@ -2,25 +2,27 @@
 export * from "./authSlice";
 
 // Products
-export { 
-  fetchProducts, 
+export {
+  fetchProducts,
   fetchProductById,
   selectSelectedProduct,
   selectProductLoading,
   selectProductError,
-  selectFilteredProducts 
+  selectFilteredProducts,
 } from "./products";
 
 // Categories
-export { 
+export {
   fetchCategories,
   deleteCategory,
   createCategory,
   updateCategory,
+  hideCategory,
+  restoreCategory,
   selectFilteredCategories,
   selectSelectedCategory,
   selectCategoryLoading,
-  selectCategoryError
+  selectCategoryError,
 } from "./categories";
 
 // Cart

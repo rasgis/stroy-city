@@ -7,7 +7,7 @@ import {
   fetchProductById,
   selectSelectedProduct,
   selectProductLoading,
-  selectProductError
+  selectProductError,
 } from "../../../reducers/products";
 import { ROUTES } from "../../../constants/routes";
 import { CATEGORIES } from "../../../constants/categories";
@@ -122,7 +122,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  
+
   // Используем мемоизированные селекторы для продукта
   const productState = useAppSelector(selectSelectedProduct);
   const loading = useAppSelector(selectProductLoading);
@@ -147,7 +147,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       image: product?.image || "",
       unitOfMeasure: product?.unitOfMeasure || "шт",
       stock: product?.stock || 0,
-      isActive: product?.isActive !== undefined ? product.isActive : true
+      isActive: product?.isActive !== undefined ? product.isActive : true,
     },
     validationSchema,
     onSubmit: async (values) => {
