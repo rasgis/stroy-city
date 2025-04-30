@@ -11,21 +11,28 @@ interface CartState {
 
 // Функция для получения ключа корзины в localStorage
 const getCartStorageKey = (): string => {
-  const user = authService.getUser();
-
-  // Используем только id пользователя для формирования ключа
-  if (user && user.id) {
-    const key = `cart_${user.id}`;
-    return key;
+  // Проверяем аутентификацию пользователя
+  if (!authService.isAuthenticated()) {
+    return "cart_guest";
   }
 
+  const user = authService.getUser();
+  // Если пользователь аутентифицирован и у него есть id
+  if (user && user.id) {
+    return `cart_${user.id}`;
+  }
+
+  // Запасной вариант, хотя не должен использоваться при правильной аутентификации
   return "cart_guest";
 };
 
 // Функция для загрузки корзины из localStorage
 export const loadCartFromStorage = (): CartState => {
   try {
-    const cartData = localStorage.getItem(getCartStorageKey());
+    // Получаем ключ корзины
+    const storageKey = getCartStorageKey();
+    const cartData = localStorage.getItem(storageKey);
+
     if (cartData) {
       return JSON.parse(cartData);
     }
@@ -64,6 +71,8 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
+      // Проверка на аутентификацию перед добавлением в корзину не нужна здесь,
+      // так как мы контролируем это на уровне маршрутизации
       const existingItem = state.items.find(
         (item) => item._id === action.payload._id
       );
@@ -110,6 +119,7 @@ const cartSlice = createSlice({
       localStorage.removeItem(key);
     },
     loadCart: (state) => {
+      // Проверяем, что пользователь авторизован
       // Загружаем корзину из localStorage с текущим ключом
       const cart = loadCartFromStorage();
 

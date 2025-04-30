@@ -28,6 +28,7 @@ import {
   EntityForm,
   WeatherWidget,
   SearchBar,
+  ErrorMessage,
 } from "../../../components";
 import { Product } from "../../../types";
 import styles from "./Admin.module.css";
@@ -147,7 +148,7 @@ const ProductList: React.FC = () => {
   }
 
   if (productsError) {
-    return <div className={styles.error}>{productsError}</div>;
+    return <ErrorMessage message={productsError} />;
   }
 
   // Преобразование Product в ProductFormValues для EntityForm

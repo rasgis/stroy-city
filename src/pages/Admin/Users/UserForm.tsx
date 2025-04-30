@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { User, UserCreateData, UserUpdateData } from "../../../types/user";
 import styles from "../Products/Admin.module.css";
+import { ErrorMessage } from "../../../components";
 
 interface UserFormProps {
   user?: User;
@@ -53,7 +54,7 @@ const UserForm: React.FC<UserFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      {error && <div className={styles.error}>{error}</div>}
+      {error && <ErrorMessage message={error} />}
 
       <div className={styles.formGroup}>
         <label htmlFor="name" className={styles.label}>

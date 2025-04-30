@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { FaShoppingCart } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import {
   fetchProductById,
@@ -19,13 +20,16 @@ import {
   Loader,
   ErrorMessage,
   ItemNotFound,
+  Button,
 } from "../../components";
 import styles from "./ProductDetail.module.css";
 import { scrollToTop } from "../../utils/scroll";
 import { handleImageError } from "../../utils/imageUtils";
+import { useAuth } from "../../hooks/useAuth";
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
 
@@ -41,7 +45,7 @@ const ProductDetail: React.FC = () => {
   );
   const categoriesError = useAppSelector((state) => state.categoriesList.error);
 
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (id) {
@@ -52,6 +56,13 @@ const ProductDetail: React.FC = () => {
   }, [dispatch, id]);
 
   const handleAddToCart = () => {
+    // Проверка авторизации перед добавлением в корзину
+    if (!isAuthenticated) {
+      // Если пользователь не авторизован, перенаправляем на страницу входа
+      navigate(ROUTES.LOGIN, { state: { from: `/products/${id}` } });
+      return;
+    }
+
     if (product) {
       dispatch(addToCartWithNotification({ ...product, quantity: 1 }));
       setShowSnackbar(true);
@@ -59,6 +70,10 @@ const ProductDetail: React.FC = () => {
         setShowSnackbar(false);
       }, 3000);
     }
+  };
+
+  const closeSnackbar = () => {
+    setShowSnackbar(false);
   };
 
   if (productLoading || categoriesLoading) {
@@ -137,14 +152,16 @@ const ProductDetail: React.FC = () => {
             <div className={styles.price}>
               {product.price} ₽ / {product.unitOfMeasure}
             </div>
-            {isAuthenticated && (
-              <button
-                className={styles.addToCartButton}
-                onClick={handleAddToCart}
-              >
-                Добавить в корзину
-              </button>
-            )}
+            <Button
+              variant="primary"
+              startIcon={<FaShoppingCart />}
+              className={styles.addToCartButton}
+              onClick={handleAddToCart}
+            >
+              {isAuthenticated
+                ? "Добавить в корзину"
+                : "Войти и добавить в корзину"}
+            </Button>
           </div>
         </div>
       </div>
@@ -153,10 +170,7 @@ const ProductDetail: React.FC = () => {
         <div className={styles.snackbar}>
           <div className={styles.snackbarContent}>
             <span>Товар добавлен в корзину</span>
-            <button
-              className={styles.closeButton}
-              onClick={() => setShowSnackbar(false)}
-            >
+            <button className={styles.closeButton} onClick={closeSnackbar}>
               ×
             </button>
           </div>

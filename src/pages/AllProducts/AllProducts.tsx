@@ -8,6 +8,7 @@ import {
   ProductCard,
   Breadcrumbs,
   PaginationBlock,
+  ErrorMessage,
 } from "../../components";
 import { scrollToTop } from "../../utils/scroll";
 import { ROUTES } from "../../constants/routes";
@@ -65,7 +66,7 @@ const AllProducts: React.FC = () => {
   if (productsError) {
     return (
       <Container className={styles.container}>
-        <Typography color="error">{productsError}</Typography>
+        <ErrorMessage message={productsError} />
       </Container>
     );
   }
@@ -86,11 +87,13 @@ const AllProducts: React.FC = () => {
         <SearchBar onSearch={handleSearch} loading={productsLoading} />
 
         {currentProducts.length === 0 ? (
-          <Typography style={{ marginTop: "2rem", color: "#d4ffea" }}>
-            {searchQuery
-              ? "По вашему запросу товары не найдены."
-              : "Нет доступных товаров."}
-          </Typography>
+          <ErrorMessage
+            message={
+              searchQuery
+                ? "По вашему запросу товары не найдены."
+                : "Нет доступных товаров."
+            }
+          />
         ) : (
           <>
             <Grid container spacing={3} className={styles.productGrid}>

@@ -296,16 +296,11 @@
   border-color: var(--error);
 }
 
-.errorMessage {
-  color: var(--error);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
 .formActions {
   display: flex;
+  justify-content: flex-end;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .submitButton,
@@ -342,7 +337,6 @@
 }
 
 .loading,
-.error,
 .empty {
   text-align: center;
   padding: 2rem;
@@ -354,10 +348,6 @@
   width: 100%;
   max-width: 600px;
   margin: 2rem auto;
-}
-
-.error {
-  color: var(--error);
 }
 
 @media (max-width: 768px) {
@@ -874,10 +864,6 @@
   background: rgba(82, 82, 255, 0.2);
   border-color: #5252ff;
   transform: translateY(-1px);
-}
-
-.filterButton {
-  margin-bottom: 20px;
 }
 
 /* Стили для селектора ролей */

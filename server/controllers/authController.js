@@ -11,13 +11,8 @@ import {
   sendForbidden,
   checkEntityExistsOrFail,
   checkUniqueness,
+  handleControllerError,
 } from "../utils/controllerUtils/index.js";
-
-// Обработка ошибок для контроллеров аутентификации
-const handleAuthError = (res, operation, error) => {
-  console.error(`Ошибка при ${operation}:`, error);
-  sendError(res, `Ошибка при ${operation}: ${error.message}`);
-};
 
 // Форматирование данных пользователя для ответа
 const formatUserResponse = (user, token) => {
@@ -79,7 +74,7 @@ export const register = asyncHandler(async (req, res) => {
     const token = generateToken(user._id);
     sendCreated(res, formatUserResponse(user, token));
   } catch (error) {
-    handleAuthError(res, "регистрации пользователя", error);
+    handleControllerError(res, "регистрации", error, "пользователя");
   }
 });
 
@@ -110,7 +105,7 @@ export const login = asyncHandler(async (req, res) => {
     const token = generateToken(user._id);
     sendSuccess(res, formatUserResponse(user, token));
   } catch (error) {
-    handleAuthError(res, "входе пользователя", error);
+    handleControllerError(res, "входе", error, "пользователя");
   }
 });
 
@@ -136,7 +131,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
       role: user.role,
     });
   } catch (error) {
-    handleAuthError(res, "получении профиля", error);
+    handleControllerError(res, "получении профиля", error, "пользователя");
   }
 });
 
@@ -173,7 +168,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 
     sendSuccess(res, formatUserResponse(updatedUser, token));
   } catch (error) {
-    handleAuthError(res, "обновлении профиля", error);
+    handleControllerError(res, "обновлении профиля", error, "пользователя");
   }
 });
 
@@ -199,6 +194,6 @@ export const deleteUserProfile = asyncHandler(async (req, res) => {
 
     sendSuccess(res, { message: "Ваш аккаунт был успешно удален" });
   } catch (error) {
-    handleAuthError(res, "удалении профиля", error);
+    handleControllerError(res, "удалении профиля", error, "пользователя");
   }
 });

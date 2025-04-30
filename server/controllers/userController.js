@@ -12,13 +12,8 @@ import {
   sendForbidden,
   checkEntityExistsOrFail,
   checkUniqueness,
+  handleControllerError,
 } from "../utils/controllerUtils/index.js";
-
-// Обработка ошибок для контроллеров пользователей
-const handleUserError = (res, operation, error) => {
-  console.error(`Ошибка при ${operation} пользователя:`, error);
-  sendError(res, `Ошибка при ${operation} пользователя: ${error.message}`);
-};
 
 // Форматирование ответа с данными пользователя
 const formatUserData = (user, includeToken = true) => {
@@ -54,7 +49,7 @@ const authUser = asyncHandler(async (req, res) => {
       sendUnauthorized(res, "Неверный email или пароль");
     }
   } catch (error) {
-    handleUserError(res, "аутентификации", error);
+    handleControllerError(res, "аутентификации", error, "пользователя");
   }
 });
 
@@ -95,7 +90,7 @@ const registerUser = asyncHandler(async (req, res) => {
       sendBadRequest(res, "Ошибка при создании пользователя");
     }
   } catch (error) {
-    handleUserError(res, "регистрации", error);
+    handleControllerError(res, "регистрации", error, "пользователя");
   }
 });
 
@@ -114,7 +109,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
     sendSuccess(res, formatUserData(user, false));
   } catch (error) {
-    handleUserError(res, "получении профиля", error);
+    handleControllerError(res, "получении профиля", error, "пользователя");
   }
 });
 
@@ -151,7 +146,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     const updatedUser = await user.save();
     sendSuccess(res, formatUserData(updatedUser));
   } catch (error) {
-    handleUserError(res, "обновлении профиля", error);
+    handleControllerError(res, "обновлении профиля", error, "пользователя");
   }
 });
 
@@ -169,7 +164,7 @@ const getUsers = asyncHandler(async (req, res) => {
     const users = await User.find({}).select("-password");
     sendSuccess(res, users);
   } catch (error) {
-    handleUserError(res, "получении списка", error);
+    handleControllerError(res, "получении списка", error, "пользователей");
   }
 });
 
@@ -196,7 +191,7 @@ const getUserById = asyncHandler(async (req, res) => {
 
     sendSuccess(res, user);
   } catch (error) {
-    handleUserError(res, "получении", error);
+    handleControllerError(res, "получении", error, "пользователя");
   }
 });
 
@@ -239,7 +234,7 @@ const updateUser = asyncHandler(async (req, res) => {
       role: updatedUser.role,
     });
   } catch (error) {
-    handleUserError(res, "обновлении", error);
+    handleControllerError(res, "обновлении", error, "пользователя");
   }
 });
 
@@ -275,7 +270,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     await user.deleteOne();
     sendMessage(res, "Пользователь удален");
   } catch (error) {
-    handleUserError(res, "удалении", error);
+    handleControllerError(res, "удалении", error, "пользователя");
   }
 });
 

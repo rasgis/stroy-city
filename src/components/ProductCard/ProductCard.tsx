@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { Product } from "../../types/product";
 import { ROUTES } from "../../constants/routes";
+import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks/redux";
 import { addToCartWithNotification } from "../../reducers/cartSlice";
 import { selectFilteredCategories } from "../../reducers/categories";
@@ -19,6 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
   ({ product, isAuthenticated }) => {
     const categories = useAppSelector(selectFilteredCategories);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     // Мемоизируем название категории
     const categoryName = useMemo(() => {
@@ -47,9 +49,13 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       (e: React.MouseEvent) => {
         e.preventDefault(); // Предотвращаем переход по ссылке
         e.stopPropagation(); // Предотвращаем всплытие события
-        dispatch(addToCartWithNotification({ ...product, quantity: 1 }));
+
+        if (isAuthenticated) {
+          // Добавляем в корзину только если пользователь авторизован
+          dispatch(addToCartWithNotification({ ...product, quantity: 1 }));
+        }
       },
-      [dispatch, product]
+      [dispatch, product, isAuthenticated]
     );
 
     const handleCardClick = useCallback((e: React.MouseEvent) => {
@@ -61,7 +67,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       scrollToTop();
     }, []);
 
-    // Футер карточки с кнопкой "В корзину"
+    // Футер карточки с кнопкой "В корзину" только для авторизованных пользователей
     const cardFooter = isAuthenticated ? (
       <Button
         variant="contained"

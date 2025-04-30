@@ -117,3 +117,31 @@ export const handleApiError = (error: unknown, context: string = ""): never => {
   // Если не удалось извлечь более конкретное сообщение, возвращаем общую ошибку
   throw new Error("Произошла непредвиденная ошибка");
 };
+
+/**
+ * Форматирует ошибку для отображения пользователю
+ * @param error Объект ошибки
+ * @returns Отформатированное сообщение об ошибке
+ */
+export const formatErrorMessage = (error: unknown): string => {
+  if (!error) return "Произошла неизвестная ошибка";
+
+  if (typeof error === "string") return error;
+
+  if (error instanceof Error) return error.message;
+
+  if (axios.isAxiosError(error)) {
+    const axiosError = error as AxiosError;
+    if (axiosError.response?.data) {
+      return extractErrorMessage(axiosError.response.data);
+    }
+    return axiosError.message || "Ошибка при выполнении сетевого запроса";
+  }
+
+  // Для объектов пытаемся преобразовать в строку
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return "Произошла ошибка, подробности недоступны";
+  }
+};

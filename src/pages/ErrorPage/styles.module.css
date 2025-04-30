@@ -1,0 +1,321 @@
+/* Общие стили контейнера */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  max-height: 80vh;
+  text-align: center;
+  padding: 3rem;
+  border-radius: 16px;
+  margin: 3rem auto;
+  max-width: 650px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Анимация появления */
+.mounted {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Стили для темной темы */
+.container.theme-dark {
+  background: linear-gradient(
+    135deg,
+    rgba(29, 30, 36, 0.9) 0%,
+    rgba(42, 43, 50, 0.9) 100%
+  );
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Стили для светлой темы */
+.container.theme-light {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(245, 245, 250, 0.95) 100%
+  );
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Декоративные элементы */
+.decorDot1 {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  top: 20px;
+  right: 20px;
+  opacity: 0.6;
+}
+
+.decorDot2 {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  bottom: 25px;
+  left: 25px;
+  opacity: 0.6;
+}
+
+.decorLine {
+  position: absolute;
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.theme-light .decorLine {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.05),
+    transparent
+  );
+}
+
+/* Псевдоэлемент для декоративного фона */
+.container::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.theme-dark.container::before {
+  background: linear-gradient(135deg, #0be0b8 0%, #0bc8e0 100%);
+}
+
+.theme-light.container::before {
+  background: linear-gradient(135deg, #0ca591 0%, #0eaec4 100%);
+}
+
+/* Псевдоэлемент для второго декоративного элемента */
+.container::after {
+  content: "";
+  position: absolute;
+  bottom: -50px;
+  left: -50px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.theme-dark.container::after {
+  background: linear-gradient(135deg, #e03b3b 0%, #ff7a7a 100%);
+}
+
+.theme-light.container::after {
+  background: linear-gradient(135deg, #d32f2f 0%, #ff5252 100%);
+}
+
+/* Иконка ошибки */
+.errorIcon {
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+  animation: float 3s ease-in-out infinite;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  margin-top: -20px;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+}
+
+/* Код ошибки */
+.errorCode {
+  font-size: 5rem;
+  margin: 0;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  letter-spacing: -2px;
+  z-index: 1;
+  background: linear-gradient(to bottom, currentColor 70%, transparent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Заголовок ошибки */
+.errorTitle {
+  font-size: 1.8rem;
+  margin: 0.5rem 0;
+  transition: color 0.3s ease;
+  z-index: 1;
+  font-weight: 600;
+}
+
+/* Сообщение ошибки */
+.errorMessage {
+  font-size: 1.1rem;
+  margin: 1rem auto 2rem;
+  transition: color 0.3s ease;
+  max-width: 90%;
+  line-height: 1.5;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+/* Стили для темной темы */
+.theme-dark .errorTitle {
+  color: #e6fff5;
+}
+
+.theme-dark .errorMessage {
+  color: #b4c5d3;
+}
+
+/* Стили для светлой темы */
+.theme-light .errorTitle {
+  color: #1c2a3a;
+}
+
+.theme-light .errorMessage {
+  color: #4a5568;
+}
+
+/* Контейнер для дополнительных действий */
+.actionsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  z-index: 1;
+}
+
+/* Кнопка "Вернуться на главную" */
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.8rem;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  z-index: 1;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Иконка "домой" */
+.homeIcon {
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Стили кнопки для темной темы */
+.theme-dark .link {
+  background: linear-gradient(135deg, #0be0b8 0%, #0bc8e0 100%);
+  color: #1d1e24;
+  box-shadow: 0 4px 15px rgba(11, 224, 184, 0.3);
+}
+
+.theme-dark .link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(11, 224, 184, 0.4);
+}
+
+.theme-dark .link:active {
+  transform: translateY(-1px);
+}
+
+/* Стили кнопки для светлой темы */
+.theme-light .link {
+  background: linear-gradient(135deg, #0ca591 0%, #0eaec4 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(12, 165, 145, 0.2);
+}
+
+.theme-light .link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(12, 165, 145, 0.3);
+}
+
+.theme-light .link:active {
+  transform: translateY(-1px);
+}
+
+/* Анимация плавающего эффекта для иконки */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 768px) {
+  .container {
+    min-height: 350px;
+    margin: 2rem 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .errorCode {
+    font-size: 4rem;
+  }
+
+  .errorTitle {
+    font-size: 1.5rem;
+  }
+
+  .errorMessage {
+    font-size: 1rem;
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .errorIcon {
+    font-size: 2.5rem;
+    width: 50px;
+    height: 50px;
+  }
+
+  .link {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .decorDot1,
+  .decorDot2 {
+    display: none;
+  }
+}

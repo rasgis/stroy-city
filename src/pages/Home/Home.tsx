@@ -136,6 +136,10 @@ const Home: React.FC = () => {
               <span className={styles.discountPercent}>5%</span> скидку на весь
               ассортимент товаров!
             </p>
+            <p className={styles.discountInfo}>
+              Для доступа к дополнительным возможностям сайта, включая заказ
+              товаров и управление корзиной, необходима авторизация в системе.
+            </p>
             <div className={styles.discountFeatures}>
               <div className={styles.discountFeature}>
                 <PersonAdd className={styles.discountFeatureIcon} />

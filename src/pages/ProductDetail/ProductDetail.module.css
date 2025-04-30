@@ -142,12 +142,7 @@
   color: var(--text-secondary);
 }
 
-.error {
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.2rem;
-  color: var(--status-error);
-}
+/* Стили для отображения ошибок удалены, так как используется единый компонент ErrorMessage */
 
 .notFound {
   text-align: center;

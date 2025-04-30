@@ -14,6 +14,7 @@ import {
   WeatherWidget,
   Modal,
   Button,
+  ErrorMessage,
 } from "../../../components";
 import { Category } from "../../../types";
 import {
@@ -236,7 +237,7 @@ const CategoryListContainer: React.FC = () => {
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <ErrorMessage message={error} />;
   }
 
   const categoryTree = buildCategoryTree(categories);

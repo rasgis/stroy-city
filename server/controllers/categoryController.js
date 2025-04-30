@@ -9,13 +9,8 @@ import {
   sendBadRequest,
   checkEntityExistsOrFail,
   checkUniqueness,
+  handleControllerError,
 } from "../utils/controllerUtils/index.js";
-
-// Базовая обработка ошибок для контроллеров категорий
-const handleCategoryError = (res, operation, error) => {
-  console.error(`Ошибка при ${operation} категории:`, error);
-  sendError(res, `Ошибка при ${operation} категории: ${error.message}`);
-};
 
 // Получение всех категорий
 export const getCategories = asyncHandler(async (req, res) => {
@@ -23,7 +18,7 @@ export const getCategories = asyncHandler(async (req, res) => {
     const categories = await Category.find({}).sort({ name: 1 });
     sendSuccess(res, categories);
   } catch (error) {
-    handleCategoryError(res, "получении", error);
+    handleControllerError(res, "получении", error, "категорий");
   }
 });
 
@@ -42,7 +37,7 @@ export const getCategoryById = asyncHandler(async (req, res) => {
 
     sendSuccess(res, category);
   } catch (error) {
-    handleCategoryError(res, "получении", error);
+    handleControllerError(res, "получении", error, "категории");
   }
 });
 
@@ -98,7 +93,7 @@ export const createCategory = asyncHandler(async (req, res) => {
 
     sendCreated(res, category);
   } catch (error) {
-    handleCategoryError(res, "создании", error);
+    handleControllerError(res, "создании", error, "категории");
   }
 });
 
@@ -172,7 +167,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
     const updatedCategory = await category.save();
     sendSuccess(res, updatedCategory);
   } catch (error) {
-    handleCategoryError(res, "обновлении", error);
+    handleControllerError(res, "обновлении", error, "категории");
   }
 });
 
@@ -209,7 +204,7 @@ export const deleteCategory = asyncHandler(async (req, res) => {
     await category.deleteOne();
     sendMessage(res, "Категория успешно удалена");
   } catch (error) {
-    handleCategoryError(res, "удалении", error);
+    handleControllerError(res, "удалении", error, "категории");
   }
 });
 
@@ -240,7 +235,7 @@ export const hideCategory = asyncHandler(async (req, res) => {
 
     sendMessage(res, "Категория успешно скрыта");
   } catch (error) {
-    handleCategoryError(res, "скрытии", error);
+    handleControllerError(res, "скрытии", error, "категории");
   }
 });
 
@@ -271,6 +266,6 @@ export const restoreCategory = asyncHandler(async (req, res) => {
 
     sendSuccess(res, restoredCategory);
   } catch (error) {
-    handleCategoryError(res, "восстановлении", error);
+    handleControllerError(res, "восстановлении", error, "категории");
   }
 });

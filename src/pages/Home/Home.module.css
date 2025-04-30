@@ -303,8 +303,10 @@
 
 .features {
   width: 100%;
+  height: 700px;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 2rem;
   padding: 2rem;
   margin: 2rem 0;
@@ -469,6 +471,10 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .feature::after {
@@ -496,18 +502,16 @@
   color: var(--text-primary);
   margin-bottom: 1rem;
   font-size: 1.5rem;
-  font-weight: 600;
-  position: relative;
-  z-index: 1;
+  text-align: center;
+  width: 100%;
 }
 
 .feature p {
   color: var(--text-secondary);
-  line-height: 1.6;
-  font-size: 1.1rem;
-  position: relative;
-  z-index: 1;
+  font-size: 1rem;
+  line-height: 1.5;
   text-align: center;
+  width: 100%;
 }
 
 .about {
@@ -556,6 +560,7 @@
   will-change: transform;
   text-shadow: 0 2px 10px rgba(var(--accent-primary-rgb), 0.2);
   letter-spacing: 0.5px;
+  width: 100%;
 }
 
 .about p {
@@ -581,6 +586,10 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .materialsStore::after,
@@ -609,6 +618,8 @@
   font-weight: 600;
   position: relative;
   z-index: 1;
+  text-align: center;
+  width: 100%;
 }
 
 .materialsStore p,
@@ -619,6 +630,9 @@
   font-size: 1.1rem;
   position: relative;
   z-index: 1;
+  text-align: center;
+  margin: 0 auto;
+  max-width: 800px;
 }
 
 .partners {
@@ -632,6 +646,9 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .partners::after {
@@ -655,6 +672,7 @@
   font-size: 2rem;
   font-weight: 600;
   text-align: center;
+  width: 100%;
 }
 
 .partners p {
@@ -717,6 +735,8 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .discountBanner::after {
@@ -753,14 +773,34 @@
   font-weight: 700;
   color: var(--accent-primary);
   margin-bottom: 1rem;
+  text-align: center;
+  width: 100%;
 }
 
 .discountText {
   font-size: 1.2rem;
   color: var(--text-primary);
   text-align: center;
+  margin-bottom: 1rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.discountInfo {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  text-align: center;
   margin-bottom: 1.5rem;
   max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  font-style: italic;
+  border-left: 3px solid var(--accent-primary);
+  padding-left: 1rem;
+  background: rgba(var(--accent-primary-rgb), 0.05);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
 }
 
 .discountPercent {
@@ -941,7 +981,7 @@
   }
 
   .hero {
-    padding: 3rem 1rem;
+    padding: 2rem 1rem;
   }
 
   .welcomeTitle {
@@ -950,7 +990,6 @@
 
   .subtitle {
     font-size: 1.1rem;
-    margin-bottom: 1.5rem;
   }
 
   .logo {
@@ -958,24 +997,25 @@
   }
 
   .features {
-    padding: 1.5rem;
-    gap: 1.5rem;
+    height: auto;
+    padding: 1rem;
+    margin: 1rem 0;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
   }
 
   .feature {
+    flex: 1 1 100%;
+    margin-bottom: 1rem;
     max-width: 100%;
-    width: 100%;
-    padding: 1.5rem;
   }
 
   .feature h3 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   .feature p {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
   .about {
@@ -988,18 +1028,23 @@
   }
 
   .about p {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    padding: 0 1rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
   }
 
   .discountTitle {
-    font-size: 1.8rem;
-    text-align: center;
+    font-size: 1.7rem;
+    margin-bottom: 0.8rem;
   }
 
   .discountText {
+    font-size: 1.1rem;
+  }
+
+  .discountInfo {
     font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+    max-width: 100%;
   }
 
   .discountButton {
@@ -1008,34 +1053,32 @@
   }
 
   .discountIcon {
-    width: 70px;
-    height: 70px;
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
   }
 
   .discountBanner::after,
   .about::after,
-  .hero::after,
-  .features::after {
-    background: radial-gradient(
-      circle at 50% 30%,
-      rgba(var(--accent-primary-rgb), 0.1),
-      transparent 80%
-    );
+  .materialsStore::after,
+  .qualityAssurance::after,
+  .trustAndExperience::after,
+  .partners::after {
+    display: none;
   }
 
   .discountFeatures {
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 1rem;
-    justify-content: center;
+    align-items: center;
   }
 
   .discountFeature {
-    padding: 0.7rem 1rem;
-    font-size: 0.9rem;
+    width: 100%;
+    max-width: 300px;
   }
 
   .discountFeatureIcon {
-    margin-right: 0.5rem;
+    font-size: 1.3rem;
   }
 
   .discountFeature span {
@@ -1044,16 +1087,40 @@
 
   .partnersGrid {
     grid-template-columns: repeat(2, 1fr);
-    padding: 1rem;
     gap: 1rem;
   }
 
   .partnerLogoContainer {
-    height: 100px;
+    padding: 0.8rem;
   }
 
   .partnerLogo {
-    max-width: 80%;
+    max-width: 100px;
+  }
+
+  .materialsStore h3,
+  .qualityAssurance h3,
+  .trustAndExperience h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .materialsStore p,
+  .qualityAssurance p,
+  .trustAndExperience p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .partners h2,
+  .discountTitle {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .partners p,
+  .discountText {
+    font-size: 1rem;
   }
 }
 
@@ -1084,10 +1151,20 @@
   .features {
     padding: 1.2rem 1rem;
     margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
 
   .feature {
     padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
 
   .feature h3 {
@@ -1172,6 +1249,22 @@
     width: auto;
     height: auto;
     object-fit: contain;
+  }
+
+  .materialsStore h3,
+  .qualityAssurance h3,
+  .trustAndExperience h3 {
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 0 0.3rem;
+  }
+
+  .materialsStore p,
+  .qualityAssurance p,
+  .trustAndExperience p {
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 0 0.3rem;
   }
 }
 

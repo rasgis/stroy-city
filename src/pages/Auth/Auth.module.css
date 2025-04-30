@@ -82,55 +82,6 @@
   border-color: var(--warning);
 }
 
-.errorMessage {
-  color: var(--warning);
-  font-size: 0.875rem;
-}
-
-.error {
-  color: var(--warning);
-  background-color: rgba(var(--warning-rgb), 0.1);
-  padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 1.5rem;
-  text-align: left;
-  font-weight: 500;
-  border: 1px solid rgba(var(--warning-rgb), 0.3);
-  position: relative;
-  padding-left: 2.5rem;
-  box-shadow: 0 2px 8px rgba(var(--warning-rgb), 0.2);
-  animation: shake 0.5s ease-in-out;
-}
-
-.error::before {
-  content: "⚠️";
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.25rem;
-}
-
-@keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  10%,
-  30%,
-  50%,
-  70%,
-  90% {
-    transform: translateX(-5px);
-  }
-  20%,
-  40%,
-  60%,
-  80% {
-    transform: translateX(5px);
-  }
-}
-
 .submitButton {
   background: var(--accent-primary);
   color: var(--button-text);
@@ -175,4 +126,24 @@
 .switchAuth a:hover {
   color: var(--accent-hover);
   text-decoration: none;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
 }

@@ -76,3 +76,24 @@ export const sendForbidden = (res, message = "Доступ запрещен") =>
 export const sendUnauthorized = (res, message = "Требуется авторизация") => {
   sendError(res, message, 401);
 };
+
+/**
+ * Универсальная функция обработки ошибок для контроллеров
+ * @param {Object} res - Express response объект
+ * @param {String} operation - Описание операции, при которой произошла ошибка
+ * @param {Error} error - Объект ошибки
+ * @param {String} entityType - Тип сущности (по умолчанию "")
+ */
+export const handleControllerError = (
+  res,
+  operation,
+  error,
+  entityType = ""
+) => {
+  const entityPrefix = entityType ? `${entityType}: ` : "";
+  console.error(
+    `Ошибка при ${operation}${entityType ? ` ${entityType}` : ""}:`,
+    error
+  );
+  sendError(res, `${entityPrefix}Ошибка при ${operation}: ${error.message}`);
+};

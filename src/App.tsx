@@ -26,11 +26,10 @@ import ProductCatalog from "./pages/ProductCatalog/ProductCatalog";
 import ProductDetail from "./pages/ProductDetail/ProductDetail";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";
 import AllProducts from "./pages/AllProducts/AllProducts";
-import NotFound from "./pages/NotFound";
+import ErrorPage from "./pages/ErrorPage";
 import CategoryListContainer from "./pages/Admin/Categories";
 import Cart from "./pages/Cart/Cart";
 import AdminUsers from "./pages/Admin/Users/Users";
-import AccessDenied from "./pages/AccessDenied";
 import Profile from "./pages/Profile/Profile";
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
@@ -58,7 +57,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   if (!isAdmin) {
-    return <AccessDenied />;
+    return <Navigate to={ROUTES.ACCESS_DENIED} />;
   }
 
   return <>{children}</>;
@@ -82,8 +81,18 @@ const App: React.FC = () => {
                   element={<ProductDetail />}
                 />
                 <Route path={ROUTES.ALL_PRODUCTS} element={<AllProducts />} />
-                <Route path={ROUTES.CART} element={<Cart />} />
-                <Route path="/access-denied" element={<AccessDenied />} />
+                <Route
+                  path={ROUTES.CART}
+                  element={
+                    <PrivateRoute>
+                      <Cart />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.ACCESS_DENIED}
+                  element={<ErrorPage type="access-denied" />}
+                />
                 <Route
                   path={ROUTES.PROFILE}
                   element={
@@ -132,7 +141,7 @@ const App: React.FC = () => {
                     </AdminRoute>
                   }
                 />
-                <Route path="*" element={<NotFound />} />
+                <Route path="*" element={<ErrorPage type="not-found" />} />
               </Routes>
             </Layout>
             <GlobalNotification />

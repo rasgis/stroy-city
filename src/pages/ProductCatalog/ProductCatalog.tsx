@@ -4,11 +4,15 @@ import {
   fetchCategories,
   selectAllCategories,
 } from "../../reducers/categories";
-import { CategoryGrid, Loader, Breadcrumbs } from "../../components";
+import {
+  CategoryGrid,
+  Loader,
+  Breadcrumbs,
+  ErrorMessage,
+} from "../../components";
 import { categoryService } from "../../services/categoryService";
 import { ROUTES } from "../../constants/routes";
 import { scrollToTop } from "../../utils/scroll";
-import { MdError } from "react-icons/md";
 import styles from "./ProductCatalog.module.css";
 import { useNavigate } from "react-router-dom";
 import { Category } from "../../types";
@@ -52,10 +56,7 @@ const ProductCatalog: React.FC = () => {
           ]}
         />
         <h1 className={styles.title}>Каталог товаров</h1>
-        <div className={styles.error}>
-          <MdError className={styles.errorIcon} />
-          <div>{categoriesError}</div>
-        </div>
+        <ErrorMessage message={categoriesError} />
       </div>
     );
   }
@@ -77,9 +78,7 @@ const ProductCatalog: React.FC = () => {
       <h1 className={styles.title}>Каталог товаров</h1>
 
       {rootCategories.length === 0 ? (
-        <div className={styles.error}>
-          <p>Нет доступных категорий</p>
-        </div>
+        <ErrorMessage message="Нет доступных категорий" />
       ) : (
         <div className={styles.categories}>
           <CategoryGrid

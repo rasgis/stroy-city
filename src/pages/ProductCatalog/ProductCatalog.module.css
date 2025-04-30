@@ -129,29 +129,6 @@
   font-size: 1.25rem;
 }
 
-.error {
-  color: var(--catalog-error-color);
-  font-size: 1.25rem;
-}
-
-.errorIcon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  color: var(--catalog-error-color);
-}
-
-.errorMessage {
-  text-align: center;
-  color: var(--catalog-error-color);
-  padding: 2rem;
-  background: var(--catalog-grid-bg);
-  border-radius: 10px;
-  box-shadow: 0 4px 15px var(--catalog-grid-shadow);
-  width: 100%;
-  font-size: 1.1rem;
-  margin: 2rem 0;
-}
-
 .emptyMessage {
   text-align: center;
   color: var(--catalog-card-text);
