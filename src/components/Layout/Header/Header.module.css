@@ -117,6 +117,13 @@
   color: var(--accent-admin);
   font-size: 0.85rem;
   transition: color var(--transition-speed);
+  display: flex;
+  align-items: center;
+}
+
+.adminLinkText {
+  white-space: nowrap;
+  margin-left: 4px;
 }
 
 /* Подчеркивание при наведении */
@@ -370,11 +377,43 @@
     justify-content: flex-start;
   }
 
+  /* Новые стили для админского меню в мобильной версии */
   .adminNav {
     margin: 0.5rem 0;
     padding: 0.5rem 0;
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
+  }
+
+  .adminLink {
+    background-color: rgba(var(--accent-admin-rgb), 0.1);
+    border: 1px solid rgba(var(--accent-admin-rgb), 0.2);
+    margin-bottom: 0.25rem;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+
+  .adminLinkText {
+    display: inline !important;
+    font-size: 0.95rem;
+    color: var(--accent-admin);
+  }
+
+  .adminIcon {
+    margin-right: 8px !important;
+    font-size: 1rem !important;
+    color: var(--accent-admin);
+  }
+
+  /* Исправление линии подчеркивания */
+  .adminLink::after {
+    bottom: -1px;
+    height: 3px;
+    background-color: var(--accent-admin) !important;
+  }
+
+  .adminLink:hover::after {
+    width: 90%;
   }
 }
 
@@ -489,5 +528,31 @@
 
   .userInfo {
     padding: 8px;
+  }
+}
+
+@media (min-width: 769px) {
+  /* Стили для обычного режима, не мобильного */
+  .adminLink {
+    padding: 8px 12px;
+  }
+
+  .adminIcon {
+    margin-right: 4px;
+  }
+
+  /* Возвращаем скрытие текста для средних экранов */
+  @media (max-width: 1169px) {
+    .adminLinkText {
+      display: none;
+    }
+
+    .adminLink {
+      padding: 6px;
+    }
+
+    .adminIcon {
+      margin-right: 0;
+    }
   }
 }

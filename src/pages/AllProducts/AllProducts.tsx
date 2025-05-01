@@ -35,7 +35,7 @@ const AllProducts: React.FC = () => {
   useEffect(() => {
     if (products) {
       const filtered = products.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        product.name?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredProducts(filtered);
       setCurrentPage(1);

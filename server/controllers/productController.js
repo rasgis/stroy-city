@@ -198,9 +198,15 @@ export const restoreProduct = asyncHandler(async (req, res) => {
     }
 
     product.isActive = true;
-    await product.save();
+    const updatedProduct = await product.save();
 
-    sendSuccess(res, { message: "Продукт успешно восстановлен" });
+    // Получаем полные данные продукта с заполненными полями
+    const fullProduct = await Product.findById(updatedProduct._id).populate(
+      "category"
+    );
+
+    // Отправляем полные данные продукта в ответе
+    res.status(200).json(fullProduct);
   } catch (error) {
     handleControllerError(res, "восстановлении", error, "продукта");
   }

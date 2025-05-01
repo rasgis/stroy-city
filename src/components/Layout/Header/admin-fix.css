@@ -1,9 +1,90 @@
-/* Фикс для админ-меню в мобильной версии */
-.admin-nav-fix {
-  position: relative;
-  z-index: 1000 !important;
+/* Добавляем CSS переменные для лучшей цветовой схемы */
+:root {
+  --admin-color: #ff5252;
+  --admin-color-rgb: 255, 82, 82;
+  --admin-hover-color: #ff7b7b;
+  --admin-bg-color: rgba(255, 82, 82, 0.1);
+  --admin-border-color: rgba(255, 82, 82, 0.3);
 }
-.admin-link-fix {
-  position: relative;
-  z-index: 1001 !important;
+
+/* Применяем стили только для мобильных устройств */
+@media (max-width: 768px) {
+  /* Позиционирование и z-index для мобильного режима */
+  .admin-nav-fix {
+    position: relative;
+    z-index: 1000 !important;
+    width: 100% !important;
+  }
+
+  .admin-link-fix {
+    position: relative;
+    z-index: 1001 !important;
+    width: 100% !important;
+  }
+
+  /* Стили для админских кнопок в мобильном режиме */
+  .admin-link-fix {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    background-color: var(--admin-bg-color) !important;
+    border: 1px solid var(--admin-border-color) !important;
+    color: var(--admin-color) !important;
+    padding: 8px 12px !important;
+    margin-bottom: 6px !important;
+    border-radius: 6px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Текст внутри админских кнопок */
+  .admin-link-fix .adminLinkText {
+    display: inline !important;
+    color: var(--admin-color) !important;
+    margin-left: 8px !important;
+    font-weight: 500 !important;
+    font-size: 0.95rem !important;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.1) !important;
+    visibility: visible !important;
+    white-space: nowrap !important;
+    opacity: 1 !important;
+  }
+
+  /* Иконки в админских кнопках */
+  .admin-link-fix .adminIcon {
+    color: var(--admin-color) !important;
+    font-size: 16px !important;
+    margin-right: 8px !important;
+  }
+
+  /* Эффекты при наведении */
+  .admin-link-fix:hover {
+    background-color: rgba(255, 82, 82, 0.15) !important;
+    color: var(--admin-hover-color) !important;
+  }
+
+  /* Подчеркивание при наведении */
+  .admin-link-fix::after {
+    content: "" !important;
+    position: absolute !important;
+    width: 0 !important;
+    height: 3px !important;
+    bottom: -2px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background-color: var(--admin-color) !important;
+    transition: width 0.3s ease !important;
+  }
+
+  .admin-link-fix:hover::after {
+    width: 90% !important;
+  }
+
+  /* Стили для контейнера админ-меню */
+  .admin-nav-fix {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05) !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+    background-color: rgba(0, 0, 0, 0.02) !important;
+  }
 }

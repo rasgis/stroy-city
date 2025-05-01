@@ -19,9 +19,12 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 import styles from "./Header.module.css";
+import "./admin-fix.css";
+import "./mobile-media.css";
 
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
@@ -38,6 +41,19 @@ const Header: React.FC = () => {
     // Не показываем кнопку "Назад" на главной странице
     setShowBackButton(location.pathname !== "/");
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -57,17 +73,6 @@ const Header: React.FC = () => {
     setMobileMenuOpen(false);
     scrollToTop();
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setMobileMenuOpen(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // Функция для рендеринга элементов, которые должны отображаться в выпадающем меню
   const renderNavigationItems = () => {
@@ -91,10 +96,10 @@ const Header: React.FC = () => {
         </nav>
 
         {isAuthenticated && user?.role === "admin" && (
-          <nav className={styles.adminNav}>
+          <nav className={isMobile ? `${styles.adminNav} admin-nav-fix` : styles.adminNav}>
             <Link
               to="/admin/products"
-              className={styles.adminLink}
+              className={isMobile ? `${styles.adminLink} admin-link-fix` : styles.adminLink}
               onClick={closeMobileMenu}
               title="Продукты"
             >
@@ -103,7 +108,7 @@ const Header: React.FC = () => {
             </Link>
             <Link
               to="/admin/categories"
-              className={styles.adminLink}
+              className={isMobile ? `${styles.adminLink} admin-link-fix` : styles.adminLink}
               onClick={closeMobileMenu}
               title="Категории"
             >
@@ -112,7 +117,7 @@ const Header: React.FC = () => {
             </Link>
             <Link
               to="/admin/users"
-              className={styles.adminLink}
+              className={isMobile ? `${styles.adminLink} admin-link-fix` : styles.adminLink}
               onClick={closeMobileMenu}
               title="Пользователи"
             >

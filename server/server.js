@@ -8,7 +8,6 @@ import authRoutes from "./routes/auth.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-// import emailRoutes from "./routes/emailRoutes.js";
 import { dirname } from "path";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
@@ -53,7 +52,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
-// app.use("/api/email", emailRoutes);
 
 // Базовый роут для проверки
 app.get("/api/health", (req, res) => {

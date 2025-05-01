@@ -66,7 +66,10 @@ const categoriesListSlice = createSlice({
       state,
       action: PayloadAction<Partial<CategoriesListState["filters"]>>
     ) => {
+      console.log("Current filters: ", state.filters);
+      console.log("Setting filters: ", action.payload);
       state.filters = { ...state.filters, ...action.payload };
+      console.log("New filters: ", state.filters);
     },
     resetFilters: (state) => {
       state.filters = initialState.filters;
@@ -136,6 +139,8 @@ const selectCategoriesFilters = (state: RootState) =>
 export const selectFilteredCategories = createSelector(
   [selectCategoriesList, selectCategoriesFilters],
   (categories, filters) => {
+    console.log("Фильтрация категорий с фильтрами:", filters);
+    
     return categories.filter((category) => {
       // Фильтрация по поисковому запросу
       if (
@@ -160,6 +165,7 @@ export const selectFilteredCategories = createSelector(
 
       // Фильтрация по активности (показывать/скрывать неактивные)
       if (!filters.showInactive && category.isActive === false) {
+        console.log("Фильтруем категорию (неактивна):", category.name);
         return false;
       }
 

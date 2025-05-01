@@ -7,6 +7,7 @@ import {
   hideCategory,
   restoreCategory,
   setFilters,
+  selectFilteredCategories,
 } from "../../../reducers/categories";
 import {
   Loader,
@@ -48,6 +49,7 @@ const categoryToFormValues = (category: Category | null) => {
 const CategoryListContainer: React.FC = () => {
   const dispatch = useAppDispatch();
   const categories = useAppSelector(selectAllCategories);
+  const filteredCategories = useAppSelector(selectFilteredCategories);
   const loading = useAppSelector((state) => state.categoriesList.loading);
   const error = useAppSelector((state) => state.categoriesList.error);
   const showInactive = useAppSelector(
@@ -68,6 +70,11 @@ const CategoryListContainer: React.FC = () => {
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
+
+  // Отслеживаем изменения фильтров
+  useEffect(() => {
+    console.log('Значение showInactive в компоненте:', showInactive);
+  }, [showInactive]);
 
   const handleAddCategory = () => {
     setSelectedCategory(null);
@@ -119,7 +126,10 @@ const CategoryListContainer: React.FC = () => {
   };
 
   const toggleShowInactive = () => {
-    dispatch(setFilters({ showInactive: !showInactive }));
+    console.log(`Переключение показа неактивных категорий, текущее значение: ${showInactive}`);
+    const newValue = !showInactive;
+    dispatch(setFilters({ showInactive: newValue }));
+    console.log(`Новое значение showInactive: ${newValue}`);
   };
 
   // Построение дерева категорий
@@ -240,7 +250,7 @@ const CategoryListContainer: React.FC = () => {
     return <ErrorMessage message={error} />;
   }
 
-  const categoryTree = buildCategoryTree(categories);
+  const categoryTree = buildCategoryTree(filteredCategories);
   // Преобразование Category в CategoryFormValues для EntityForm
   const categoryFormData = categoryToFormValues(selectedCategory);
 
@@ -256,14 +266,12 @@ const CategoryListContainer: React.FC = () => {
               variant="secondary"
               startIcon={showInactive ? <FaEyeSlash /> : <FaEye />}
               onClick={toggleShowInactive}
-              className={styles.filterButton}
             >
               {showInactive ? "Скрыть неактивные" : "Показать все"}
             </Button>
             <Button
               variant="primary"
               onClick={handleAddCategory}
-              className={styles.addButton}
               startIcon={<FaPlus className={styles.addIcon} />}
             >
               Добавить категорию
