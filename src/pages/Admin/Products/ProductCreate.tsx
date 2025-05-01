@@ -8,7 +8,7 @@ import {
   selectFilteredCategories,
 } from "../../../reducers/categories";
 import { ProductFormData } from "../../../types/product";
-import { Loader, WeatherWidget } from "../../../components";
+import { Loader } from "../../../components";
 import ProductForm from "./ProductForm";
 import styles from "./Admin.module.css";
 
@@ -53,7 +53,6 @@ const ProductCreate: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <WeatherWidget />
       <h2 className={styles.title}>Создание нового товара</h2>
       <ProductForm
         initialValues={emptyProduct}

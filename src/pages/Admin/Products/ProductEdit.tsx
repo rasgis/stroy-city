@@ -7,7 +7,7 @@ import {
   fetchCategories,
   selectFilteredCategories,
 } from "../../../reducers/categories";
-import { Loader, WeatherWidget } from "../../../components";
+import { Loader } from "../../../components";
 import ProductForm from "./ProductForm";
 import { Product, ProductFormData } from "../../../types/product";
 import styles from "./Admin.module.css";
@@ -94,7 +94,6 @@ const ProductEdit: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <WeatherWidget />
       <h2 className={styles.title}>Редактирование товара</h2>
       <ProductForm
         initialValues={productFormValues}

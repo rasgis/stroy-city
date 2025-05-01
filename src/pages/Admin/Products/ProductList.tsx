@@ -14,7 +14,6 @@ import {
 } from "../../../reducers/categories";
 import {
   FaEdit,
-  FaTrash,
   FaPlus,
   FaTrashAlt,
   FaRedoAlt,
@@ -26,7 +25,6 @@ import {
   Button,
   Loader,
   EntityForm,
-  WeatherWidget,
   SearchBar,
   ErrorMessage,
 } from "../../../components";
@@ -102,67 +100,45 @@ const ProductList: React.FC = () => {
   };
 
   const handlePermanentDeleteClick = (productId: string) => {
-    console.log("Запрос на полное удаление товара с ID:", productId);
     setActionProductId(productId);
     setIsPermanentDeleteModalOpen(true);
   };
 
   const handleRestoreClick = async (productId: string) => {
-    console.log("Нажата кнопка восстановления товара с ID:", productId);
     try {
       const resultAction = await dispatch(restoreProduct(productId));
-      console.log("Результат восстановления товара:", resultAction);
       
-      if (restoreProduct.fulfilled.match(resultAction)) {
-        console.log("Товар успешно восстановлен:", resultAction.payload);
-        // Redux уже обновляет данные в сторе, дополнительная загрузка не требуется
-      } else if (restoreProduct.rejected.match(resultAction)) {
-        console.error("Ошибка при восстановлении товара:", resultAction.error);
-        alert("Ошибка при восстановлении товара: " + resultAction.error.message);
-      }
+
     } catch (error) {
-      console.error("Необработанная ошибка при восстановлении товара:", error);
-      alert("Произошла ошибка при восстановлении товара");
+      console.error("Ошибка при восстановлении товара:", error) ;
     }
   };
 
   const handleDeleteConfirm = async () => {
     if (actionProductId) {
-      console.log("Скрытие товара с ID:", actionProductId);
       try {
         const resultAction = await dispatch(deleteProduct(actionProductId));
-        console.log("Результат скрытия товара:", resultAction);
         
-        if (deleteProduct.fulfilled.match(resultAction)) {
-          console.log("Товар успешно скрыт:", resultAction.payload);
-          // Redux уже обновляет данные в сторе, дополнительная загрузка не требуется
-        }
+
       } catch (error) {
-        console.error("Ошибка при скрытии товара:", error);
+        alert("Ошибка при скрытии товара");
       }
       
       setIsDeleteModalOpen(false);
-      setActionProductId(null);
     }
   };
 
   const handlePermanentDeleteConfirm = async () => {
     if (actionProductId) {
-      console.log("Полное удаление товара с ID:", actionProductId);
       try {
         const resultAction = await dispatch(permanentDeleteProduct(actionProductId));
-        console.log("Результат полного удаления товара:", resultAction);
         
-        if (permanentDeleteProduct.fulfilled.match(resultAction)) {
-          console.log("Товар успешно удален полностью:", resultAction.payload);
-          // Redux уже обновляет данные в сторе, дополнительная загрузка не требуется
-        }
+
       } catch (error) {
         console.error("Ошибка при полном удалении товара:", error);
       }
       
       setIsPermanentDeleteModalOpen(false);
-      setActionProductId(null);
     }
   };
 
@@ -196,7 +172,6 @@ const ProductList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <WeatherWidget />
       <div className={styles.header}>
         <h2>Управление товарами</h2>
         <div className={styles.actions}>

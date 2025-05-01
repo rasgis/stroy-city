@@ -48,13 +48,10 @@ class ProductService extends BaseService {
   }
 
   async deleteProduct(id: string): Promise<void> {
-    console.log(`Вызов deleteProduct с id: ${id}`);
     try {
       const response = await this.delete<void>(API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(id));
-      console.log('Ответ от сервера после скрытия товара:', response);
       return response;
     } catch (error) {
-      console.error('Ошибка при скрытии товара:', error);
       throw error;
     }
   }
@@ -66,20 +63,16 @@ class ProductService extends BaseService {
   }
 
   async restoreProduct(id: string): Promise<Product> {
-    console.log(`Вызов restoreProduct с id: ${id}`);
     try {
       const response = await this.put<any>(`${this.endpoint}/restore/${id}`, {});
-      console.log('Ответ от сервера после восстановления:', response);
       
       // Если сервер вернул только сообщение об успехе, а не сам товар
       if (response && (!response._id || !response.name)) {
-        console.log('Получаем актуальные данные о товаре после восстановления');
         return this.getProductById(id);
       }
       
       return response;
     } catch (error) {
-      console.error('Ошибка при восстановлении товара:', error);
       throw error;
     }
   }

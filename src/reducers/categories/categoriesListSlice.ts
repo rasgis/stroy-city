@@ -66,10 +66,7 @@ const categoriesListSlice = createSlice({
       state,
       action: PayloadAction<Partial<CategoriesListState["filters"]>>
     ) => {
-      console.log("Current filters: ", state.filters);
-      console.log("Setting filters: ", action.payload);
       state.filters = { ...state.filters, ...action.payload };
-      console.log("New filters: ", state.filters);
     },
     resetFilters: (state) => {
       state.filters = initialState.filters;
@@ -135,37 +132,23 @@ const selectCategoriesListError = (state: RootState) =>
 const selectCategoriesFilters = (state: RootState) =>
   state.categoriesList.filters;
 
-// Мемоизированные селекторы
+// Мемоизированные селекторы для получения отфильтрованных категорий
 export const selectFilteredCategories = createSelector(
   [selectCategoriesList, selectCategoriesFilters],
   (categories, filters) => {
-    console.log("Фильтрация категорий с фильтрами:", filters);
-    
     return categories.filter((category) => {
+      
       // Фильтрация по поисковому запросу
       if (
         filters.searchTerm &&
-        !category.name
-          .toLowerCase()
-          .includes(filters.searchTerm.toLowerCase()) &&
-        !(
-          category.description &&
-          category.description
-            .toLowerCase()
-            .includes(filters.searchTerm.toLowerCase())
-        )
+        !category.name?.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
+        !category.description?.toLowerCase().includes(filters.searchTerm.toLowerCase())
       ) {
         return false;
       }
 
-      // Фильтрация по активности только если она явно указана
-      if (filters.isActive !== null && category.isActive !== filters.isActive) {
-        return false;
-      }
-
-      // Фильтрация по активности (показывать/скрывать неактивные)
-      if (!filters.showInactive && category.isActive === false) {
-        console.log("Фильтруем категорию (неактивна):", category.name);
+      // Фильтрация по активности
+      if (!filters.showInactive && !category.isActive) {
         return false;
       }
 

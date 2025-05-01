@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { WeatherWidget, Slider } from "../../components";
+import {  Slider } from "../../components";
 import { sliderData } from "./data/sliderData";
 import {
   LocalOffer,
@@ -107,7 +107,6 @@ const Home: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <WeatherWidget />
       <Slider slides={sliderData} autoPlayInterval={5000} />
       <section className={styles.hero} ref={heroRef}>
         <div className={styles.logoContainer}>

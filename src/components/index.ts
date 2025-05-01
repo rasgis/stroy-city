@@ -15,7 +15,6 @@ export * from "./ProductCard/ProductCard";
 export * from "./ScrollTop/ScrollTop";
 export * from "./SearchBar/SearchBar";
 export * from "./Slider/Slider";
-export * from "./WeatherWidget/WeatherWidget";
 export { default as ErrorMessage } from "./ErrorMessage/ErrorMessage";
 export { default as ItemNotFound } from "./ItemNotFound/ItemNotFound";
 export * from "./BaseCard";

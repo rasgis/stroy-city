@@ -52,12 +52,9 @@ export const deleteProduct = createAsyncThunk(
   "productsList/deleteProduct",
   async (id: string, { rejectWithValue }) => {
     try {
-      console.log("Отправка запроса на скрытие товара с ID:", id);
       await productService.deleteProduct(id);
-      console.log("Товар успешно скрыт на сервере с ID:", id);
       return id;
     } catch (error) {
-      console.error("Ошибка при скрытии товара:", error);
       return rejectWithValue(error);
     }
   }
@@ -75,22 +72,17 @@ export const restoreProduct = createAsyncThunk(
   "productsList/restoreProduct",
   async (id: string, { rejectWithValue }) => {
     try {
-      console.log("Отправка запроса на восстановление товара с ID:", id);
       const response = await productService.restoreProduct(id);
-      console.log("Ответ от сервера при восстановлении товара:", response);
       
       // Если сервер возвращает только сообщение об успехе, а не сам продукт
       if (!response._id) {
         // Получаем товар из админского списка
-        console.log("Получаем товар из списка администратора");
         const product = await productService.getProductById(id);
-        console.log("Получен товар:", product);
         return product;
       }
       
       return response;
     } catch (error) {
-      console.error("Ошибка при восстановлении товара:", error);
       return rejectWithValue(error);
     }
   }
@@ -159,11 +151,9 @@ const productsListSlice = createSlice({
       })
       // Delete Product (soft delete)
       .addCase(deleteProduct.fulfilled, (state, action) => {
-        console.log("Обработка успешного скрытия товара с ID:", action.payload);
         
         // Удаляем из основного списка (обычные пользователи не видят неактивные товары)
         state.items = state.items.filter((item) => item._id !== action.payload);
-        console.log("Товар удален из списка обычных пользователей");
 
         // Обновляем флаг активности в списке админа
         const adminIndex = state.adminItems.findIndex(
@@ -171,14 +161,11 @@ const productsListSlice = createSlice({
         );
         
         if (adminIndex !== -1) {
-          console.log("Найден товар в списке администратора, обновляем статус");
           state.adminItems[adminIndex].isActive = false;
         } else {
-          console.log("Товар не найден в списке администратора");
         }
       })
       .addCase(deleteProduct.rejected, (state, action) => {
-        console.error("Ошибка при скрытии товара:", action);
         state.error = "Ошибка при скрытии товара";
       })
       // Permanent Delete Product
@@ -191,7 +178,6 @@ const productsListSlice = createSlice({
       })
       // Restore Product
       .addCase(restoreProduct.fulfilled, (state, action) => {
-        console.log("Обработка успешного восстановления товара:", action.payload);
         
         // Добавляем в обычный список
         const exists = state.items.some(
@@ -199,10 +185,8 @@ const productsListSlice = createSlice({
         );
         
         if (!exists) {
-          console.log("Добавляем товар в обычный список");
           state.items.push(action.payload);
         } else {
-          console.log("Товар уже существует в обычном списке");
         }
 
         // Обновляем в админском списке
@@ -211,15 +195,12 @@ const productsListSlice = createSlice({
         );
         
         if (adminIndex !== -1) {
-          console.log("Обновляем товар в списке администратора");
           state.adminItems[adminIndex] = {...state.adminItems[adminIndex], ...action.payload, isActive: true};
         } else {
-          console.log("Товар не найден в списке администратора - добавляем");
           state.adminItems.push(action.payload);
         }
       })
       .addCase(restoreProduct.rejected, (state, action) => {
-        console.error("Ошибка при восстановлении товара:", action);
         state.error = "Ошибка при восстановлении товара";
       });
   },

@@ -12,7 +12,6 @@ import {
 import {
   Loader,
   EntityForm,
-  WeatherWidget,
   Modal,
   Button,
   ErrorMessage,
@@ -48,10 +47,10 @@ const categoryToFormValues = (category: Category | null) => {
 
 const CategoryListContainer: React.FC = () => {
   const dispatch = useAppDispatch();
-  const categories = useAppSelector(selectAllCategories);
-  const filteredCategories = useAppSelector(selectFilteredCategories);
-  const loading = useAppSelector((state) => state.categoriesList.loading);
-  const error = useAppSelector((state) => state.categoriesList.error);
+  const categories = useAppSelector(selectFilteredCategories);
+  const categoriesLoading = useAppSelector((state) => state.categoriesList.loading);
+  const categoriesError = useAppSelector((state) => state.categoriesList.error);
+  const filters = useAppSelector((state) => state.categoriesList.filters);
   const showInactive = useAppSelector(
     (state) => state.categoriesList.filters.showInactive
   );
@@ -71,10 +70,11 @@ const CategoryListContainer: React.FC = () => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  // Отслеживаем изменения фильтров
-  useEffect(() => {
-    console.log('Значение showInactive в компоненте:', showInactive);
-  }, [showInactive]);
+  // Фильтр неактивных категорий
+  const handleShowInactiveToggle = () => {
+    const newValue = !showInactive;
+    dispatch(setFilters({ showInactive: newValue }));
+  };
 
   const handleAddCategory = () => {
     setSelectedCategory(null);
@@ -123,13 +123,6 @@ const CategoryListContainer: React.FC = () => {
 
   const handleFormSubmit = () => {
     dispatch(fetchCategories());
-  };
-
-  const toggleShowInactive = () => {
-    console.log(`Переключение показа неактивных категорий, текущее значение: ${showInactive}`);
-    const newValue = !showInactive;
-    dispatch(setFilters({ showInactive: newValue }));
-    console.log(`Новое значение showInactive: ${newValue}`);
   };
 
   // Построение дерева категорий
@@ -242,21 +235,20 @@ const CategoryListContainer: React.FC = () => {
     );
   };
 
-  if (loading) {
+  if (categoriesLoading) {
     return <Loader message="Загрузка категорий..." />;
   }
 
-  if (error) {
-    return <ErrorMessage message={error} />;
+  if (categoriesError) {
+    return <ErrorMessage message={categoriesError} />;
   }
 
-  const categoryTree = buildCategoryTree(filteredCategories);
+  const categoryTree = buildCategoryTree(categories);
   // Преобразование Category в CategoryFormValues для EntityForm
   const categoryFormData = categoryToFormValues(selectedCategory);
 
   return (
     <div>
-      <WeatherWidget />
 
       <div className={styles.container}>
         <div className={styles.header}>
@@ -265,7 +257,7 @@ const CategoryListContainer: React.FC = () => {
             <Button
               variant="secondary"
               startIcon={showInactive ? <FaEyeSlash /> : <FaEye />}
-              onClick={toggleShowInactive}
+              onClick={handleShowInactiveToggle}
             >
               {showInactive ? "Скрыть неактивные" : "Показать все"}
             </Button>
