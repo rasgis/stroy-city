@@ -20,7 +20,7 @@ export const PaginationBlock: React.FC<PaginationBlockProps> = ({
 }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  if (totalItems === 0) {
+  if (totalItems === 0 || totalPages <= 1) {
     return null;
   }
 

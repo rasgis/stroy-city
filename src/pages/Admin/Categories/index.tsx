@@ -15,6 +15,7 @@ import {
   Modal,
   Button,
   ErrorMessage,
+  ItemNotFound,
 } from "../../../components";
 import { Category } from "../../../types";
 import {
@@ -30,6 +31,7 @@ import {
   MdExpandMore as ExpandMoreIcon,
 } from "react-icons/md";
 import styles from "./CategoryList.module.css";
+import { buildCategoryTree } from "../../../utils/categoryUtils";
 
 // Временная типизация для преобразования Category в CategoryFormValues
 const categoryToFormValues = (category: Category | null) => {
@@ -48,7 +50,9 @@ const categoryToFormValues = (category: Category | null) => {
 const CategoryListContainer: React.FC = () => {
   const dispatch = useAppDispatch();
   const categories = useAppSelector(selectFilteredCategories);
-  const categoriesLoading = useAppSelector((state) => state.categoriesList.loading);
+  const categoriesLoading = useAppSelector(
+    (state) => state.categoriesList.loading
+  );
   const categoriesError = useAppSelector((state) => state.categoriesList.error);
   const filters = useAppSelector((state) => state.categoriesList.filters);
   const showInactive = useAppSelector(
@@ -98,6 +102,7 @@ const CategoryListContainer: React.FC = () => {
 
   const handleRestoreCategory = async (categoryId: string) => {
     await dispatch(restoreCategory(categoryId));
+    dispatch(fetchCategories());
   };
 
   const handleDeleteConfirm = async () => {
@@ -249,7 +254,6 @@ const CategoryListContainer: React.FC = () => {
 
   return (
     <div>
-
       <div className={styles.container}>
         <div className={styles.header}>
           <h2>Управление категориями</h2>
@@ -258,6 +262,7 @@ const CategoryListContainer: React.FC = () => {
               variant="secondary"
               startIcon={showInactive ? <FaEyeSlash /> : <FaEye />}
               onClick={handleShowInactiveToggle}
+              className={styles.filterButton}
             >
               {showInactive ? "Скрыть неактивные" : "Показать все"}
             </Button>

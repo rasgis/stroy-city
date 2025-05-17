@@ -2,12 +2,13 @@
  * Утилиты для обеспечения безопасности в клиентском приложении
  */
 
-import { User } from "../types/auth";
+import { User } from "../types/user";
 
-const TOKEN_KEY = "token";
-const USER_KEY = "user";
-const ROLE_KEY = "role";
-const SAVED_PROFILE_KEY = "SAVED_USER_PROFILE";
+// Константы для ключей хранилища, используемых для авторизации и безопасности
+export const TOKEN_KEY = "token";
+export const USER_KEY = "user";
+export const ROLE_KEY = "role";
+export const SAVED_PROFILE_KEY = "SAVED_USER_PROFILE";
 
 /**
  * Проверяет целостность и валидность данных пользователя
@@ -113,20 +114,6 @@ export const validateAndSyncUserData = (): {
       message: "Ошибка проверки данных",
       user: null,
     };
-  }
-};
-
-/**
- * Очищает все данные аутентификации
- */
-export const clearAllAuthData = (): void => {
-  try {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    localStorage.removeItem(ROLE_KEY);
-    localStorage.removeItem(SAVED_PROFILE_KEY);
-  } catch (error) {
-    console.error("Ошибка при очистке данных аутентификации:", error);
   }
 };
 

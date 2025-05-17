@@ -1,38 +1,7 @@
-import categoriesListReducer, {
-  fetchCategories,
-  deleteCategory,
-  selectFilteredCategories,
-  selectAllCategories,
-  setFilters,
-  hideCategory,
-  restoreCategory,
-} from "./categoriesListSlice";
-import categoryDetailsReducer, {
-  fetchCategoryById,
-  createCategory,
-  updateCategory,
-  selectSelectedCategory,
-  selectCategoryLoading,
-  selectCategoryError,
-} from "./categoryDetailsSlice";
+import categoriesListReducer from "./categoriesListSlice";
+import categoryDetailsReducer from "./categoryDetailsSlice";
 
-export {
-  categoriesListReducer,
-  categoryDetailsReducer,
-  fetchCategories,
-  fetchCategoryById,
-  deleteCategory,
-  createCategory,
-  updateCategory,
-  hideCategory,
-  restoreCategory,
-  selectFilteredCategories,
-  selectSelectedCategory,
-  selectAllCategories,
-  selectCategoryLoading,
-  selectCategoryError,
-  setFilters,
-};
+export { categoriesListReducer, categoryDetailsReducer };
 
 // Re-export actions and selectors for convenience
 export * from "./categoriesListSlice";

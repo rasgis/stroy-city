@@ -4,10 +4,8 @@ import generateToken from "../utils/generateToken.js";
 import {
   sendSuccess,
   sendCreated,
-  sendError,
   sendBadRequest,
   sendUnauthorized,
-  sendNotFound,
   sendForbidden,
   checkEntityExistsOrFail,
   checkUniqueness,

@@ -5,58 +5,32 @@ import {
   sendSuccess,
   sendCreated,
   sendMessage,
-  sendError,
   sendBadRequest,
   sendUnauthorized,
-  sendNotFound,
   sendForbidden,
   checkEntityExistsOrFail,
-  checkUniqueness,
   handleControllerError,
 } from "../utils/controllerUtils/index.js";
 
-// Форматирование ответа с данными пользователя
-const formatUserData = (user, includeToken = true) => {
-  const userData = {
+/**
+ * Форматирование ответа с данными пользователя для административных функций
+ * @param {Object} user - Объект пользователя
+ * @returns {Object} - Отформатированные данные пользователя
+ */
+const formatUserData = (user) => {
+  return {
     _id: user._id,
     name: user.name,
     login: user.login,
     email: user.email,
     role: user.role,
   };
-
-  if (includeToken) {
-    userData.token = generateToken(user._id);
-  }
-
-  return userData;
 };
 
-// Аутентификация пользователя
-const authUser = asyncHandler(async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return sendBadRequest(res, "Пожалуйста, заполните все поля");
-    }
-
-    const user = await User.findOne({ email });
-
-    if (user && (await user.matchPassword(password))) {
-      sendSuccess(res, formatUserData(user));
-    } else {
-      sendUnauthorized(res, "Неверный email или пароль");
-    }
-  } catch (error) {
-    handleControllerError(res, "аутентификации", error, "пользователя");
-  }
-});
-
-// Регистрация пользователя
+// Регистрация пользователя администратором
 const registerUser = asyncHandler(async (req, res) => {
   try {
-    const { name, login, email, password } = req.body;
+    const { name, login, email, password, role } = req.body;
 
     if (!name || !login || !email || !password) {
       return sendBadRequest(res, "Пожалуйста, заполните все поля");
@@ -82,6 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
       login,
       email,
       password,
+      role: role || "user", // Администратор может создавать пользователей с разными ролями
     });
 
     if (user) {
@@ -91,62 +66,6 @@ const registerUser = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     handleControllerError(res, "регистрации", error, "пользователя");
-  }
-});
-
-// Получение профиля пользователя
-const getUserProfile = asyncHandler(async (req, res) => {
-  try {
-    const user = await checkEntityExistsOrFail(
-      res,
-      User,
-      req.user._id,
-      {},
-      "Пользователь"
-    );
-
-    if (!user) return;
-
-    sendSuccess(res, formatUserData(user, false));
-  } catch (error) {
-    handleControllerError(res, "получении профиля", error, "пользователя");
-  }
-});
-
-// Обновление профиля пользователя
-const updateUserProfile = asyncHandler(async (req, res) => {
-  try {
-    if (!req.user) {
-      return sendUnauthorized(res, "Не авторизован");
-    }
-
-    const { name, password } = req.body;
-
-    // Запрет на изменение роли
-    if (req.body.role) {
-      return sendForbidden(res, "Изменение роли не разрешено");
-    }
-
-    const user = await checkEntityExistsOrFail(
-      res,
-      User,
-      req.user._id,
-      {},
-      "Пользователь"
-    );
-
-    if (!user) return;
-
-    // Обновление полей пользователя
-    user.name = name || user.name;
-    if (password) {
-      user.password = password;
-    }
-
-    const updatedUser = await user.save();
-    sendSuccess(res, formatUserData(updatedUser));
-  } catch (error) {
-    handleControllerError(res, "обновлении профиля", error, "пользователя");
   }
 });
 
@@ -226,13 +145,7 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 
     const updatedUser = await user.save();
-    sendSuccess(res, {
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      login: updatedUser.login,
-      email: updatedUser.email,
-      role: updatedUser.role,
-    });
+    sendSuccess(res, formatUserData(updatedUser));
   } catch (error) {
     handleControllerError(res, "обновлении", error, "пользователя");
   }
@@ -274,13 +187,4 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-export {
-  authUser,
-  registerUser,
-  getUserProfile,
-  updateUserProfile,
-  getUsers,
-  getUserById,
-  updateUser,
-  deleteUser,
-};
+export { registerUser, getUsers, getUserById, updateUser, deleteUser };

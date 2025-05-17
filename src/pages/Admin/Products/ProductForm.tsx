@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
   fetchProductById,
   selectSelectedProduct,
@@ -10,12 +10,12 @@ import {
   selectProductError,
 } from "../../../reducers/products";
 import { ROUTES } from "../../../constants/routes";
-import { CATEGORIES } from "../../../constants/categories";
 import styles from "./Admin.module.css";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { Product, ProductFormData, Category } from "../../../types";
 import { categoryService } from "../../../services/categoryService";
+import { buildCategoryTree } from "../../../utils/categoryUtils";
 
 // Добавляем список единиц измерения
 const UNITS_OF_MEASURE = [
@@ -61,37 +61,6 @@ interface ProductFormProps {
   onSubmit: (values: ProductFormData) => Promise<void>;
   onCancel?: () => void;
 }
-
-// Функция для построения дерева категорий
-const buildCategoryTree = (categories: Category[]): Category[] => {
-  const categoryMap = new Map<string, Category>();
-  const rootCategories: Category[] = [];
-
-  // Создаем Map для быстрого доступа к категориям
-  categories.forEach((category) => {
-    categoryMap.set(category._id, { ...category, children: [] });
-  });
-
-  // Строим дерево
-  categories.forEach((category) => {
-    const currentCategory = categoryMap.get(category._id);
-    if (currentCategory) {
-      if (category.parentId) {
-        const parentCategory = categoryMap.get(category.parentId);
-        if (parentCategory) {
-          if (!parentCategory.children) {
-            parentCategory.children = [];
-          }
-          parentCategory.children.push(currentCategory);
-        }
-      } else {
-        rootCategories.push(currentCategory);
-      }
-    }
-  });
-
-  return rootCategories;
-};
 
 // Компонент для рекурсивного отображения категорий
 const CategoryOption: React.FC<{ category: Category; level: number }> = ({

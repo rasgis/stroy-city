@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import {  Slider } from "../../components";
+import { Slider } from "../../components";
 import { sliderData } from "./data/sliderData";
 import {
   LocalOffer,
