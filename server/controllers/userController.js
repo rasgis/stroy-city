@@ -62,7 +62,6 @@ const registerUser = asyncHandler(async (req, res) => {
       return sendBadRequest(res, "Пожалуйста, заполните все поля");
     }
 
-    // Проверка email и логина на уникальность
     const existingUser = await User.findOne({ $or: [{ email }, { login }] });
 
     if (existingUser) {
@@ -122,7 +121,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
     const { name, password } = req.body;
 
-    // Запрет на изменение роли
     if (req.body.role) {
       return sendForbidden(res, "Изменение роли не разрешено");
     }
@@ -137,7 +135,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
     if (!user) return;
 
-    // Обновление полей пользователя
     user.name = name || user.name;
     if (password) {
       user.password = password;
@@ -150,10 +147,9 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// Получение списка всех пользователей (только для админов)
+// Получение списка всех пользователей
 const getUsers = asyncHandler(async (req, res) => {
   try {
-    // Проверка прав доступа
     if (!req.user || req.user.role !== "admin") {
       return sendForbidden(
         res,
@@ -168,10 +164,9 @@ const getUsers = asyncHandler(async (req, res) => {
   }
 });
 
-// Получение пользователя по ID (только для админов)
+// Получение пользователя по ID
 const getUserById = asyncHandler(async (req, res) => {
   try {
-    // Проверка прав доступа
     if (!req.user || req.user.role !== "admin") {
       return sendForbidden(
         res,
@@ -198,7 +193,6 @@ const getUserById = asyncHandler(async (req, res) => {
 // Обновление пользователя админом
 const updateUser = asyncHandler(async (req, res) => {
   try {
-    // Проверка прав доступа
     if (!req.user || req.user.role !== "admin") {
       return sendForbidden(
         res,
@@ -216,7 +210,6 @@ const updateUser = asyncHandler(async (req, res) => {
 
     if (!user) return;
 
-    // Обновление полей пользователя
     user.name = req.body.name || user.name;
     user.login = req.body.login || user.login;
     user.email = req.body.email || user.email;
@@ -238,10 +231,9 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Удаление пользователя (только для админов)
+// Удаление пользователя
 const deleteUser = asyncHandler(async (req, res) => {
   try {
-    // Проверка прав доступа
     if (!req.user || req.user.role !== "admin") {
       return sendForbidden(
         res,
@@ -259,7 +251,6 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     if (!user) return;
 
-    // Запрет на удаление своей учетной записи
     if (user._id.toString() === req.user._id.toString()) {
       return sendBadRequest(
         res,

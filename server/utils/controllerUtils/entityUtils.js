@@ -1,14 +1,7 @@
 import mongoose from "mongoose";
 import { sendBadRequest, sendNotFound } from "./responseUtils.js";
 
-/**
- * Проверяет существование сущности по ID
- * @param {Object} Model - Mongoose модель
- * @param {String} id - ID сущности
- * @param {Object} options - Дополнительные опции
- * @returns {Promise<Object|null>} - Найденная сущность или null
- */
-export const checkEntityExists = async (Model, id, options = {}) => {
+export const checkEntityExists = async (Model, id, options = {}) => { // проверка существования сущности
   const { populate = null, select = null } = options;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -28,15 +21,6 @@ export const checkEntityExists = async (Model, id, options = {}) => {
   return await query;
 };
 
-/**
- * Проверяет существование сущности и отправляет ошибку, если не найдена
- * @param {Object} res - Express response объект
- * @param {Object} Model - Mongoose модель
- * @param {String} id - ID сущности
- * @param {Object} options - Дополнительные опции
- * @param {String} entityName - Название сущности для сообщения об ошибке
- * @returns {Promise<Object|null>} - Найденная сущность или null после отправки ошибки
- */
 export const checkEntityExistsOrFail = async (
   res,
   Model,
@@ -44,7 +28,7 @@ export const checkEntityExistsOrFail = async (
   options = {},
   entityName = "Объект"
 ) => {
-  const entity = await checkEntityExists(Model, id, options);
+  const entity = await checkEntityExists(Model, id, options); 
 
   if (!entity) {
     sendNotFound(res, `${entityName} не найден`);
@@ -54,15 +38,7 @@ export const checkEntityExistsOrFail = async (
   return entity;
 };
 
-/**
- * Проверяет уникальность поля в коллекции
- * @param {Object} Model - Mongoose модель
- * @param {Object} condition - Условие поиска
- * @param {Object} res - Express response объект
- * @param {String} errorMessage - Сообщение об ошибке при нарушении уникальности
- * @returns {Promise<boolean>} - true если проверка прошла успешно, false если сообщение об ошибке отправлено
- */
-export const checkUniqueness = async (Model, condition, res, errorMessage) => {
+export const checkUniqueness = async (Model, condition, res, errorMessage) => { 
   const exists = await Model.findOne(condition);
 
   if (exists) {
@@ -73,13 +49,7 @@ export const checkUniqueness = async (Model, condition, res, errorMessage) => {
   return true;
 };
 
-/**
- * Создает базовый CRUD контроллер для модели
- * @param {Object} Model - Mongoose модель
- * @param {Object} options - Опции для контроллера
- * @returns {Object} - Объект с CRUD методами
- */
-export const createBasicController = (Model, options = {}) => {
+export const createBasicController = (Model, options = {}) => { 
   const {
     entityName = "объект",
     populateFields = null,
@@ -87,15 +57,13 @@ export const createBasicController = (Model, options = {}) => {
   } = options;
 
   return {
-    /**
-     * Получение всех сущностей
-     */
-    getAll: async (req, res) => {
+
+    getAll: async (req, res) => { 
       try {
-        let query = Model.find();
+        let query = Model.find(); 
 
         if (populateFields) {
-          query = query.populate(populateFields);
+          query = query.populate(populateFields); 
         }
 
         const entities = await query;
@@ -108,10 +76,7 @@ export const createBasicController = (Model, options = {}) => {
       }
     },
 
-    /**
-     * Получение сущности по ID
-     */
-    getById: async (req, res) => {
+    getById: async (req, res) => { 
       try {
         const entity = await checkEntityExistsOrFail(
           res,
@@ -131,14 +96,10 @@ export const createBasicController = (Model, options = {}) => {
       }
     },
 
-    /**
-     * Создание новой сущности
-     */
-    create: async (req, res) => {
+    create: async (req, res) => { 
       try {
         let entityData = req.body;
 
-        // Если указаны разрешенные поля, фильтруем данные
         if (allowedFields) {
           entityData = Object.keys(entityData)
             .filter((key) => allowedFields.includes(key))
@@ -150,7 +111,6 @@ export const createBasicController = (Model, options = {}) => {
 
         const entity = await Model.create(entityData);
 
-        // Если указаны поля для популяции, получаем сущность с ними
         let result = entity;
         if (populateFields) {
           result = await Model.findById(entity._id).populate(populateFields);
@@ -164,9 +124,6 @@ export const createBasicController = (Model, options = {}) => {
       }
     },
 
-    /**
-     * Обновление сущности
-     */
     update: async (req, res) => {
       try {
         const entity = await checkEntityExistsOrFail(
@@ -181,7 +138,6 @@ export const createBasicController = (Model, options = {}) => {
 
         let updateData = req.body;
 
-        // Если указаны разрешенные поля, фильтруем данные
         if (allowedFields) {
           updateData = Object.keys(updateData)
             .filter((key) => allowedFields.includes(key))
@@ -191,14 +147,12 @@ export const createBasicController = (Model, options = {}) => {
             }, {});
         }
 
-        // Обновляем поля сущности
         Object.keys(updateData).forEach((key) => {
           entity[key] = updateData[key];
         });
 
         await entity.save();
 
-        // Если указаны поля для популяции, получаем сущность с ними
         let result = entity;
         if (populateFields) {
           result = await Model.findById(entity._id).populate(populateFields);
@@ -212,9 +166,6 @@ export const createBasicController = (Model, options = {}) => {
       }
     },
 
-    /**
-     * Удаление сущности
-     */
     delete: async (req, res) => {
       try {
         const entity = await checkEntityExistsOrFail(

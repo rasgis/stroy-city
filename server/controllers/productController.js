@@ -30,13 +30,11 @@ export const getProductsByCategory = asyncHandler(async (req, res) => {
   try {
     const { categoryId } = req.params;
 
-    // Проверяем, существует ли категория
     const category = await Category.findById(categoryId);
     if (!category) {
       return sendNotFound(res, "Категория не найдена");
     }
 
-    // Находим продукты в этой категории
     const products = await Product.find({
       category: categoryId,
       isActive: true,
@@ -74,7 +72,6 @@ export const getProductById = asyncHandler(async (req, res) => {
       return sendNotFound(res, "Продукт не найден");
     }
 
-    // Если продукт не активен и запрос не от админа, возвращаем 404
     if (!product.isActive && (!req.user || req.user.role !== "admin")) {
       return sendNotFound(res, "Продукт не найден или недоступен");
     }
@@ -85,13 +82,12 @@ export const getProductById = asyncHandler(async (req, res) => {
   }
 });
 
-// Создание нового продукта (только для админов)
+// Создание нового продукта
 export const createProduct = asyncHandler(async (req, res) => {
   try {
     const { name, description, price, categoryId, image, unitOfMeasure } =
       req.body;
 
-    // Базовая валидация
     if (!name || !price || !categoryId) {
       return sendBadRequest(
         res,
@@ -99,13 +95,11 @@ export const createProduct = asyncHandler(async (req, res) => {
       );
     }
 
-    // Проверка существования категории
     const categoryExists = await Category.findById(categoryId);
     if (!categoryExists) {
       return sendBadRequest(res, "Указанная категория не существует");
     }
 
-    // Проверка уникальности имени
     const isNameUnique = await checkUniqueness(
       Product,
       { name },
@@ -132,7 +126,7 @@ export const createProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// Обновление продукта (только для админов)
+// Обновление продукта
 export const updateProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -142,7 +136,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
     }
 
     const { categoryId } = req.body;
-    // Проверка существования категории, если она изменена
+
     if (categoryId && categoryId !== product.category.toString()) {
       const categoryExists = await Category.findById(categoryId);
       if (!categoryExists) {
@@ -150,7 +144,6 @@ export const updateProduct = asyncHandler(async (req, res) => {
       }
     }
 
-    // Обновление полей
     product.name = req.body.name || product.name;
     product.description = req.body.description || product.description;
     product.price = req.body.price || product.price;
@@ -158,7 +151,6 @@ export const updateProduct = asyncHandler(async (req, res) => {
     product.image = req.body.image || product.image;
     product.unitOfMeasure = req.body.unitOfMeasure || product.unitOfMeasure;
 
-    // Если в запросе явно указано изменение активности
     if (req.body.isActive !== undefined) {
       product.isActive = req.body.isActive;
     }
@@ -170,7 +162,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// Скрытие (soft delete) продукта (только для админов)
+// Скрытие продукта
 export const deleteProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -188,7 +180,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// Восстановление продукта (только для админов)
+// Восстановление продукта
 export const restoreProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -200,19 +192,17 @@ export const restoreProduct = asyncHandler(async (req, res) => {
     product.isActive = true;
     const updatedProduct = await product.save();
 
-    // Получаем полные данные продукта с заполненными полями
     const fullProduct = await Product.findById(updatedProduct._id).populate(
       "category"
     );
 
-    // Отправляем полные данные продукта в ответе
     res.status(200).json(fullProduct);
   } catch (error) {
     handleControllerError(res, "восстановлении", error, "продукта");
   }
 });
 
-// Полное удаление продукта (только для админов)
+// Полное удаление продукта
 export const permanentDeleteProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);

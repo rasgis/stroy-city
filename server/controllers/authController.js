@@ -34,7 +34,6 @@ export const register = asyncHandler(async (req, res) => {
   try {
     const { name, email, login, password } = req.body;
 
-    // Проверка на наличие всех необходимых полей
     if (!name || !email || !login || !password) {
       return sendBadRequest(
         res,
@@ -42,7 +41,6 @@ export const register = asyncHandler(async (req, res) => {
       );
     }
 
-    // Проверка уникальности email
     const isEmailUnique = await checkUniqueness(
       User,
       { email },
@@ -52,7 +50,6 @@ export const register = asyncHandler(async (req, res) => {
 
     if (!isEmailUnique) return;
 
-    // Проверка уникальности логина
     const isLoginUnique = await checkUniqueness(
       User,
       { login },
@@ -62,7 +59,6 @@ export const register = asyncHandler(async (req, res) => {
 
     if (!isLoginUnique) return;
 
-    // Создание нового пользователя
     const user = await User.create({
       name,
       email,
@@ -87,7 +83,6 @@ export const login = asyncHandler(async (req, res) => {
       return sendBadRequest(res, "Необходимо указать логин/email и пароль");
     }
 
-    // Поиск пользователя по email или логину
     const user = await User.findOne({
       $or: [{ email: identifier }, { login: identifier }],
     });
@@ -96,7 +91,6 @@ export const login = asyncHandler(async (req, res) => {
       return sendUnauthorized(res, "Неверные учетные данные");
     }
 
-    // Проверка пароля
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return sendUnauthorized(res, "Неверные учетные данные");
@@ -144,7 +138,6 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 
     const { name, password, role } = req.body;
 
-    // Запрет на изменение роли через API профиля
     if (role) {
       return sendForbidden(res, "Изменение роли через API профиля запрещено");
     }
@@ -159,7 +152,6 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 
     if (!user) return;
 
-    // Обновление разрешенных полей
     if (name) user.name = name;
     if (password) user.password = password;
 

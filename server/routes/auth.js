@@ -10,34 +10,21 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Добавляем middleware для логирования запросов
 const logRequests = (req, res, next) => {
   console.log(`[Auth Routes] ${req.method} ${req.originalUrl}`);
   next();
 };
 
-// Применяем middleware логирования ко всем маршрутам
-router.use(logRequests);
+router.use(logRequests); // логирование запросов
 
-// @desc    Регистрация нового пользователя
-// @route   POST /api/auth/register
-// @access  Public
-router.post("/register", register);
+router.post("/register", register); // регистрация нового пользователя
 
-// @desc    Вход пользователя
-// @route   POST /api/auth/login
-// @access  Public
-router.post("/login", login);
+router.post("/login", login); // вход пользователя
 
-// @desc    Получение и обновление профиля пользователя
-// @route   GET /api/auth/profile
-// @route   PUT /api/auth/profile
-// @route   DELETE /api/auth/profile
-// @access  Private
 router
   .route("/profile")
-  .get(protect, getUserProfile)
-  .put(protect, updateUserProfile)
-  .delete(protect, deleteUserProfile);
+  .get(protect, getUserProfile) // получение и обновление профиля пользователя
+  .put(protect, updateUserProfile) // обновление профиля пользователя
+  .delete(protect, deleteUserProfile); // удаление профиля пользователя
 
 export default router;

@@ -1,18 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-/**
- * Схема пользователя в MongoDB
- *
- * @typedef {Object} User
- * @property {string} name - Имя пользователя
- * @property {string} email - Email пользователя (уникальный)
- * @property {string} login - Логин пользователя (уникальный)
- * @property {string} password - Хешированный пароль пользователя
- * @property {string} role - Роль пользователя ("user" или "admin")
- * @property {Date} createdAt - Дата создания записи
- * @property {Date} updatedAt - Дата последнего обновления записи
- */
 const userSchema = mongoose.Schema(
   {
     name: {
@@ -47,10 +35,6 @@ const userSchema = mongoose.Schema(
   }
 );
 
-/**
- * Middleware хеширования пароля перед сохранением
- * Срабатывает только при изменении пароля
- */
 userSchema.pre("save", async function (next) {
   // Если пароль не был изменен, пропускаем хеширование
   if (!this.isModified("password")) {
@@ -58,20 +42,14 @@ userSchema.pre("save", async function (next) {
   }
 
   try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    const salt = await bcrypt.genSalt(10); 
+    this.password = await bcrypt.hash(this.password, salt); 
     next();
   } catch (error) {
     next(error);
   }
 });
 
-/**
- * Метод для проверки соответствия пароля хэшу
- *
- * @param {string} enteredPassword - Введенный пароль для проверки
- * @returns {Promise<boolean>} - Результат проверки
- */
 userSchema.methods.matchPassword = async function (enteredPassword) {
   try {
     return await bcrypt.compare(enteredPassword, this.password);

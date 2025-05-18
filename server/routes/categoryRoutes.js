@@ -12,40 +12,23 @@ import { protect, admin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Добавляем middleware для логирования запросов
 const logRequests = (req, res, next) => {
   console.log(`[Category Routes] ${req.method} ${req.originalUrl}`);
-  next();
+  next(); 
 };
 
-// Применяем middleware логирования ко всем маршрутам
-router.use(logRequests);
+router.use(logRequests); // логирование запросов
 
-// @desc    Получение всех категорий и создание новой категории
-// @route   GET /api/categories
-// @route   POST /api/categories
-// @access  Public (GET), Private/Admin (POST)
-router.route("/").get(getCategories).post(protect, admin, createCategory);
+router.route("/").get(getCategories).post(protect, admin, createCategory); // получение всех категорий и создание новой категории
 
-// @desc    Получение, обновление и удаление категории по ID
-// @route   GET /api/categories/:id
-// @route   PUT /api/categories/:id
-// @route   DELETE /api/categories/:id
-// @access  Public (GET), Private/Admin (PUT, DELETE)
 router
-  .route("/:id")
-  .get(getCategoryById)
-  .put(protect, admin, updateCategory)
-  .delete(protect, admin, deleteCategory);
+  .route("/:id") // получение, обновление и удаление категории по ID
+  .get(getCategoryById) // получение категории по ID
+  .put(protect, admin, updateCategory) // обновление категории
+  .delete(protect, admin, deleteCategory); // удаление категории
 
-// @desc    Скрытие категории (soft delete)
-// @route   PUT /api/categories/:id/hide
-// @access  Private/Admin
-router.route("/:id/hide").put(protect, admin, hideCategory);
+router.route("/:id/hide").put(protect, admin, hideCategory); // скрытие категории
 
-// @desc    Восстановление скрытой категории
-// @route   PUT /api/categories/:id/restore
-// @access  Private/Admin
-router.route("/:id/restore").put(protect, admin, restoreCategory);
+router.route("/:id/restore").put(protect, admin, restoreCategory); // восстановление категории
 
 export default router;

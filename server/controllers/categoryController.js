@@ -58,7 +58,6 @@ export const createCategory = asyncHandler(async (req, res) => {
       return sendBadRequest(res, "Название категории обязательно");
     }
 
-    // Проверка уникальности имени категории
     const isUnique = await checkUniqueness(
       Category,
       { name },
@@ -68,7 +67,6 @@ export const createCategory = asyncHandler(async (req, res) => {
 
     if (!isUnique) return;
 
-    // Проверка существования родительской категории
     const parentIdObj =
       parentId && parentId !== ""
         ? mongoose.Types.ObjectId.createFromHexString(parentId)
@@ -120,7 +118,6 @@ export const updateCategory = asyncHandler(async (req, res) => {
 
     if (!category) return;
 
-    // Проверка уникальности имени при изменении
     if (name && name !== category.name) {
       const isUnique = await checkUniqueness(
         Category,
@@ -132,7 +129,6 @@ export const updateCategory = asyncHandler(async (req, res) => {
       if (!isUnique) return;
     }
 
-    // Проверка корректности родительской категории
     if (parentId !== undefined && parentId !== category.parentId?.toString()) {
       if (parentId === req.params.id) {
         return sendBadRequest(
@@ -152,7 +148,6 @@ export const updateCategory = asyncHandler(async (req, res) => {
       }
     }
 
-    // Обновление полей категории
     category.name = name || category.name;
     category.parentId =
       parentId !== undefined
@@ -192,7 +187,6 @@ export const deleteCategory = asyncHandler(async (req, res) => {
 
     if (!category) return;
 
-    // Проверка на наличие подкатегорий
     const hasChildren = await Category.exists({ parentId: req.params.id });
     if (hasChildren) {
       return sendBadRequest(
@@ -208,7 +202,7 @@ export const deleteCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Скрытие категории (soft delete)
+// Скрытие категории
 export const hideCategory = asyncHandler(async (req, res) => {
   try {
     // Проверка прав доступа
@@ -242,7 +236,7 @@ export const hideCategory = asyncHandler(async (req, res) => {
 // Восстановление скрытой категории
 export const restoreCategory = asyncHandler(async (req, res) => {
   try {
-    // Проверка прав доступа
+
     if (!req.user || req.user.role !== "admin") {
       return sendError(
         res,

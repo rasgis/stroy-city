@@ -3,13 +3,7 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import { requireAdmin } from "../utils/controllerUtils/index.js";
 
-/**
- * Middleware для проверки аутентификации пользователя
- * Проверяет JWT токен и добавляет пользователя в req.user
- *
- * @desc    Защита маршрутов, требующих авторизации
- * @access  Private
- */
+// Проверяем JWT токен и добавляем пользователя в req.user
 const protect = asyncHandler(async (req, res, next) => {
   let token;
 
@@ -48,13 +42,6 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 });
 
-/**
- * Middleware для проверки прав администратора
- * Требует предварительного использования middleware protect
- *
- * @desc    Защита маршрутов, требующих права администратора
- * @access  Private/Admin
- */
 const admin = (req, res, next) => {
   requireAdmin(req, res, next);
 };
