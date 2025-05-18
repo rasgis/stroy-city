@@ -86,13 +86,12 @@ export const createProduct = asyncHandler(async (req, res) => {
       name,
       description,
       price,
-      category, // используем category как передано с фронтенда
+      category,
       image,
       unitOfMeasure,
       stock,
     } = req.body;
 
-    // Базовая валидация обязательных полей согласно модели
     if (!name || !description || !price || !category || !image) {
       return sendBadRequest(
         res,
@@ -100,7 +99,6 @@ export const createProduct = asyncHandler(async (req, res) => {
       );
     }
 
-    // Проверка существования категории
     const categoryExists = await Category.findById(category);
     if (!categoryExists) {
       return sendBadRequest(res, "Указанная категория не существует");
@@ -119,10 +117,10 @@ export const createProduct = asyncHandler(async (req, res) => {
       name,
       description,
       price,
-      category, // сохраняем category как есть
+      category,
       image,
       unitOfMeasure: unitOfMeasure || "шт.",
-      stock: stock || 0, // используем переданное значение или 0 по умолчанию
+      stock: stock || 0,
       isActive: true,
     });
 
@@ -144,7 +142,6 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
     const { category } = req.body;
 
-    // Проверка существования категории, если она изменена
     if (category && category !== product.category.toString()) {
       const categoryExists = await Category.findById(category);
       if (!categoryExists) {
@@ -154,11 +151,11 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
     product.name = req.body.name || product.name;
     product.description = req.body.description || product.description;
-    product.price = req.body.price ?? product.price; // используем ?? для числовых полей
+    product.price = req.body.price ?? product.price;
     product.category = category || product.category;
     product.image = req.body.image || product.image;
     product.unitOfMeasure = req.body.unitOfMeasure || product.unitOfMeasure;
-    product.stock = req.body.stock ?? product.stock; // используем ?? для числовых полей
+    product.stock = req.body.stock ?? product.stock;
 
     if (req.body.isActive !== undefined) {
       product.isActive = req.body.isActive;

@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { Product } from "../../types/product";
 import { ROUTES } from "../../constants/routes";
-import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { addToCartWithNotification } from "../../reducers/cartSlice";
 import { selectFilteredCategories } from "../../reducers/categories";
@@ -20,16 +19,13 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
   ({ product, isAuthenticated }) => {
     const categories = useAppSelector(selectFilteredCategories);
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
 
     // Мемоизируем название категории
     const categoryName = useMemo(() => {
-      // Проверяем, существует ли product.category
       if (!product.category) {
         return "Без категории";
       }
 
-      // Если product.category - строка (ID категории)
       if (typeof product.category === "string") {
         const foundCategory = categories.find(
           (cat) => cat._id === product.category
@@ -37,7 +33,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
         return foundCategory ? foundCategory.name : "Категория не найдена";
       }
 
-      // Если product.category - объект (с полем name)
       if (product.category.name) {
         return product.category.name;
       }
@@ -47,8 +42,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
 
     const handleAddToCart = useCallback(
       (e: React.MouseEvent) => {
-        e.preventDefault(); // Предотвращаем переход по ссылке
-        e.stopPropagation(); // Предотвращаем всплытие события
+        e.preventDefault();
+        e.stopPropagation();
 
         if (isAuthenticated) {
           // Добавляем в корзину только если пользователь авторизован
@@ -59,7 +54,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
     );
 
     const handleCardClick = useCallback((e: React.MouseEvent) => {
-      // Предотвращаем перекрытие события клика на кнопку
       if ((e.target as Element).closest(`.${styles.cartButton}`)) {
         e.preventDefault();
         return;
@@ -67,7 +61,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       scrollToTop();
     }, []);
 
-    // Футер карточки с кнопкой "В корзину" только для авторизованных пользователей
     const cardFooter = isAuthenticated ? (
       <Button
         variant="contained"
@@ -92,7 +85,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
     );
   },
   (prevProps, nextProps) => {
-    // Проверяем, действительно ли нужно перерендерить компонент
+    // нужен ли перерендер 
     return (
       prevProps.product._id === nextProps.product._id &&
       prevProps.product.price === nextProps.product.price &&

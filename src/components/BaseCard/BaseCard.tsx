@@ -7,54 +7,15 @@ import { useTheme } from "../../context/ThemeContext";
 
 export interface BaseCardProps
   extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
-  /**
-   * Заголовок карточки
-   */
   title?: ReactNode;
-
-  /**
-   * Содержимое карточки
-   */
   children?: ReactNode;
-
-  /**
-   * Содержимое нижней части карточки (футер)
-   */
   footer?: ReactNode;
-
-  /**
-   * Изображение карточки
-   */
   image?: string;
-
-  /**
-   * Альтернативный текст для изображения
-   */
   imageAlt?: string;
-
-  /**
-   * Fallback-изображение при ошибке загрузки
-   */
   fallbackImage?: string;
-
-  /**
-   * Ссылка при клике на карточку
-   */
   linkTo?: string;
-
-  /**
-   * Обработчик клика на карточку
-   */
   onClick?: (e: React.MouseEvent) => void;
-
-  /**
-   * Дополнительные элементы в заголовке карточки
-   */
   headerActions?: ReactNode;
-
-  /**
-   * Вариант внешнего вида карточки
-   */
   variant?:
     | "default"
     | "elevated"
@@ -64,15 +25,7 @@ export interface BaseCardProps
     | "category"
     | "cart"
     | "adminCard";
-
-  /**
-   * Добавить градиентный фон
-   */
   gradient?: boolean;
-
-  /**
-   * Дополнительный CSS класс
-   */
   className?: string;
 }
 
@@ -115,15 +68,11 @@ export const BaseCard: React.FC<BaseCardProps> = ({
     }
   };
 
-  // Особая обработка заголовка для карточек категорий
   const renderTitle = () => {
-    // Если это категория, обрабатываем особым образом
     if (variant === "category") {
-      // Если заголовок уже ReactNode (div или другой элемент), используем его
       if (typeof title !== "string") {
         return title;
       }
-      // Если заголовок - строка, обертываем его в div с принудительными стилями
       return (
         <div
           className={styles.cardTitle}
@@ -142,7 +91,6 @@ export const BaseCard: React.FC<BaseCardProps> = ({
       );
     }
 
-    // Для других типов карточек
     return typeof title === "string" ? (
       <h3 className={styles.cardTitle}>{title}</h3>
     ) : (

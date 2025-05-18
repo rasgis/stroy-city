@@ -1,5 +1,2 @@
-import { FormGroup, FormGroupProps } from "./FormGroup";
-import { Form, FormProps } from "./Form";
-
-export { FormGroup, Form };
-export type { FormGroupProps, FormProps };
+export * from "./FormGroup";
+export * from "./Form";

@@ -12,7 +12,6 @@ import {
   FaBars,
   FaTimes,
   FaCog,
-  FaStore,
   FaUsers,
   FaListAlt,
   FaBoxes,
@@ -62,7 +61,7 @@ const Header: React.FC = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-1); // Возврат на предыдущую страницу
+    navigate(-1);
   };
 
   const toggleMobileMenu = () => {
@@ -74,7 +73,6 @@ const Header: React.FC = () => {
     scrollToTop();
   };
 
-  // Функция для рендеринга элементов, которые должны отображаться в выпадающем меню
   const renderNavigationItems = () => {
     return (
       <>
@@ -130,7 +128,6 @@ const Header: React.FC = () => {
     );
   };
 
-  // Функция для рендеринга элементов, которые должны оставаться в верхней части экрана
   const renderUserMenuItems = () => {
     return (
       <>

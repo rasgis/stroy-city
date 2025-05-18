@@ -22,16 +22,10 @@ export const SimpleImageSelector: React.FC<SimpleImageSelectorProps> = ({
   error = false,
   helperText = "",
 }) => {
-  // Состояние для хранения URL изображения
   const [imageUrl, setImageUrl] = useState<string>(value || "");
-
-  // Состояние для предпросмотра изображения
   const [preview, setPreview] = useState<string>(value || "");
-
-  // Состояние для хранения ошибки
   const [localError, setLocalError] = useState<string>("");
 
-  // При изменении значения извне, обновляем состояние
   useEffect(() => {
     if (value) {
       setImageUrl(value);
@@ -39,7 +33,6 @@ export const SimpleImageSelector: React.FC<SimpleImageSelectorProps> = ({
     }
   }, [value]);
 
-  // Обработчик изменения URL изображения
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
     setImageUrl(url);
@@ -51,7 +44,6 @@ export const SimpleImageSelector: React.FC<SimpleImageSelectorProps> = ({
       return;
     }
 
-    // Используем общую функцию проверки URL
     if (isValidImageUrl(url)) {
       setPreview(url);
       onChange(url);
@@ -61,7 +53,6 @@ export const SimpleImageSelector: React.FC<SimpleImageSelectorProps> = ({
     }
   };
 
-  // Очистить поле ввода
   const clearInput = () => {
     setImageUrl("");
     setPreview("");

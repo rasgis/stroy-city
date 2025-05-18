@@ -21,7 +21,6 @@ export interface FormField {
 
 export type EntityType = "product" | "category" | "user";
 
-// Типы для формы продукта
 export interface ProductFormValues {
   name: string;
   description: string;
@@ -33,7 +32,6 @@ export interface ProductFormValues {
   _id?: string;
 }
 
-// Типы для формы категории
 export interface CategoryFormValues {
   name: string;
   description: string;
@@ -43,7 +41,6 @@ export interface CategoryFormValues {
   _id?: string;
 }
 
-// Типы для формы пользователя
 export interface UserFormValues {
   name: string;
   email: string;

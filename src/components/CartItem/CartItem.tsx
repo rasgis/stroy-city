@@ -2,8 +2,7 @@ import React, { useState, useCallback, useMemo } from "react";
 import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
 import { CartItem as CartItemType } from "../../types";
 import { formatCurrency } from "../../utils/formatCurrency";
-import { handleImageError } from "../../utils/imageUtils";
-import { Button } from "../";
+import { Button } from "../Button";
 import { BaseCard } from "../BaseCard";
 import styles from "./CartItem.module.css";
 

@@ -12,8 +12,7 @@ export const SearchBar: React.FC<SearchBarProps> = React.memo(
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedQuery, setDebouncedQuery] = useState("");
     const [isTyping, setIsTyping] = useState(false);
-
-    // Используем useCallback для мемоизации функций-обработчиков
+    
     const handleInputChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
@@ -30,7 +29,6 @@ export const SearchBar: React.FC<SearchBarProps> = React.memo(
       onSearch("");
     }, [onSearch]);
 
-    // Функция для рендеринга кнопки очистки
     const renderClearButton = () => {
       if (!searchQuery) return null;
       return (
@@ -52,7 +50,6 @@ export const SearchBar: React.FC<SearchBarProps> = React.memo(
       );
     };
 
-    // Функция для рендеринга индикатора загрузки
     const renderLoadingIndicator = () => {
       if (!isTyping && !loading) return null;
 
@@ -65,7 +62,6 @@ export const SearchBar: React.FC<SearchBarProps> = React.memo(
       );
     };
 
-    // Дебаунс поискового запроса
     useEffect(() => {
       const timerId = setTimeout(() => {
         if (searchQuery !== debouncedQuery) {
@@ -79,7 +75,6 @@ export const SearchBar: React.FC<SearchBarProps> = React.memo(
       };
     }, [searchQuery, debouncedQuery]);
 
-    // Отправляем родительскому компоненту запрос только после дебаунса
     useEffect(() => {
       onSearch(debouncedQuery);
     }, [debouncedQuery, onSearch]);

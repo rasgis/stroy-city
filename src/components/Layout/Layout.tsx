@@ -12,7 +12,6 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = memo(({ children }) => {
-  // Использование хука для прокрутки страницы вверх при изменении маршрута
   useLocationEffect(scrollToTop);
 
   return (

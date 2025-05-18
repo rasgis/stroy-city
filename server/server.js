@@ -18,21 +18,29 @@ const __dirname = dirname(__filename);
 // Загружаем переменные окружения из корня проекта
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
-// Проверяем загрузку переменных окружения
 console.log("Переменные окружения:");
 console.log("NODE_ENV:", process.env.NODE_ENV);
 console.log("PORT:", process.env.PORT);
-console.log("MONGO_URI:", process.env.MONGO_URI);
+console.log(
+  "MONGO_URI:",
+  process.env.MONGO_URI ? "***скрыто***" : "не определено"
+);
 
 const app = express();
 
-// Подключение к базе данных
 connectDB();
 
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin:
+      process.env.NODE_ENV === "production"
+        ? [
+            "http://localhost:5173",
+            "http://localhost:3000",
+            process.env.FRONTEND_URL,
+          ].filter(Boolean)
+        : ["http://localhost:5173", "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -59,8 +67,8 @@ app.get("/api/health", (req, res) => {
 });
 
 // Middleware для обработки ошибок
-app.use(notFound); // Обработка несуществующих маршрутов
-app.use(errorHandler); // Обработка ошибок
+app.use(notFound);
+app.use(errorHandler);
 
 // Для обработки путей в production (Vercel)
 if (process.env.NODE_ENV === "production") {
@@ -68,7 +76,6 @@ if (process.env.NODE_ENV === "production") {
   const distPath = path.join(__dirname, "..", "dist");
   app.use(express.static(distPath));
 
-  // Любые запросы не к API перенаправляем на React приложение
   app.get("*", (req, res) => {
     if (!req.path.startsWith("/api/")) {
       res.sendFile(path.join(distPath, "index.html"));
@@ -78,11 +85,9 @@ if (process.env.NODE_ENV === "production") {
 
 const PORT = process.env.PORT || 3001;
 
-// Запускаем сервер
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
   console.log(`API доступно по адресу http://localhost:${PORT}/api`);
 });
 
-// Для Vercel экспортируем приложение
 export default app;

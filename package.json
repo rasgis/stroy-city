@@ -12,8 +12,7 @@
     "preview": "vite preview",
     "server": "node server/server.js",
     "server:dev": "nodemon server/server.js",
-    "dev:full": "concurrently \"npm run server:dev\" \"npm run dev\"",
-    "seed:db": "node server/seeder.js"
+    "dev:full": "concurrently \"npm run server:dev\" \"npm run dev\""
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

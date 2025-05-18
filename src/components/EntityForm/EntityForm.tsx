@@ -8,10 +8,6 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import CloseIcon from "@mui/icons-material/Close";
 import ErrorIcon from "@mui/icons-material/Error";
 import {
-  createProduct,
-  updateProduct,
-} from "../../reducers/products/productDetailsSlice";
-import {
   fetchCategories,
   selectFilteredCategories,
   createCategory,
@@ -22,8 +18,6 @@ import { EntityType } from "../../types/entity";
 import { ENTITY_FIELDS } from "./formConfig";
 import { getValidationSchema } from "./validationSchemas";
 import { getInitialValues, getTitleByEntityType } from "./utils";
-import * as Yup from "yup";
-import { Button, TextField, MenuItem, Box, Typography } from "@mui/material";
 import { productService } from "../../services/productService";
 import { fetchProducts } from "../../reducers/products/productsListSlice";
 import {
@@ -32,7 +26,6 @@ import {
   CategoryFormValues,
   UserFormValues,
   FormField,
-  FieldOption,
 } from "./types";
 import { userService } from "../../services/userService";
 import { SimpleImageSelector } from "../ImageSelector/SimpleImageSelector";
@@ -188,7 +181,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                 throw new Error("Отсутствует ID пользователя для обновления");
               }
 
-              // Проверяем, что у нас валидная роль
               const role: "user" | "admin" =
                 userValues.role === "admin" ? "admin" : "user";
 

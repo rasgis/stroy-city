@@ -1,7 +1,6 @@
 import { FormField, EntityType } from "./types";
 import { UNITS_OF_MEASURE, USER_ROLES } from "./constants";
 
-// Поля для каждого типа сущности
 export const ENTITY_FIELDS: Record<EntityType, FormField[]> = {
   product: [
     { name: "name", type: "text", label: "Название товара", required: true },

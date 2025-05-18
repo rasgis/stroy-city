@@ -1,10 +1,3 @@
-/**
- * Компонент переключения темы оформления
- *
- * Используется для переключения между темной и светлой темами.
- * Отображает иконку солнца для темной темы (чтобы переключиться на светлую)
- * и иконку луны для светлой темы (чтобы переключиться на темную).
- */
 import React, { useRef } from "react";
 import { useTheme } from "../../context/ThemeContext";
 import { FaSun, FaMoon } from "react-icons/fa";
@@ -14,11 +7,6 @@ const ThemeToggle: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  /**
-   * Обрабатывает клик по кнопке переключения темы
-   *
-   * @param {React.MouseEvent<HTMLButtonElement>} e - Событие клика
-   */
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     toggleTheme();

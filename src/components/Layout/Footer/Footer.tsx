@@ -3,7 +3,6 @@ import styles from "./Footer.module.css";
 import { FaInstagram, FaTelegramPlane, FaVk } from "react-icons/fa";
 
 const Footer: React.FC = () => {
-  // Получаем текущий год
   const currentYear = new Date().getFullYear();
 
   return (

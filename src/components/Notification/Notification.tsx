@@ -14,7 +14,6 @@ export const Notification: React.FC<NotificationProps> = ({
   onClose,
   autoHideDuration = 3000,
 }) => {
-  // Автоматическое закрытие уведомления после указанного времени
   useEffect(() => {
     if (isOpen && autoHideDuration) {
       const timer = setTimeout(() => {
@@ -27,7 +26,6 @@ export const Notification: React.FC<NotificationProps> = ({
     }
   }, [isOpen, autoHideDuration, onClose]);
 
-  // Обработчик для закрытия уведомления по клику на кнопку
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
