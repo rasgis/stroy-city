@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 import styles from "./BaseCard.module.css";
 import { handleImageError } from "../../utils/imageUtils";
+import { useTheme } from "../../context/ThemeContext";
 
 export interface BaseCardProps
   extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
@@ -90,6 +91,8 @@ export const BaseCard: React.FC<BaseCardProps> = ({
   className,
   ...props
 }) => {
+  const { theme } = useTheme();
+
   const cardClassName = classNames(
     styles.card,
     {
@@ -125,14 +128,8 @@ export const BaseCard: React.FC<BaseCardProps> = ({
         <div
           className={styles.cardTitle}
           style={{
-            color:
-              document.documentElement.getAttribute("data-theme") === "light"
-                ? "#2c3e50"
-                : "#d4ffea",
-            background:
-              document.documentElement.getAttribute("data-theme") === "light"
-                ? "white"
-                : "#1d1e24",
+            color: theme === "light" ? "#2c3e50" : "#d4ffea",
+            background: theme === "light" ? "white" : "#1d1e24",
             fontWeight: "bold",
             display: "flex",
             alignItems: "center",

@@ -1,6 +1,7 @@
 import { Category, CategoryFormData } from "../types/category";
 import { BaseService } from "./common/BaseService";
 import { API_CONFIG } from "../config/api";
+import { buildCategoryTree } from "../utils/categoryUtils";
 
 export interface CategoryWithChildren extends Category {
   children?: CategoryWithChildren[];
@@ -54,19 +55,6 @@ class CategoryService extends BaseService {
 
   async restoreCategory(id: string): Promise<Category> {
     return this.put<Category>(`${this.endpoint}/${id}/restore`, {});
-  }
-
-  buildCategoryTree(categories: Category[]): Category[] {
-    return categories.filter((category) => {
-      // Проверяем, что это корневая категория (без родителя)
-      const isRoot = !category.parentId || category.parentId === "";
-
-      // Проверяем активность категории
-      // Если isActive явно false, то фильтруем, иначе оставляем (undefined или true)
-      const isActive = category.isActive !== false;
-
-      return isRoot && isActive;
-    });
   }
 
   // Построить полное дерево категорий с вложенными подкатегориями

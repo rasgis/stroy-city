@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { BaseCard } from "../BaseCard";
 import { Product } from "../../types/product";
+import { formatCurrency } from "../../utils/formatCurrency";
 import styles from "./ProductDisplay.module.css";
 
 export interface ProductDisplayProps {
@@ -67,15 +68,10 @@ export const ProductDisplay: React.FC<ProductDisplayProps> = ({
   priceFormatter,
   children,
 }) => {
-  // Дефолтное форматирование цены
-  const formatPrice = (price: number, unitOfMeasure: string): string => {
-    return `${price} ₽ / ${unitOfMeasure}`;
-  };
-
-  // Используем переданный форматтер или дефолтный
+  // Используем переданный форматтер или дефолтный на основе formatCurrency
   const displayPrice = priceFormatter
     ? priceFormatter(product.price, product.unitOfMeasure)
-    : formatPrice(product.price, product.unitOfMeasure);
+    : `${formatCurrency(product.price)} / ${product.unitOfMeasure}`;
 
   return (
     <BaseCard

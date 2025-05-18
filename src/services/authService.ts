@@ -5,12 +5,14 @@ import {
 } from "../types/auth";
 import { User } from "../types/user";
 import { API_CONFIG } from "../config/api";
-import { auditSecurityAction } from "../utils/securityUtils";
+import {
+  auditSecurityAction,
+  TOKEN_KEY,
+  USER_KEY,
+  ROLE_KEY,
+  SAVED_PROFILE_KEY,
+} from "../utils/securityUtils";
 import { BaseService } from "./common/BaseService";
-
-const TOKEN_KEY = "token";
-const USER_KEY = "user";
-const ROLE_KEY = "role";
 
 class AuthService extends BaseService {
   /**
@@ -86,7 +88,7 @@ class AuthService extends BaseService {
     }
 
     // Обновляем сохраненный профиль с безопасной ролью
-    localStorage.setItem("SAVED_USER_PROFILE", JSON.stringify(normalizedUser));
+    localStorage.setItem(SAVED_PROFILE_KEY, JSON.stringify(normalizedUser));
   }
 
   /**
@@ -113,7 +115,7 @@ class AuthService extends BaseService {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(ROLE_KEY);
-    localStorage.removeItem("SAVED_USER_PROFILE"); // Удаляем сохраненный профиль при выходе
+    localStorage.removeItem(SAVED_PROFILE_KEY);
   }
 
   /**
@@ -345,7 +347,7 @@ class AuthService extends BaseService {
    * @returns Сохраненный профиль пользователя или null
    */
   loadSavedProfile(): User | null {
-    const savedProfileStr = localStorage.getItem("SAVED_USER_PROFILE");
+    const savedProfileStr = localStorage.getItem(SAVED_PROFILE_KEY);
     return savedProfileStr ? JSON.parse(savedProfileStr) : null;
   }
 }

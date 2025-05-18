@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch } from "../hooks/redux";
+import { useAppDispatch } from "../hooks";
 import { authService } from "../services/authService";
 import { updateUserData } from "../reducers/authSlice";
 import {
   validateAndSyncUserData,
   auditSecurityAction,
+  TOKEN_KEY,
+  USER_KEY,
+  ROLE_KEY,
+  SAVED_PROFILE_KEY,
 } from "../utils/securityUtils";
 
 /**
@@ -26,7 +30,7 @@ const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({
         if (!valid) {
           console.warn("Проверка безопасности не пройдена:", message);
           // Если проверка не пройдена и есть пользователь, выполняем выход
-          if (localStorage.getItem("token")) {
+          if (localStorage.getItem(TOKEN_KEY)) {
             authService.clearAuthData();
           }
         } else if (user) {
@@ -69,7 +73,7 @@ const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({
     const handleStorageChange = (event: StorageEvent) => {
       if (
         event.key &&
-        ["token", "user", "role", "SAVED_USER_PROFILE"].includes(event.key)
+        [TOKEN_KEY, USER_KEY, ROLE_KEY, SAVED_PROFILE_KEY].includes(event.key)
       ) {
         performSecurityCheck();
       }

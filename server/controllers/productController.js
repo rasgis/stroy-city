@@ -3,11 +3,8 @@ import Category from "../models/categoryModel.js";
 import {
   sendSuccess,
   sendCreated,
-  sendMessage,
-  sendError,
   sendNotFound,
   sendBadRequest,
-  checkEntityExistsOrFail,
   checkUniqueness,
   handleControllerError,
 } from "../utils/controllerUtils/index.js";
@@ -85,17 +82,26 @@ export const getProductById = asyncHandler(async (req, res) => {
 // Создание нового продукта
 export const createProduct = asyncHandler(async (req, res) => {
   try {
-    const { name, description, price, categoryId, image, unitOfMeasure } =
-      req.body;
+    const {
+      name,
+      description,
+      price,
+      category, // используем category как передано с фронтенда
+      image,
+      unitOfMeasure,
+      stock,
+    } = req.body;
 
-    if (!name || !price || !categoryId) {
+    // Базовая валидация обязательных полей согласно модели
+    if (!name || !description || !price || !category || !image) {
       return sendBadRequest(
         res,
-        "Имя, цена и категория обязательны для заполнения"
+        "Название, описание, цена, категория и изображение обязательны для заполнения"
       );
     }
 
-    const categoryExists = await Category.findById(categoryId);
+    // Проверка существования категории
+    const categoryExists = await Category.findById(category);
     if (!categoryExists) {
       return sendBadRequest(res, "Указанная категория не существует");
     }
@@ -113,9 +119,10 @@ export const createProduct = asyncHandler(async (req, res) => {
       name,
       description,
       price,
-      category: categoryId,
+      category, // сохраняем category как есть
       image,
       unitOfMeasure: unitOfMeasure || "шт.",
+      stock: stock || 0, // используем переданное значение или 0 по умолчанию
       isActive: true,
     });
 
@@ -135,10 +142,11 @@ export const updateProduct = asyncHandler(async (req, res) => {
       return sendNotFound(res, "Продукт не найден");
     }
 
-    const { categoryId } = req.body;
+    const { category } = req.body;
 
-    if (categoryId && categoryId !== product.category.toString()) {
-      const categoryExists = await Category.findById(categoryId);
+    // Проверка существования категории, если она изменена
+    if (category && category !== product.category.toString()) {
+      const categoryExists = await Category.findById(category);
       if (!categoryExists) {
         return sendBadRequest(res, "Указанная категория не существует");
       }
@@ -146,10 +154,11 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
     product.name = req.body.name || product.name;
     product.description = req.body.description || product.description;
-    product.price = req.body.price || product.price;
-    product.category = categoryId || product.category;
+    product.price = req.body.price ?? product.price; // используем ?? для числовых полей
+    product.category = category || product.category;
     product.image = req.body.image || product.image;
     product.unitOfMeasure = req.body.unitOfMeasure || product.unitOfMeasure;
+    product.stock = req.body.stock ?? product.stock; // используем ?? для числовых полей
 
     if (req.body.isActive !== undefined) {
       product.isActive = req.body.isActive;

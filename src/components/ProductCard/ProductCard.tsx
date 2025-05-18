@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { Product } from "../../types/product";
 import { ROUTES } from "../../constants/routes";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../../hooks/redux";
+import { useAppSelector, useAppDispatch } from "../../hooks";
 import { addToCartWithNotification } from "../../reducers/cartSlice";
 import { selectFilteredCategories } from "../../reducers/categories";
 import { Button } from "@mui/material";

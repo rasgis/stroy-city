@@ -27,6 +27,7 @@ import {
   EntityForm,
   SearchBar,
   ErrorMessage,
+  ItemNotFound,
 } from "../../../components";
 import { Product } from "../../../types";
 import styles from "./Admin.module.css";
@@ -105,39 +106,21 @@ const ProductList: React.FC = () => {
   };
 
   const handleRestoreClick = async (productId: string) => {
-    try {
-      const resultAction = await dispatch(restoreProduct(productId));
-      
-
-    } catch (error) {
-      console.error("Ошибка при восстановлении товара:", error) ;
-    }
+    await dispatch(restoreProduct(productId));
   };
 
   const handleDeleteConfirm = async () => {
     if (actionProductId) {
-      try {
-        const resultAction = await dispatch(deleteProduct(actionProductId));
-        
+      await dispatch(deleteProduct(actionProductId));
 
-      } catch (error) {
-        alert("Ошибка при скрытии товара");
-      }
-      
       setIsDeleteModalOpen(false);
     }
   };
 
   const handlePermanentDeleteConfirm = async () => {
     if (actionProductId) {
-      try {
-        const resultAction = await dispatch(permanentDeleteProduct(actionProductId));
-        
+      await dispatch(permanentDeleteProduct(actionProductId));
 
-      } catch (error) {
-        console.error("Ошибка при полном удалении товара:", error);
-      }
-      
       setIsPermanentDeleteModalOpen(false);
     }
   };

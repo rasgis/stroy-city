@@ -57,9 +57,7 @@ class ProductService extends BaseService {
   }
 
   async permanentDeleteProduct(id: string): Promise<void> {
-    return this.delete<void>(
-      `${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(id)}/permanent`
-    );
+    return this.delete<void>(`${this.endpoint}/permanent/${id}`);
   }
 
   async restoreProduct(id: string): Promise<Product> {
