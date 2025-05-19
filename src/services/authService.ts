@@ -11,84 +11,63 @@ import {
   USER_KEY,
   ROLE_KEY,
   SAVED_PROFILE_KEY,
+  TOKEN_EXPIRY_KEY,
 } from "../utils/securityUtils";
 import { BaseService } from "./common/BaseService";
 
 class AuthService extends BaseService {
-  /**
-   * Сохранение токена и данных пользователя
-   * @param token Токен авторизации
-   * @param user Данные пользователя
-   */
+
   setAuthData(token: string, user: User | any) {
-    // Проверка и нормализация ID пользователя
-    // Получаем текущие данные пользователя для проверки безопасности
-    const currentUserStr = localStorage.getItem(USER_KEY);
-    const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
-    const currentRole = currentUser?.role;
+    try {
+      // Проверка и нормализация ID пользователя
+      const currentUserStr = localStorage.getItem(USER_KEY);
+      const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
+      const currentRole = currentUser?.role;
 
-    let userProfile = { ...user };
+      let userProfile = { ...user };
 
-    // Проверка безопасности: если пользователь пытается изменить роль
-    if (currentUser && userProfile && currentRole) {
-      // Если роль пытаются изменить, будем блокировать изменение
-      // Но если роль не указана, мы не должны блокировать обновление
-      if (userProfile.role && userProfile.role !== currentRole) {
-        console.warn("БЛОКИРОВАНА ПОПЫТКА ИЗМЕНЕНИЯ РОЛИ через setAuthData", {
-          currentRole,
-          attemptedRole: userProfile.role || "не указана",
-          userId: userProfile.id || userProfile._id,
-          timestamp: new Date().toISOString(),
-        });
+      const normalizedUser = {
+        ...userProfile,
+        id: userProfile._id || userProfile.id || "",
+        name: userProfile.name || "",
+        role: userProfile.role || currentRole || "user",
+      };
 
-        // Принудительно восстанавливаем правильную роль
-        userProfile.role = currentRole;
-      } else if (!userProfile.role) {
-        // Если роль не указана в обновленных данных, сохраняем текущую роль
-        userProfile.role = currentRole;
+      // Сохраняем токен и его срок действия (7 дней)
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 7);
+      
+      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(TOKEN_EXPIRY_KEY, expiryDate.toISOString());
+      localStorage.setItem(USER_KEY, JSON.stringify(normalizedUser));
+
+      if (normalizedUser.role) {
+        localStorage.setItem(ROLE_KEY, normalizedUser.role);
       }
 
-      // Дополнительная проверка на подмену идентификатора
-      if (
-        currentUser.id &&
-        userProfile.id &&
-        currentUser.id !== userProfile.id
-      ) {
-        console.warn(
-          "БЛОКИРОВАНА ПОПЫТКА ПОДМЕНЫ ИДЕНТИФИКАТОРА ПОЛЬЗОВАТЕЛЯ",
-          {
-            currentId: currentUser.id,
-            attemptedId: userProfile.id,
-            timestamp: new Date().toISOString(),
-          }
-        );
-
-        // Сохраняем оригинальный идентификатор
-        userProfile.id = currentUser.id;
-        userProfile._id = currentUser.id;
-      }
+      localStorage.setItem(SAVED_PROFILE_KEY, JSON.stringify(normalizedUser));
+    } catch (error) {
+      console.error("Ошибка при сохранении данных авторизации:", error);
+      this.clearAuthData();
+      throw new Error("Не удалось сохранить данные авторизации");
     }
+  }
 
-    const normalizedUser = {
-      ...userProfile,
-      // Используем _id или id из ответа сервера
-      id: userProfile._id || userProfile.id || "",
-      // Гарантируем, что имя будет установлено
-      name: userProfile.name || "",
-      // Сохраняем роль, если не указана явно
-      role: userProfile.role || currentRole || "user",
-    };
+  /**
+   * Проверка срока действия токена
+   * @returns boolean
+   */
+  isTokenValid(): boolean {
+    try {
+      const expiryStr = localStorage.getItem(TOKEN_EXPIRY_KEY);
+      if (!expiryStr) return false;
 
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(USER_KEY, JSON.stringify(normalizedUser));
-
-    // Сохраняем роль пользователя, если она есть
-    if (normalizedUser.role) {
-      localStorage.setItem(ROLE_KEY, normalizedUser.role);
+      const expiryDate = new Date(expiryStr);
+      return expiryDate > new Date();
+    } catch (error) {
+      console.error("Ошибка при проверке срока действия токена:", error);
+      return false;
     }
-
-    // Обновляем сохраненный профиль с безопасной ролью
-    localStorage.setItem(SAVED_PROFILE_KEY, JSON.stringify(normalizedUser));
   }
 
   /**
@@ -96,7 +75,16 @@ class AuthService extends BaseService {
    * @returns Токен авторизации или null
    */
   getToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+    try {
+      if (!this.isTokenValid()) {
+        this.clearAuthData();
+        return null;
+      }
+      return localStorage.getItem(TOKEN_KEY);
+    } catch (error) {
+      console.error("Ошибка при получении токена:", error);
+      return null;
+    }
   }
 
   /**
@@ -112,10 +100,15 @@ class AuthService extends BaseService {
    * Очистка данных авторизации
    */
   clearAuthData() {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    localStorage.removeItem(ROLE_KEY);
-    localStorage.removeItem(SAVED_PROFILE_KEY);
+    try {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(ROLE_KEY);
+      localStorage.removeItem(SAVED_PROFILE_KEY);
+      localStorage.removeItem(TOKEN_EXPIRY_KEY);
+    } catch (error) {
+      console.error("Ошибка при очистке данных авторизации:", error);
+    }
   }
 
   /**
@@ -123,8 +116,7 @@ class AuthService extends BaseService {
    * @returns true если пользователь авторизован
    */
   isAuthenticated(): boolean {
-    const token = this.getToken();
-    return !!token;
+    return !!this.getToken() && this.isTokenValid();
   }
 
   /**
