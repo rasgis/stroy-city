@@ -9,27 +9,21 @@ interface CartState {
   total: number;
 }
 
-// Функция для получения ключа корзины в localStorage
 const getCartStorageKey = (): string => {
-  // Проверяем аутентификацию пользователя
   if (!authService.isAuthenticated()) {
     return "cart_guest";
   }
 
   const user = authService.getUser();
-  // Если пользователь аутентифицирован и у него есть id
   if (user && user.id) {
     return `cart_${user.id}`;
   }
 
-  // Запасной вариант, хотя не должен использоваться при правильной аутентификации
   return "cart_guest";
 };
 
-// Функция для загрузки корзины из localStorage
 export const loadCartFromStorage = (): CartState => {
   try {
-    // Получаем ключ корзины
     const storageKey = getCartStorageKey();
     const cartData = localStorage.getItem(storageKey);
 
@@ -42,14 +36,11 @@ export const loadCartFromStorage = (): CartState => {
   return { items: [], total: 0 };
 };
 
-// Функция для сохранения корзины в localStorage
 const saveCartToStorage = (cart: CartState) => {
   try {
     const key = getCartStorageKey();
-    // Очищаем устаревшие ключи для текущего пользователя
     const user = authService.getUser();
     if (user && user.id) {
-      // Удаляем старые ключи, если они существуют
       const oldKeys = [`cart_${user._id}`];
       oldKeys.forEach((oldKey) => {
         if (oldKey !== key && localStorage.getItem(oldKey)) {
@@ -71,8 +62,6 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      // Проверка на аутентификацию перед добавлением в корзину не нужна здесь,
-      // так как мы контролируем это на уровне маршрутизации
       const existingItem = state.items.find(
         (item) => item._id === action.payload._id
       );
@@ -110,20 +99,16 @@ const cartSlice = createSlice({
       saveCartToStorage(state);
     },
     clearCart: (state) => {
-      // Очищаем корзину в состоянии
       state.items = [];
       state.total = 0;
 
-      // Очищаем корзину в localStorage
       const key = getCartStorageKey();
       localStorage.removeItem(key);
     },
     loadCart: (state) => {
-      // Проверяем, что пользователь авторизован
-      // Загружаем корзину из localStorage с текущим ключом
+
       const cart = loadCartFromStorage();
 
-      // Используем данные из текущей корзины
       state.items = cart.items;
       state.total = cart.total;
     },
@@ -132,10 +117,8 @@ const cartSlice = createSlice({
 
 export const addToCartWithNotification =
   (item: CartItem) => (dispatch: AppDispatch) => {
-    // Добавляем товар в корзину
     dispatch(addToCart(item));
 
-    // Показываем уведомление
     dispatch(
       showNotification({
         message: "Товар добавлен в корзину",

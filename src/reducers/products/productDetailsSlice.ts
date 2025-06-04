@@ -30,7 +30,6 @@ export const createProduct = createAsyncThunk(
   "productDetails/create",
   async (product: ProductFormData, { dispatch }) => {
     const newProduct = await productService.createProduct(product);
-    // Заполняем список продуктов в другом слайсе
     dispatch({ type: 'productsList/addProduct', payload: newProduct });
     return newProduct;
   }
@@ -40,7 +39,6 @@ export const updateProduct = createAsyncThunk(
   "productDetails/update",
   async ({ id, product }: { id: string; product: ProductFormData }, { dispatch }) => {
     const updatedProduct = await productService.updateProduct(id, product);
-    // Обновляем в списке продуктов
     dispatch({ type: 'productsList/updateProductInList', payload: updatedProduct });
     return updatedProduct;
   }
@@ -61,7 +59,6 @@ const productDetailsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Product by ID
       .addCase(fetchProductById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -74,7 +71,6 @@ const productDetailsSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Не удалось загрузить продукт";
       })
-      // Create Product
       .addCase(createProduct.pending, (state) => {
         state.saveStatus = 'loading';
         state.error = null;
@@ -87,7 +83,6 @@ const productDetailsSlice = createSlice({
         state.saveStatus = 'failed';
         state.error = action.error.message || "Не удалось создать продукт";
       })
-      // Update Product
       .addCase(updateProduct.pending, (state) => {
         state.saveStatus = 'loading';
         state.error = null;
@@ -103,10 +98,8 @@ const productDetailsSlice = createSlice({
   },
 });
 
-// Базовые селекторы
 const selectProductDetails = (state: RootState) => state.productDetails;
 
-// Мемоизированные селекторы
 export const selectSelectedProduct = createSelector(
   [selectProductDetails],
   (details) => details.selectedProduct

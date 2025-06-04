@@ -10,7 +10,7 @@ import { User, UserUpdateData } from "../../types/user";
 import { Loader, Modal } from "../../components";
 import styles from "./Profile.module.css";
 
-const Profile: React.FC = () => {
+export const Profile: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user: authUser } = useAppSelector((state) => state.auth);
@@ -34,7 +34,6 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        // Если профиль уже загружался, не делаем повторный запрос
         if (profileFetchedRef.current) {
           return;
         }
@@ -42,27 +41,20 @@ const Profile: React.FC = () => {
         setIsLoading(true);
         setError(null);
 
-        // Проверяем, что текущий пользователь существует
         if (!authUser) {
           console.error("Нет данных о текущем пользователе");
           navigate(ROUTES.LOGIN);
           return;
         }
 
-        // Проверяем наличие хотя бы одного идентификатора (более мягкая проверка)
         if (authUser) {
-          // Получаем актуальные данные с сервера
           let profileData;
 
           try {
-            // Пытаемся получить данные профиля с сервера
             profileData = await authService.getUserProfile();
 
-            // Обновляем Redux и localStorage актуальными данными
             dispatch(updateUserData(profileData));
 
-            // Если роль с сервера отличается от роли в localStorage,
-            // это может быть признаком атаки. Обновляем все данные.
             if (profileData && profileData.role !== authUser.role) {
               console.warn(
                 "БЕЗОПАСНОСТЬ: Роль на сервере отличается от локальной, выполняется синхронизация",
@@ -75,11 +67,9 @@ const Profile: React.FC = () => {
           } catch (apiError) {
             console.error("Ошибка получения данных с сервера:", apiError);
 
-            // Используем резервные данные из authUser
             profileData = authUser;
           }
 
-          // Приводим данные к формату User, используя данные из Redux при необходимости
           const userObj: User = {
             _id:
               profileData?._id ||
@@ -98,14 +88,11 @@ const Profile: React.FC = () => {
           setEmail(userObj.email || "");
           setLogin(userObj.login || "");
 
-          // Обновляем сохраненный профиль с правильной ролью
           authService.updateUserData(userObj);
 
-          // Отмечаем, что профиль был загружен
           profileFetchedRef.current = true;
         } else {
           console.error("Отсутствует пользователь в состоянии Redux");
-          // Попробуем восстановить из localStorage
           const savedProfile = authService.loadSavedProfile();
 
           if (savedProfile) {
@@ -149,40 +136,32 @@ const Profile: React.FC = () => {
       setError(null);
       setSuccessMessage(null);
 
-      // Создаем объект с обновленными данными
       const userData: UserUpdateData = {
         name,
       };
 
-      // Добавляем пароль только если он был введен
       if (password) {
         userData.password = password;
       }
 
       try {
-        // Обновляем профиль через API
         const updatedUser = await userService.updateUserProfile(userData);
 
-        // Создаем объект с обновленными данными, гарантируя что имя будет установлено
         const userObj: User = {
           _id: updatedUser._id || "",
-          name, // Используем текущее имя из состояния компонента
-          email: updatedUser.email || email, // Используем email из состояния, если с сервера не пришел
-          login: updatedUser.login || login, // Используем login из состояния, если с сервера не пришел
+          name,
+          email: updatedUser.email || email,
+          login: updatedUser.login || login, 
           role: updatedUser.role as "user" | "admin",
         };
 
-        // Обновляем как локальное состояние, так и Redux
         setUser(userObj);
-        dispatch(updateUserData(userObj)); // Отправляем в Redux объект с гарантированно указанным именем
+        dispatch(updateUserData(userObj)); 
 
-        // Убедимся, что флаг остается установленным, чтобы избежать повторной загрузки
         profileFetchedRef.current = true;
 
-        // Показываем сообщение об успехе
         setSuccessMessage("Профиль успешно обновлен");
 
-        // Сбрасываем поля пароля
         setPassword("");
         setConfirmPassword("");
       } catch (apiError) {
@@ -205,15 +184,12 @@ const Profile: React.FC = () => {
     try {
       setIsLoading(true);
       setError(null);
-      setIsDeleteModalOpen(false); // Закрываем модальное окно сразу
+      setIsDeleteModalOpen(false);
 
-      // Используем новый метод для удаления текущего пользователя
       await userService.deleteCurrentUser();
 
-      // Сбрасываем флаг загрузки профиля
       profileFetchedRef.current = false;
 
-      // Очищаем все локальные состояния
       setUser(null);
       setName("");
       setEmail("");
@@ -221,26 +197,19 @@ const Profile: React.FC = () => {
       setPassword("");
       setConfirmPassword("");
 
-      // Показываем модальное окно с сообщением об успехе
       setSuccessDeleteMessage("Ваш аккаунт был успешно удален");
       setIsSuccessModalOpen(true);
 
-      // После закрытия модалки выход и перенаправление произойдут
-      // автоматически при нажатии кнопки "ОК" (см. обработчик onConfirm в модальном окне)
-
-      // Отключаем состояние загрузки
       setIsLoading(false);
     } catch (error) {
       console.error("Ошибка при удалении аккаунта:", error);
 
-      // Отображаем ошибку
       if (error instanceof Error) {
         setError(error.message);
       } else {
         setError("Произошла ошибка при удалении аккаунта");
       }
 
-      // Сбрасываем состояние загрузки
       setIsLoading(false);
     }
   };
@@ -401,4 +370,3 @@ const Profile: React.FC = () => {
   );
 };
 
-export default Profile;

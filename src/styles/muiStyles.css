@@ -1,6 +1,4 @@
-/* Глобальные стили для Material-UI компонентов */
 
-/* Стили для MuiBox с классом css-19kzrtu */
 .MuiBox-root.css-19kzrtu {
   background-color: var(--background-card);
   border-radius: 8px;
@@ -15,7 +13,6 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Стили для кнопок */
 .MuiButton-root {
   border-radius: 4px;
   text-transform: none;
@@ -35,7 +32,6 @@
   box-shadow: var(--card-shadow);
 }
 
-/* Стили для карточек */
 .MuiCard-root {
   border-radius: 8px;
   box-shadow: var(--card-shadow);

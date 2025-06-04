@@ -64,7 +64,6 @@ class ProductService extends BaseService {
     try {
       const response = await this.put<any>(`${this.endpoint}/restore/${id}`, {});
       
-      // Если сервер вернул только сообщение об успехе, а не сам товар
       if (response && (!response._id || !response.name)) {
         return this.getProductById(id);
       }

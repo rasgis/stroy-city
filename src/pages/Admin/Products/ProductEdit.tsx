@@ -30,12 +30,10 @@ const ProductEdit: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Загружаем категории, если они ещё не загружены
         if (categories.length === 0 && !categoriesLoading) {
           await dispatch(fetchCategories());
         }
 
-        // Загружаем продукт по ID
         if (id) {
           const fetchedProduct = await productService.getProductById(id);
           setProduct(fetchedProduct);
@@ -77,7 +75,6 @@ const ProductEdit: React.FC = () => {
     return <div className={styles.notFound}>Продукт не найден</div>;
   }
 
-  // Подготавливаем данные продукта для формы
   const productFormValues = {
     name: product.name,
     description: product.description,

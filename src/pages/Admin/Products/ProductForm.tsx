@@ -14,8 +14,6 @@ import styles from "./Admin.module.css";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { Product, ProductFormData, Category } from "../../../types";
-import { categoryService } from "../../../services/categoryService";
-import { buildCategoryTree } from "../../../utils/categoryUtils";
 
 // Добавляем список единиц измерения
 const UNITS_OF_MEASURE = [
@@ -62,7 +60,6 @@ interface ProductFormProps {
   onCancel?: () => void;
 }
 
-// Компонент для рекурсивного отображения категорий
 const CategoryOption: React.FC<{ category: Category; level: number }> = ({
   category,
   level,
@@ -92,7 +89,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
-  // Используем мемоизированные селекторы для продукта
   const productState = useAppSelector(selectSelectedProduct);
   const loading = useAppSelector(selectProductLoading);
   const error = useAppSelector(selectProductError);

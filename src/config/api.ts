@@ -1,10 +1,7 @@
-// Определяем базовый URL в зависимости от окружения
 const getBaseUrl = () => {
-  // В режиме production API и клиент находятся на одном домене
   if (import.meta.env.PROD) {
     return "";
   }
-  // В режиме разработки используем localhost
   return "http://localhost:3001";
 };
 

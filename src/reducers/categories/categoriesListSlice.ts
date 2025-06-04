@@ -85,7 +85,6 @@ const categoriesListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Categories
       .addCase(fetchCategories.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -98,11 +97,9 @@ const categoriesListSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Не удалось загрузить категории";
       })
-      // Delete Category
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.items = state.items.filter((item) => item._id !== action.payload);
       })
-      // Hide Category
       .addCase(hideCategory.fulfilled, (state, action) => {
         const index = state.items.findIndex(
           (item) => item._id === action.payload
@@ -111,7 +108,6 @@ const categoriesListSlice = createSlice({
           state.items[index].isActive = false;
         }
       })
-      // Restore Category
       .addCase(restoreCategory.fulfilled, (state, action) => {
         const index = state.items.findIndex(
           (item) => item._id === action.payload._id
@@ -123,7 +119,6 @@ const categoriesListSlice = createSlice({
   },
 });
 
-// Базовые селекторы
 const selectCategoriesList = (state: RootState) => state.categoriesList.items;
 const selectCategoriesListLoading = (state: RootState) =>
   state.categoriesList.loading;
@@ -132,13 +127,11 @@ const selectCategoriesListError = (state: RootState) =>
 const selectCategoriesFilters = (state: RootState) =>
   state.categoriesList.filters;
 
-// Мемоизированные селекторы для получения отфильтрованных категорий
 export const selectFilteredCategories = createSelector(
   [selectCategoriesList, selectCategoriesFilters],
   (categories, filters) => {
     return categories.filter((category) => {
       
-      // Фильтрация по поисковому запросу
       if (
         filters.searchTerm &&
         !category.name?.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
@@ -147,7 +140,6 @@ export const selectFilteredCategories = createSelector(
         return false;
       }
 
-      // Фильтрация по активности
       if (!filters.showInactive && !category.isActive) {
         return false;
       }
@@ -174,7 +166,6 @@ export const selectActiveCategoriesForDropdown = createSelector(
       }))
 );
 
-// Селектор для получения всех категорий (включая неактивные)
 export const selectAllCategories = createSelector(
   [selectCategoriesList],
   (categories) => categories

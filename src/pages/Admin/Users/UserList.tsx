@@ -6,7 +6,6 @@ import styles from "../Products/Admin.module.css";
 import { Loader } from "../../../components";
 import { Modal } from "../../../components/Modal/Modal";
 
-// Инлайн-стили для отключения эффектов наведения
 const tableStyles = {
   tr: {
     transition: "none",
@@ -30,7 +29,6 @@ const UserList = () => {
   const [showRoleModal, setShowRoleModal] = useState<boolean>(false);
   const [selectedRole, setSelectedRole] = useState<"user" | "admin">("user");
 
-  // Загрузка пользователей
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -52,14 +50,12 @@ const UserList = () => {
     fetchUsers();
   }, []);
 
-  // Обработчик открытия модального окна для изменения роли
   const handleRoleClick = (user: User) => {
     setSelectedUser(user);
     setSelectedRole(user.role);
     setShowRoleModal(true);
   };
 
-  // Обработчик изменения роли пользователя
   const handleRoleChange = async () => {
     if (!selectedUser) return;
 
@@ -70,7 +66,7 @@ const UserList = () => {
       });
       setShowRoleModal(false);
       setSelectedUser(null);
-      fetchUsers(); // Перезагрузка списка пользователей
+      fetchUsers(); 
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -80,13 +76,11 @@ const UserList = () => {
     }
   };
 
-  // Обработчик открытия модального окна удаления
   const handleDeleteClick = (user: User) => {
     setSelectedUser(user);
     setShowDeleteModal(true);
   };
 
-  // Обработчик удаления пользователя
   const handleDeleteConfirm = async () => {
     if (!selectedUser) return;
 
@@ -94,7 +88,7 @@ const UserList = () => {
       await userService.deleteUser(selectedUser._id);
       setShowDeleteModal(false);
       setSelectedUser(null);
-      fetchUsers(); // Перезагрузка списка пользователей
+      fetchUsers(); 
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -104,7 +98,6 @@ const UserList = () => {
     }
   };
 
-  // Рендеринг строки таблицы для пользователя
   const renderUserRow = (user: User) => {
     return (
       <tr key={user._id} style={tableStyles.tr}>

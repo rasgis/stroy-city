@@ -11,11 +11,9 @@ import userRoutes from "./routes/userRoutes.js";
 import { dirname } from "path";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
-// Получаем текущую директорию
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Загружаем переменные окружения из корня проекта
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
 console.log("Переменные окружения:");
@@ -51,28 +49,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json({ limit: "50mb" }));
 
-// Настройка статических файлов
 const publicDir = path.join(__dirname, "..", "public");
 app.use("/public", express.static(publicDir));
 
-// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 
-// Базовый роут для проверки
 app.get("/api/health", (req, res) => {
   res.status(200).json({ message: "API работает корректно!" });
 });
 
-// Middleware для обработки ошибок
 app.use(notFound);
 app.use(errorHandler);
 
-// Для обработки путей в production (Vercel)
+// Для обработки путей (Vercel)
 if (process.env.NODE_ENV === "production") {
-  // Путь к статическим файлам сборки
   const distPath = path.join(__dirname, "..", "dist");
   app.use(express.static(distPath));
 

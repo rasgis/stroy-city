@@ -10,7 +10,6 @@ import {
 } from "../utils/controllerUtils/index.js";
 import asyncHandler from "express-async-handler";
 
-// Получение всех продуктов (активных, для покупателей)
 export const getProducts = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find({ isActive: true })
@@ -22,7 +21,6 @@ export const getProducts = asyncHandler(async (req, res) => {
   }
 });
 
-// Получение продуктов по категории
 export const getProductsByCategory = asyncHandler(async (req, res) => {
   try {
     const { categoryId } = req.params;
@@ -48,7 +46,6 @@ export const getProductsByCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Получение всех продуктов для админ панели (включая неактивные)
 export const getAllProductsAdmin = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find({})
@@ -60,7 +57,6 @@ export const getAllProductsAdmin = asyncHandler(async (req, res) => {
   }
 });
 
-// Получение продукта по ID
 export const getProductById = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate("category");
@@ -79,7 +75,6 @@ export const getProductById = asyncHandler(async (req, res) => {
   }
 });
 
-// Создание нового продукта
 export const createProduct = asyncHandler(async (req, res) => {
   try {
     const {
@@ -131,7 +126,6 @@ export const createProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// Обновление продукта
 export const updateProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -168,8 +162,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// Скрытие продукта
-export const deleteProduct = asyncHandler(async (req, res) => {
+export const deleteProduct = asyncHandler(async (req, res) => { // скрытие продукта
   try {
     const product = await Product.findById(req.params.id);
 
@@ -186,7 +179,6 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// Восстановление продукта
 export const restoreProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -208,7 +200,6 @@ export const restoreProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// Полное удаление продукта
 export const permanentDeleteProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);

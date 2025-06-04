@@ -29,7 +29,6 @@ export const CartItem: React.FC<CartItemProps> = ({
       onUpdateQuantity(item._id, item.quantity + 1);
     } else {
       setError(`Максимальное количество: ${maxQuantity}`);
-      // Автоматически скрыть ошибку через 3 секунды
       setTimeout(() => setError(null), 3000);
     }
   }, [item._id, item.quantity, maxQuantity, onUpdateQuantity]);

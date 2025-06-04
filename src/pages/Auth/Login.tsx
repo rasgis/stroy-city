@@ -18,7 +18,6 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { loading, error } = useAppSelector((state) => state.auth);
 
-  // Очищаем ошибку при размонтировании компонента
   React.useEffect(() => {
     return () => {
       dispatch(clearError());
@@ -36,12 +35,11 @@ const Login: React.FC = () => {
         await dispatch(login(values)).unwrap();
         navigate(ROUTES.HOME);
       } catch (error) {
-        // Ошибка уже обработана в authSlice и установлена в state.error
+
       }
     },
   });
 
-  // Очищаем ошибку при изменении полей формы
   React.useEffect(() => {
     if (error) {
       dispatch(clearError());

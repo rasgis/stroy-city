@@ -52,6 +52,30 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       meta.content = theme === "dark" ? "#1a1a1f" : "#f5f2eb";
       document.head.appendChild(meta);
     }
+
+    setTimeout(() => {
+      const categoryTitles = document.querySelectorAll(
+        '[class*="categoryCard"] [class*="cardTitle"]'
+      );
+      
+      categoryTitles.forEach((title) => {
+        if (title instanceof HTMLElement) {
+          title.style.visibility = "visible";
+          title.style.opacity = "1";
+          title.style.display = "flex";
+          title.style.alignItems = "center";
+          title.style.justifyContent = "center";
+          
+          if (theme === "light") {
+            title.style.color = "#2c3e50";
+            title.style.backgroundColor = "white";
+          } else {
+            title.style.color = "#d4ffea";
+            title.style.backgroundColor = "#1d1e24";
+          }
+        }
+      });
+    }, 500);
   }, [theme]);
 
   const toggleTheme = () => {

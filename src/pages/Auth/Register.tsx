@@ -30,7 +30,6 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
   const { loading, error } = useAppSelector((state) => state.auth);
 
-  // Очищаем ошибку при размонтировании компонента
   React.useEffect(() => {
     return () => {
       dispatch(clearError());
@@ -52,7 +51,6 @@ const Register: React.FC = () => {
         await dispatch(register(registerData)).unwrap();
         navigate(ROUTES.HOME);
       } catch (error) {
-        // Ошибка уже обработана в authSlice и установлена в state.error
       }
     },
   });

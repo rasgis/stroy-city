@@ -19,7 +19,6 @@ class AuthService extends BaseService {
 
   setAuthData(token: string, user: User | any) {
     try {
-      // Проверка и нормализация ID пользователя
       const currentUserStr = localStorage.getItem(USER_KEY);
       const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
       const currentRole = currentUser?.role;
@@ -33,7 +32,6 @@ class AuthService extends BaseService {
         role: userProfile.role || currentRole || "user",
       };
 
-      // Сохраняем токен и его срок действия (7 дней)
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 7);
       
@@ -53,10 +51,6 @@ class AuthService extends BaseService {
     }
   }
 
-  /**
-   * Проверка срока действия токена
-   * @returns boolean
-   */
   isTokenValid(): boolean {
     try {
       const expiryStr = localStorage.getItem(TOKEN_EXPIRY_KEY);
@@ -70,10 +64,6 @@ class AuthService extends BaseService {
     }
   }
 
-  /**
-   * Получение токена
-   * @returns Токен авторизации или null
-   */
   getToken(): string | null {
     try {
       if (!this.isTokenValid()) {
@@ -87,18 +77,11 @@ class AuthService extends BaseService {
     }
   }
 
-  /**
-   * Получение данных пользователя
-   * @returns Данные пользователя или null
-   */
   getUser(): User | null {
     const userStr = localStorage.getItem(USER_KEY);
     return userStr ? JSON.parse(userStr) : null;
   }
 
-  /**
-   * Очистка данных авторизации
-   */
   clearAuthData() {
     try {
       localStorage.removeItem(TOKEN_KEY);
@@ -111,19 +94,10 @@ class AuthService extends BaseService {
     }
   }
 
-  /**
-   * Проверка авторизации
-   * @returns true если пользователь авторизован
-   */
   isAuthenticated(): boolean {
     return !!this.getToken() && this.isTokenValid();
   }
 
-  /**
-   * Авторизация пользователя
-   * @param credentials Учетные данные для входа
-   * @returns Ответ авторизации с токеном и данными пользователя
-   */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
       const response = await this.post<AuthResponse>(
@@ -131,25 +105,22 @@ class AuthService extends BaseService {
         credentials
       );
 
-      // Сохраняем данные пользователя, включая _id или id
       const user = response.user;
 
-      // Убедимся, что все поля пользователя корректно копируются
       const userToSave = {
         ...user,
-        id: user._id || user.id || "", // Сохраняем _id или id
-        name: user.name || "", // Явно указываем имя
+        id: user._id || user.id || "", 
+        name: user.name || "",
         email: user.email || "",
         login: user.login || "",
         role: user.role || "user",
       };
 
-      // Используем метод setAuthData для унификации сохранения данных
       this.setAuthData(response.token, userToSave);
 
       return {
         ...response,
-        user: userToSave, // Возвращаем обработанного пользователя
+        user: userToSave, 
       };
     } catch (error) {
       console.error("Ошибка входа:", error);
@@ -157,20 +128,14 @@ class AuthService extends BaseService {
     }
   }
 
-  /**
-   * Регистрация нового пользователя
-   * @param credentials Данные для регистрации
-   * @returns Данные созданного пользователя
-   */
   async register(credentials: RegisterCredentials): Promise<User> {
     try {
-      // Явно задаем роль "user" для нового пользователя
       const userData = {
         name: credentials.name,
         email: credentials.email,
         login: credentials.login,
         password: credentials.password,
-        role: "user", // Принудительно устанавливаем роль "user"
+        role: "user",
       };
 
       const response = await this.post<AuthResponse>(
@@ -178,54 +143,46 @@ class AuthService extends BaseService {
         userData
       );
 
-      // Проверяем, что response содержит все необходимые поля
       if (!response || !response.token) {
         throw new Error("Неверный формат ответа от сервера");
       }
 
       const { token, user } = response;
 
-      // Сохраняем данные пользователя, включая _id или id
       const userToSave = {
         ...user,
-        id: user._id || user.id || "", // Сохраняем _id или id
-        name: user.name || credentials.name || "", // Используем имя из ответа или из отправленных данных
+        id: user._id || user.id || "", 
+        name: user.name || credentials.name || "",
         email: user.email || credentials.email || "",
         login: user.login || credentials.login || "",
         role: user.role || "user",
       };
 
-      // Сохраняем данные авторизации
       this.setAuthData(token, userToSave);
 
       return userToSave;
     } catch (error) {
-      // Улучшенная обработка ошибок для удобного чтения пользователями
       if (error instanceof Error) {
         const message = error.message;
 
-        // Проверка на существующий email
         if (message.includes("email уже существует")) {
           throw new Error(
             "Пользователь с таким email уже зарегистрирован. Пожалуйста, используйте другой email или выполните вход."
           );
         }
 
-        // Проверка на существующий логин
         if (message.includes("логином уже существует")) {
           throw new Error(
             "Пользователь с таким логином уже зарегистрирован. Пожалуйста, выберите другой логин."
           );
         }
 
-        // Другие типичные ошибки при регистрации
         if (message.includes("заполните все поля")) {
           throw new Error(
             "Пожалуйста, заполните все обязательные поля для регистрации."
           );
         }
 
-        // Сложность пароля
         if (message.includes("пароль") && message.includes("символов")) {
           throw new Error(
             "Пароль должен содержать как минимум 6 символов, включая буквы и цифры."
@@ -233,37 +190,23 @@ class AuthService extends BaseService {
         }
       }
 
-      // Если не смогли обработать ошибку более конкретно, пробрасываем исходную
       throw error;
     }
   }
 
-  /**
-   * Получение профиля пользователя
-   * @returns Данные профиля пользователя
-   */
   async getUserProfile(): Promise<User> {
     return this.get<User>(API_CONFIG.ENDPOINTS.AUTH.PROFILE);
   }
 
-  /**
-   * Выход из системы
-   */
   logout() {
-    // Записываем информацию об операции в аудит безопасности
     auditSecurityAction("user-logout", {
       timestamp: new Date().toISOString(),
       success: true,
     });
 
-    // Очищаем все данные аутентификации
     this.clearAuthData();
   }
 
-  /**
-   * Обновление хранимых данных пользователя без запроса к серверу
-   * @param user Обновленные данные пользователя
-   */
   updateUserData(user: any) {
     const currentUser = this.getUser();
     const currentRole = currentUser?.role;
@@ -274,23 +217,15 @@ class AuthService extends BaseService {
       return;
     }
 
-    // Объединяем данные, сохраняя роль
     const updatedUser = {
       ...currentUser,
       ...user,
-      // Сохраняем текущую роль, если она не указана в обновленных данных
       role: user.role || currentRole,
     };
 
-    // Обновляем данные через основной метод
     this.setAuthData(token, updatedUser);
   }
 
-  /**
-   * Локальное обновление профиля без обращения к серверу
-   * @param userData Данные пользователя для обновления
-   * @returns Обновленные данные пользователя
-   */
   localUpdateUserProfile(userData: {
     name?: string;
     email?: string;
@@ -308,7 +243,6 @@ class AuthService extends BaseService {
       return null;
     }
 
-    // Защита от изменения роли
     const validUserData = { ...userData };
     if (validUserData.role && validUserData.role !== currentUser.role) {
       console.warn(
@@ -321,28 +255,22 @@ class AuthService extends BaseService {
       validUserData.role = currentUser.role;
     }
 
-    // Обновляем данные пользователя
     const updatedUser = {
       ...currentUser,
       ...validUserData,
-      role: currentUser.role, // Гарантируем, что роль не изменится
+      role: currentUser.role, 
     };
 
-    // Сохраняем обновленные данные
+
     this.setAuthData(token, updatedUser);
 
     return updatedUser;
   }
 
-  /**
-   * Загрузка сохраненного профиля
-   * @returns Сохраненный профиль пользователя или null
-   */
   loadSavedProfile(): User | null {
     const savedProfileStr = localStorage.getItem(SAVED_PROFILE_KEY);
     return savedProfileStr ? JSON.parse(savedProfileStr) : null;
   }
 }
 
-// Экспортируем экземпляр сервиса
 export const authService = new AuthService();

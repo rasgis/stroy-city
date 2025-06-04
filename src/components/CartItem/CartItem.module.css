@@ -1,5 +1,3 @@
-/* Все базовые стили перенесены в BaseCard.module.css */
-
 /* Уникальные стили для CartItem */
 .priceContainer {
   display: flex;

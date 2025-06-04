@@ -14,7 +14,6 @@ const UserEdit = () => {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Загрузка пользователя
   useEffect(() => {
     const fetchUser = async () => {
       if (!id) return;
@@ -38,7 +37,6 @@ const UserEdit = () => {
     fetchUser();
   }, [id]);
 
-  // Обработчик отправки формы редактирования
   const handleSubmit = async (userData: UserUpdateData) => {
     if (!id) return;
 

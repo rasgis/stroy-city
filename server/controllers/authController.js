@@ -12,7 +12,6 @@ import {
   handleControllerError,
 } from "../utils/controllerUtils/index.js";
 
-// Форматирование данных пользователя для ответа
 const formatUserResponse = (user, token) => {
   return {
     token,
@@ -27,7 +26,6 @@ const formatUserResponse = (user, token) => {
   };
 };
 
-// Регистрация пользователя
 export const register = asyncHandler(async (req, res) => {
   try {
     const { name, email, login, password } = req.body;
@@ -72,7 +70,6 @@ export const register = asyncHandler(async (req, res) => {
   }
 });
 
-// Вход пользователя
 export const login = asyncHandler(async (req, res) => {
   try {
     const { identifier, password } = req.body;
@@ -101,7 +98,6 @@ export const login = asyncHandler(async (req, res) => {
   }
 });
 
-// Получение профиля пользователя
 export const getUserProfile = asyncHandler(async (req, res) => {
   try {
     const user = await checkEntityExistsOrFail(
@@ -127,7 +123,6 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// Обновление профиля пользователя
 export const updateUserProfile = asyncHandler(async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
@@ -162,7 +157,6 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// Удаление профиля пользователя
 export const deleteUserProfile = asyncHandler(async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
@@ -179,7 +173,6 @@ export const deleteUserProfile = asyncHandler(async (req, res) => {
 
     if (!user) return;
 
-    // Удаляем пользователя из базы данных
     await user.deleteOne();
 
     sendSuccess(res, { message: "Ваш аккаунт был успешно удален" });

@@ -22,18 +22,16 @@ const UserForm: React.FC<UserFormProps> = ({
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"admin" | "user">("user");
 
-  // Заполнение формы при наличии редактируемого пользователя
   useEffect(() => {
     if (user) {
       setName(user.name);
       setEmail(user.email);
       setLogin(user.login);
-      setPassword(""); // Пароль не заполняем при редактировании
+      setPassword(""); 
       setRole(user.role);
     }
   }, [user]);
 
-  // Обработчик отправки формы
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -44,7 +42,6 @@ const UserForm: React.FC<UserFormProps> = ({
       role,
     };
 
-    // Добавляем пароль только если он был введен
     if (password) {
       userData.password = password;
     }
@@ -120,7 +117,7 @@ const UserForm: React.FC<UserFormProps> = ({
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setPassword(e.target.value)
           }
-          required={!user} // Пароль обязателен только при создании
+          required={!user}
         />
       </div>
 

@@ -14,17 +14,17 @@ import { protect, admin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getProducts); // получение всех продуктов
-router.get("/category/:categoryId", getProductsByCategory); // получение продуктов по категории
+router.get("/", getProducts);
+router.get("/category/:categoryId", getProductsByCategory); 
 
-router.get("/admin/all", protect, admin, getAllProductsAdmin); // получение всех продуктов для администратора
+router.get("/admin/all", protect, admin, getAllProductsAdmin); 
 
-router.get("/:id", getProductById); // получение индивидуального продукта по ID
+router.get("/:id", getProductById);
   
-router.post("/", protect, admin, createProduct); // создание нового продукта
-router.put("/:id", protect, admin, updateProduct); // обновление продукта
-router.delete("/:id", protect, admin, deleteProduct); // удаление продукта
-router.delete("/permanent/:id", protect, admin, permanentDeleteProduct); // удаление продукта на постоянной основе
-router.put("/restore/:id", protect, admin, restoreProduct); // восстановление продукта
+router.post("/", protect, admin, createProduct);
+router.put("/:id", protect, admin, updateProduct);
+router.delete("/:id", protect, admin, deleteProduct);
+router.delete("/permanent/:id", protect, admin, permanentDeleteProduct);
+router.put("/restore/:id", protect, admin, restoreProduct);
 
 export default router;

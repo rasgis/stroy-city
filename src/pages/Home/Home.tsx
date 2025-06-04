@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Slider } from "../../components";
 import { sliderData } from "./data/sliderData";
@@ -11,13 +11,6 @@ import {
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { useAppDispatch } from "../../hooks";
-import {
-  fetchCategories,
-  selectFilteredCategories,
-} from "../../reducers/categories";
-import { fetchProducts } from "../../reducers/products";
-import { scrollToTop } from "../../utils/scroll";
 import styles from "./Home.module.css";
 import { ROUTES } from "../../constants/routes";
 import { partners } from "./data/partners";
@@ -32,7 +25,6 @@ const Home: React.FC = () => {
   );
   const featuresRef = useRef<HTMLElement | null>(null);
   const heroRef = useRef<HTMLElement>(null);
-  const [particlesCreated, setParticlesCreated] = useState(false);
 
   const handlePartnerClick = (url: string) => {
     window.open(url, "_blank", "noopener,noreferrer");
@@ -46,64 +38,6 @@ const Home: React.FC = () => {
   const handleFeatureMouseLeave = () => {
     setActiveFeature(null);
   };
-
-  // Функция для создания анимированных частиц в hero секции
-  useEffect(() => {
-    if (heroRef.current && !particlesCreated) {
-      const createParticles = () => {
-        const hero = heroRef.current;
-        if (!hero) return;
-
-        // Очищаем предыдущие частицы
-        const existingParticles = hero.querySelectorAll(".particle");
-        existingParticles.forEach((particle) => particle.remove());
-
-        // Количество частиц зависит от ширины экрана
-        const isMobile = window.innerWidth <= 768;
-        const particleCount = isMobile ? 10 : 20;
-
-        for (let i = 0; i < particleCount; i++) {
-          const particle = document.createElement("div");
-          particle.classList.add("particle");
-
-          // Случайные стили и размеры
-          const size = Math.random() * 8 + 2; // 2-10px
-          const left = Math.random() * 100; // 0-100%
-          const delay = Math.random() * 20; // 0-20s
-          const duration = Math.random() * 10 + 10; // 10-20s
-
-          // Настраиваем стили
-          particle.style.cssText = `
-            position: absolute;
-            width: ${size}px;
-            height: ${size}px;
-            background: rgba(var(--accent-primary-rgb), ${
-              Math.random() * 0.2 + 0.1
-            });
-            border-radius: 50%;
-            left: ${left}%;
-            bottom: 0;
-            opacity: 0;
-            z-index: 0;
-            animation: floatParticle ${duration}s ease-in-out ${delay}s infinite;
-          `;
-
-          hero.appendChild(particle);
-        }
-      };
-
-      createParticles();
-      setParticlesCreated(true);
-
-      // Пересоздаем частицы при изменении размера окна
-      const handleResize = () => {
-        createParticles();
-      };
-
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  }, [particlesCreated]);
 
   return (
     <div className={styles.container}>

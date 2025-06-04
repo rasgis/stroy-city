@@ -13,8 +13,9 @@ import {
 import { scrollToTop } from "../../utils/scroll";
 import { ROUTES } from "../../constants/routes";
 import styles from "./AllProducts.module.css";
+import { Product } from "../../types";
 
-const ITEMS_PER_PAGE = 12; // Количество товаров на странице
+const ITEMS_PER_PAGE = 12;
 
 const AllProducts: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -34,7 +35,7 @@ const AllProducts: React.FC = () => {
 
   useEffect(() => {
     if (products) {
-      const filtered = products.filter((product) =>
+      const filtered = products.filter((product: Product) =>
         product.name?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredProducts(filtered);
@@ -97,7 +98,7 @@ const AllProducts: React.FC = () => {
         ) : (
           <>
             <Grid container spacing={3} className={styles.productGrid}>
-              {currentProducts.map((product) => (
+              {currentProducts.map((product: Product) => (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
                   <ProductCard
                     product={product}

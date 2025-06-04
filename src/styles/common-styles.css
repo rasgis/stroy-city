@@ -79,7 +79,6 @@
   text-align: center;
 }
 
-/* Общие стили для сеток */
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -87,7 +86,6 @@
   margin: 1.5rem 0;
 }
 
-/* Общие стили для анимаций */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -120,7 +118,6 @@
   }
 }
 
-/* Адаптивные стили */
 @media (max-width: 768px) {
   .form-card {
     padding: 1.5rem;

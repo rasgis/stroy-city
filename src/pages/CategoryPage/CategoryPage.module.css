@@ -170,7 +170,6 @@
 }
 
 .section,
-.title,
 .breadcrumbs,
 .emptyMessage {
   animation: fadeIn 0.5s ease forwards;
@@ -186,12 +185,6 @@
     padding: 0.8rem;
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
-  }
-
-  .title {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    padding: 1.5rem;
   }
 
   .section {

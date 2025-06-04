@@ -1,6 +1,5 @@
 import { User } from "../types/user";
 
-// Константы для ключей хранилища, используемых для авторизации и безопасности
 export const TOKEN_KEY = "auth_token";
 export const USER_KEY = "auth_user";
 export const ROLE_KEY = "auth_role";
@@ -110,7 +109,6 @@ export const auditSecurityAction = (
 ): void => {
   const timestamp = new Date().toISOString();
 
-  // Получаем текущего пользователя
   try {
     const userStr = localStorage.getItem(USER_KEY);
     const user = userStr ? JSON.parse(userStr) : null;

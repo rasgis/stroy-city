@@ -13,7 +13,6 @@ const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => { 
     const checkSecurity = async () => {
       try {
-        // Проверяем валидность токена
         if (!authService.isTokenValid()) {
           authService.clearAuthData();
           dispatch(updateUserData(null));

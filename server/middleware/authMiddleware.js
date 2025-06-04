@@ -15,7 +15,6 @@ const protect = asyncHandler(async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Получаем id пользователя из вложенного объекта user
       const userId = decoded.user ? decoded.user.id : null;
 
       if (!userId) {

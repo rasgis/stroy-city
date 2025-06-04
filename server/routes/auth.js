@@ -15,16 +15,16 @@ const logRequests = (req, res, next) => {
   next();
 };
 
-router.use(logRequests); // логирование запросов
+router.use(logRequests);
 
-router.post("/register", register); // регистрация нового пользователя
+router.post("/register", register); 
 
-router.post("/login", login); // вход пользователя
+router.post("/login", login);
 
 router
   .route("/profile")
-  .get(protect, getUserProfile) // получение и обновление профиля пользователя
-  .put(protect, updateUserProfile) // обновление профиля пользователя
-  .delete(protect, deleteUserProfile); // удаление профиля пользователя
+  .get(protect, getUserProfile)
+  .put(protect, updateUserProfile)
+  .delete(protect, deleteUserProfile);
 
 export default router;

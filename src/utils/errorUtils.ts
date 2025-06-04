@@ -1,16 +1,9 @@
 import axios, { AxiosError } from "axios";
 
-/**
- * Извлекает понятное сообщение об ошибке из ответа сервера
- * @param responseData Данные ответа от сервера
- * @returns Человекочитаемое сообщение об ошибке
- */
 const extractErrorMessage = (responseData: any): string => {
-  // Проверяем разные форматы сообщений об ошибках
   if (responseData.message) {
     const message = responseData.message;
 
-    // Специальная обработка для ошибок регистрации пользователя
     if (message.includes("email уже существует")) {
       return "Пользователь с таким email уже зарегистрирован. Пожалуйста, используйте другой email или выполните вход.";
     }
@@ -27,37 +20,26 @@ const extractErrorMessage = (responseData: any): string => {
       return responseData.error.message;
     }
   } else if (responseData.errors && Array.isArray(responseData.errors)) {
-    // Для массива ошибок, например, от валидатора
     return responseData.errors
       .map((err: any) => err.msg || err.message)
       .join(". ");
   }
 
-  // Если не удалось найти сообщение в стандартных местах
   return "Произошла ошибка при выполнении запроса";
 };
 
-/**
- * Обрабатывает и логирует ошибки API запросов
- * @param error Ошибка из axios запроса
- * @param context Дополнительный контекст для логирования
- * @returns Выбрасывает ошибку с понятным сообщением
- */
 export const handleApiError = (error: unknown, context: string = ""): never => {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError;
 
-    // Для отладки все еще логируем в консоль, но не показываем пользователю
     console.error(`API ошибка в ${context}:`, error);
 
     if (axiosError.response) {
       console.error("Статус ошибки:", axiosError.response.status);
       console.error("Данные ошибки:", axiosError.response.data);
 
-      // Извлекаем сообщение об ошибке из ответа сервера
       const responseData = axiosError.response.data as any;
 
-      // Формируем сообщение в зависимости от статуса и данных
       let errorMessage: string;
 
       switch (axiosError.response.status) {
@@ -93,7 +75,6 @@ export const handleApiError = (error: unknown, context: string = ""): never => {
       }
 
       const errorWithCustomMessage = new Error(errorMessage);
-      // Копируем свойства оригинальной ошибки
       Object.assign(errorWithCustomMessage, error);
       throw errorWithCustomMessage;
     } else if (axiosError.request) {
@@ -114,15 +95,9 @@ export const handleApiError = (error: unknown, context: string = ""): never => {
     }
   }
 
-  // Если не удалось извлечь более конкретное сообщение, возвращаем общую ошибку
   throw new Error("Произошла непредвиденная ошибка");
 };
 
-/**
- * Форматирует ошибку для отображения пользователю
- * @param error Объект ошибки
- * @returns Отформатированное сообщение об ошибке
- */
 export const formatErrorMessage = (error: unknown): string => {
   if (!error) return "Произошла неизвестная ошибка";
 
@@ -138,7 +113,6 @@ export const formatErrorMessage = (error: unknown): string => {
     return axiosError.message || "Ошибка при выполнении сетевого запроса";
   }
 
-  // Для объектов пытаемся преобразовать в строку
   try {
     return JSON.stringify(error);
   } catch {

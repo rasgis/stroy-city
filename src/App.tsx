@@ -7,7 +7,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
-import { useAppSelector } from "./hooks";
 import { useAuth } from "./hooks/useAuth";
 import { ROUTES } from "./constants/routes";
 import "./styles/global.css";
@@ -15,7 +14,6 @@ import { GlobalNotification } from "./components/GlobalNotification";
 import SecurityProvider from "./components/SecurityProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 
-// Pages
 import Home from "./pages/Home/Home";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
@@ -30,7 +28,7 @@ import ErrorPage from "./pages/ErrorPage";
 import CategoryListContainer from "./pages/Admin/Categories";
 import Cart from "./pages/Cart/Cart";
 import AdminUsers from "./pages/Admin/Users/Users";
-import Profile from "./pages/Profile/Profile";
+import {Profile} from "./pages/Profile/Profile";
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
   children,

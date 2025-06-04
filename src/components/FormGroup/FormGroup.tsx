@@ -2,24 +2,9 @@ import React, { ReactNode } from "react";
 import styles from "./FormGroup.module.css";
 
 export interface FormGroupProps {
-  /**
-   * Название поля
-   */
   label?: string;
-
-  /**
-   * Дочерние элементы (поля ввода)
-   */
   children: ReactNode;
-
-  /**
-   * Текст ошибки (если есть)
-   */
   error?: string | null;
-
-  /**
-   * Дополнительный CSS класс для контейнера
-   */
   className?: string;
 }
 

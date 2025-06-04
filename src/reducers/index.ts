@@ -1,7 +1,7 @@
-// Auth
+
 export * from "./authSlice";
 
-// Products
+
 export {
   fetchProducts,
   fetchProductById,
@@ -11,7 +11,6 @@ export {
   selectFilteredProducts,
 } from "./products";
 
-// Categories
 export {
   fetchCategories,
   deleteCategory,
@@ -25,5 +24,5 @@ export {
   selectCategoryError,
 } from "./categories";
 
-// Cart
+
 export * from "./cartSlice";

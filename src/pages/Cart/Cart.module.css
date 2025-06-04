@@ -199,8 +199,8 @@
     var(--accent-primary) 0%,
     var(--accent-secondary) 100%
   ) !important;
-  color: var(--background-primary) !important;
-  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.2) !important;
+  color: var(--button-text) !important;
+  border: none !important;
 }
 
 .checkoutButton:hover {
@@ -213,29 +213,9 @@
   box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.3) !important;
 }
 
-.contactButton {
-  background: linear-gradient(
-    135deg,
-    var(--accent-primary) 0%,
-    var(--accent-secondary) 100%
-  ) !important;
-  color: var(--background-primary) !important;
-  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.2) !important;
-}
-
-.contactButton:hover {
-  background: linear-gradient(
-    135deg,
-    var(--accent-secondary) 0%,
-    var(--accent-primary) 100%
-  ) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.3) !important;
-}
-
 .emptyIcon {
-  font-size: 4rem !important;
-  color: rgba(var(--accent-primary-rgb), 0.3);
+  font-size: 3rem;
+  color: var(--accent-primary);
   margin-bottom: 1rem;
 }
 
@@ -253,14 +233,12 @@
 @media (max-width: 1200px) {
   .cartGrid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.2rem;
   }
 }
 
 @media (max-width: 992px) {
   .cartGrid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
   }
 }
 
@@ -271,8 +249,7 @@
   }
 
   .title {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
   }
 
   .actions {
@@ -284,25 +261,24 @@
   }
 
   .totalAmount {
-    font-size: 1.6rem !important;
+    font-size: 1.5rem !important;
   }
 }
 
 @media (max-width: 680px) {
   .cartGrid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
   }
 
   .cartItem {
-    min-height: auto;
-    margin: 0 auto;
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
   .title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 
   .container {
@@ -310,15 +286,15 @@
   }
 
   .cart {
-    padding: 1rem 0.5rem;
+    padding: 0.5rem;
   }
 
   .cartSummary {
-    padding: 1.2rem;
+    padding: 1rem;
   }
 
   .infoNote {
-    padding: 0.8rem 1rem;
+    padding: 1rem;
   }
 
   .infoNote p {

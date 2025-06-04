@@ -37,7 +37,6 @@ const Header: React.FC = () => {
   const [showBackButton, setShowBackButton] = useState(false);
 
   useEffect(() => {
-    // Не показываем кнопку "Назад" на главной странице
     setShowBackButton(location.pathname !== "/");
   }, [location.pathname]);
 

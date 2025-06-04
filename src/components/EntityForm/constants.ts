@@ -15,13 +15,11 @@ export const UNITS_OF_MEASURE: FieldOption[] = [
   { value: "компл", label: "Комплект" },
 ];
 
-// Роли пользователей
 export const USER_ROLES: FieldOption[] = [
   { value: "user", label: "Пользователь" },
   { value: "admin", label: "Администратор" },
 ];
 
-// Начальные значения для каждого типа сущности
 export const INITIAL_VALUES = {
   name: "",
   description: "",

@@ -20,7 +20,6 @@ body {
   flex-direction: column;
 }
 
-/* Специальные классы для принудительного применения темы */
 body.theme-dark {
   --background-primary: #1a1a1f;
   --background-primary-rgb: 26, 26, 31;

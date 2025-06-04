@@ -30,7 +30,6 @@ export const createCategory = createAsyncThunk(
   "categoryDetails/create",
   async (category: CategoryFormData, { dispatch }) => {
     const newCategory = await categoryService.createCategory(category);
-    // Заполняем список категорий в другом слайсе
     dispatch({ type: "categoriesList/addCategory", payload: newCategory });
     return newCategory;
   }
@@ -43,7 +42,6 @@ export const updateCategory = createAsyncThunk(
     { dispatch }
   ) => {
     const updatedCategory = await categoryService.updateCategory(id, category);
-    // Обновляем в списке категорий
     dispatch({
       type: "categoriesList/updateCategoryInList",
       payload: updatedCategory,
@@ -67,7 +65,6 @@ const categoryDetailsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Category by ID
       .addCase(fetchCategoryById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -80,7 +77,6 @@ const categoryDetailsSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Не удалось загрузить категорию";
       })
-      // Create Category
       .addCase(createCategory.pending, (state) => {
         state.saveStatus = "loading";
         state.error = null;
@@ -93,7 +89,6 @@ const categoryDetailsSlice = createSlice({
         state.saveStatus = "failed";
         state.error = action.error.message || "Не удалось создать категорию";
       })
-      // Update Category
       .addCase(updateCategory.pending, (state) => {
         state.saveStatus = "loading";
         state.error = null;
@@ -109,10 +104,8 @@ const categoryDetailsSlice = createSlice({
   },
 });
 
-// Базовые селекторы
 const selectCategoryDetails = (state: RootState) => state.categoryDetails;
 
-// Мемоизированные селекторы
 export const selectSelectedCategory = createSelector(
   [selectCategoryDetails],
   (details) => details.selectedCategory

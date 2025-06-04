@@ -40,7 +40,6 @@ export const getInitialValues = (entityType: EntityType, entityData?: any) => {
     };
   }
 
-  // Если данные есть, извлекаем их корректно
   const baseValues = {
     name: entityData.name || "",
     description: entityData.description || "",
@@ -55,7 +54,6 @@ export const getInitialValues = (entityType: EntityType, entityData?: any) => {
       unitOfMeasure: entityData.unitOfMeasure || "шт",
     };
 
-    // Для поля categoryId нужно учесть разные форматы данных
     if (typeof entityData.category === "object" && entityData.category) {
       productValues.categoryId =
         entityData.category._id || entityData.category.id || "";

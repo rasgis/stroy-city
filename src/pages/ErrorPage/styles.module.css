@@ -19,14 +19,13 @@
   transform: translateY(20px);
 }
 
-/* Анимация появления */
+
 .mounted {
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Стили для темной темы */
 .container.theme-dark {
   background: linear-gradient(
     135deg,
@@ -37,7 +36,6 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Стили для светлой темы */
 .container.theme-light {
   background: linear-gradient(
     135deg,
@@ -48,7 +46,6 @@
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* Декоративные элементы */
 .decorDot1 {
   position: absolute;
   width: 12px;
@@ -93,7 +90,6 @@
   );
 }
 
-/* Псевдоэлемент для декоративного фона */
 .container::before {
   content: "";
   position: absolute;
@@ -114,7 +110,6 @@
   background: linear-gradient(135deg, #0ca591 0%, #0eaec4 100%);
 }
 
-/* Псевдоэлемент для второго декоративного элемента */
 .container::after {
   content: "";
   position: absolute;
@@ -135,7 +130,6 @@
   background: linear-gradient(135deg, #d32f2f 0%, #ff5252 100%);
 }
 
-/* Иконка ошибки */
 .errorIcon {
   font-size: 3.5rem;
   margin-bottom: 0.5rem;
@@ -150,7 +144,6 @@
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
 }
 
-/* Код ошибки */
 .errorCode {
   font-size: 5rem;
   margin: 0;
@@ -165,7 +158,6 @@
   background-clip: text;
 }
 
-/* Заголовок ошибки */
 .errorTitle {
   font-size: 1.8rem;
   margin: 0.5rem 0;
@@ -174,7 +166,6 @@
   font-weight: 600;
 }
 
-/* Сообщение ошибки */
 .errorMessage {
   font-size: 1.1rem;
   margin: 1rem auto 2rem;
@@ -185,7 +176,6 @@
   opacity: 0.9;
 }
 
-/* Стили для темной темы */
 .theme-dark .errorTitle {
   color: #e6fff5;
 }
@@ -194,7 +184,6 @@
   color: #b4c5d3;
 }
 
-/* Стили для светлой темы */
 .theme-light .errorTitle {
   color: #1c2a3a;
 }
@@ -203,7 +192,6 @@
   color: #4a5568;
 }
 
-/* Контейнер для дополнительных действий */
 .actionsContainer {
   display: flex;
   flex-wrap: wrap;
@@ -213,7 +201,6 @@
   z-index: 1;
 }
 
-/* Кнопка "Вернуться на главную" */
 .link {
   display: inline-flex;
   align-items: center;
@@ -230,13 +217,11 @@
   overflow: hidden;
 }
 
-/* Иконка "домой" */
 .homeIcon {
   margin-right: 0.5rem;
   font-size: 1.1rem;
 }
 
-/* Стили кнопки для темной темы */
 .theme-dark .link {
   background: linear-gradient(135deg, #0be0b8 0%, #0bc8e0 100%);
   color: #1d1e24;
@@ -252,7 +237,6 @@
   transform: translateY(-1px);
 }
 
-/* Стили кнопки для светлой темы */
 .theme-light .link {
   background: linear-gradient(135deg, #0ca591 0%, #0eaec4 100%);
   color: #ffffff;
@@ -268,7 +252,6 @@
   transform: translateY(-1px);
 }
 
-/* Анимация плавающего эффекта для иконки */
 @keyframes float {
   0% {
     transform: translateY(0px);
@@ -281,7 +264,6 @@
   }
 }
 
-/* Адаптивные стили для мобильных устройств */
 @media (max-width: 768px) {
   .container {
     min-height: 350px;

@@ -1,7 +1,6 @@
 import { Category, CategoryFormData } from "../types/category";
 import { BaseService } from "./common/BaseService";
 import { API_CONFIG } from "../config/api";
-import { buildCategoryTree } from "../utils/categoryUtils";
 
 export interface CategoryWithChildren extends Category {
   children?: CategoryWithChildren[];
@@ -57,26 +56,21 @@ class CategoryService extends BaseService {
     return this.put<Category>(`${this.endpoint}/${id}/restore`, {});
   }
 
-  // Построить полное дерево категорий с вложенными подкатегориями
   buildFullCategoryTree(
     categories: Category[],
     parentId?: string
   ): CategoryWithChildren[] {
     return categories
       .filter((category) => {
-        // Проверяем соответствие parentId
         let parentMatch = false;
 
         if (parentId) {
-          // Если есть parentId, ищем категории с таким родителем
           parentMatch = category.parentId === parentId;
         } else {
-          // Если parentId не указан, ищем корневые категории
           parentMatch = !category.parentId || category.parentId === "";
         }
 
-        // Проверяем активность категории
-        // Если isActive явно false, то фильтруем, иначе оставляем (undefined или true)
+
         const activeMatch = category.isActive !== false;
 
         return parentMatch && activeMatch;
@@ -87,17 +81,14 @@ class CategoryService extends BaseService {
       }));
   }
 
-  // Получить все категории и подкатегории в плоском списке, подходит для select-опций
   getAllCategoriesFlat(categories: Category[]): {
     id: string;
     name: string;
     level: number;
     isParent: boolean;
   }[] {
-    // Строим дерево категорий
     const categoryTree = this.buildFullCategoryTree(categories);
 
-    // Рекурсивно проходим по дереву и создаем плоский список
     const flattenCategories = (
       categoryList: CategoryWithChildren[],
       level = 0,
@@ -113,7 +104,6 @@ class CategoryService extends BaseService {
           category.children && category.children.length > 0
         );
 
-        // Добавляем текущую категорию
         result.push({
           id: category._id,
           name: category.name,
@@ -121,7 +111,6 @@ class CategoryService extends BaseService {
           isParent: hasChildren,
         });
 
-        // Если есть подкатегории, рекурсивно добавляем их
         if (hasChildren && category.children) {
           flattenCategories(category.children, level + 1, result);
         }

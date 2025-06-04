@@ -30,7 +30,6 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  // Добавляем классы в зависимости от пропсов
   const buttonClasses = classNames(
     styles.button,
     styles[variant],

@@ -141,12 +141,6 @@
   margin-left: 5px;
 }
 
-.readOnlyField {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
 .readOnlyInput {
   background-color: var(--background-light);
   color: var(--text-secondary);

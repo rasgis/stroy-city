@@ -12,7 +12,6 @@ import {
   handleControllerError,
 } from "../utils/controllerUtils/index.js";
 
-// Получение всех категорий
 export const getCategories = asyncHandler(async (req, res) => {
   try {
     const categories = await Category.find({}).sort({ name: 1 });
@@ -22,7 +21,6 @@ export const getCategories = asyncHandler(async (req, res) => {
   }
 });
 
-// Получение категории по ID
 export const getCategoryById = asyncHandler(async (req, res) => {
   try {
     const category = await checkEntityExistsOrFail(
@@ -41,7 +39,6 @@ export const getCategoryById = asyncHandler(async (req, res) => {
   }
 });
 
-// Создание новой категории
 export const createCategory = asyncHandler(async (req, res) => {
   try {
     if (!req.user || req.user.role !== "admin") {
@@ -95,7 +92,6 @@ export const createCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Обновление категории
 export const updateCategory = asyncHandler(async (req, res) => {
   try {
     if (!req.user || req.user.role !== "admin") {
@@ -166,7 +162,6 @@ export const updateCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Удаление категории
 export const deleteCategory = asyncHandler(async (req, res) => {
   try {
     if (!req.user || req.user.role !== "admin") {
@@ -202,10 +197,9 @@ export const deleteCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Скрытие категории
 export const hideCategory = asyncHandler(async (req, res) => {
   try {
-    // Проверка прав доступа
+
     if (!req.user || req.user.role !== "admin") {
       return sendError(
         res,
@@ -233,7 +227,6 @@ export const hideCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Восстановление скрытой категории
 export const restoreCategory = asyncHandler(async (req, res) => {
   try {
 

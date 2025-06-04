@@ -27,12 +27,10 @@ import {
   EntityForm,
   SearchBar,
   ErrorMessage,
-  ItemNotFound,
 } from "../../../components";
 import { Product } from "../../../types";
 import styles from "./Admin.module.css";
 
-// Временная типизация для преобразования Product в ProductFormValues
 const productToFormValues = (product: Product | null) => {
   if (!product) return undefined;
 
@@ -76,7 +74,6 @@ const ProductList: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    // Фильтруем продукты по поисковому запросу
     if (allProducts) {
       const filtered = allProducts.filter((product) =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -150,7 +147,6 @@ const ProductList: React.FC = () => {
     return <ErrorMessage message={productsError} />;
   }
 
-  // Преобразование Product в ProductFormValues для EntityForm
   const productFormData = productToFormValues(selectedProduct);
 
   return (

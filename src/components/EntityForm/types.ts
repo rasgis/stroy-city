@@ -60,6 +60,6 @@ export interface EntityFormProps {
   isOpen: boolean;
   onClose: () => void;
   entityType: EntityType;
-  entityData?: any; // Данные для редактирования
-  afterSubmit?: () => void; // Функция, вызываемая после успешного сохранения
+  entityData?: any; 
+  afterSubmit?: () => void; 
 }

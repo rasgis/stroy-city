@@ -12,9 +12,6 @@ export interface SimpleImageSelectorProps {
   helperText?: string;
 }
 
-/**
- * Упрощенный компонент для выбора изображения по URL
- */
 export const SimpleImageSelector: React.FC<SimpleImageSelectorProps> = ({
   value = "",
   onChange,
@@ -60,7 +57,6 @@ export const SimpleImageSelector: React.FC<SimpleImageSelectorProps> = ({
     setLocalError("");
   };
 
-  // Обработчик ошибки загрузки изображения
   const handleImageLoadError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     handleImageError(e, "/placeholder-image.png");
     setLocalError("Не удалось загрузить изображение. Проверьте URL.");

@@ -12,11 +12,6 @@ import {
   handleControllerError,
 } from "../utils/controllerUtils/index.js";
 
-/**
- * Форматирование ответа с данными пользователя для административных функций
- * @param {Object} user - Объект пользователя
- * @returns {Object} - Отформатированные данные пользователя
- */
 const formatUserData = (user) => {
   return {
     _id: user._id,
@@ -27,7 +22,6 @@ const formatUserData = (user) => {
   };
 };
 
-// Регистрация пользователя администратором
 const registerUser = asyncHandler(async (req, res) => {
   try {
     const { name, login, email, password, role } = req.body;
@@ -55,7 +49,7 @@ const registerUser = asyncHandler(async (req, res) => {
       login,
       email,
       password,
-      role: role || "user", // Администратор может создавать пользователей с разными ролями
+      role: role || "user",
     });
 
     if (user) {
@@ -68,61 +62,58 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Получение профиля пользователя
-const getUserProfile = asyncHandler(async (req, res) => {
-  try {
-    const user = await checkEntityExistsOrFail(
-      res,
-      User,
-      req.user._id,
-      {},
-      "Пользователь"
-    );
+// const getUserProfile = asyncHandler(async (req, res) => {
+//   try {
+//     const user = await checkEntityExistsOrFail(
+//       res,
+//       User,
+//       req.user._id,
+//       {},
+//       "Пользователь"
+//     );
 
-    if (!user) return;
+//     if (!user) return;
 
-    sendSuccess(res, formatUserData(user, false));
-  } catch (error) {
-    handleControllerError(res, "получении профиля", error, "пользователя");
-  }
-});
+//     sendSuccess(res, formatUserData(user, false));
+//   } catch (error) {
+//     handleControllerError(res, "получении профиля", error, "пользователя");
+//   }
+// });
 
-// Обновление профиля пользователя
-const updateUserProfile = asyncHandler(async (req, res) => {
-  try {
-    if (!req.user) {
-      return sendUnauthorized(res, "Не авторизован");
-    }
+// const updateUserProfile = asyncHandler(async (req, res) => {
+//   try {
+//     if (!req.user) {
+//       return sendUnauthorized(res, "Не авторизован");
+//     }
 
-    const { name, password } = req.body;
+//     const { name, password } = req.body;
 
-    if (req.body.role) {
-      return sendForbidden(res, "Изменение роли не разрешено");
-    }
+//     if (req.body.role) {
+//       return sendForbidden(res, "Изменение роли не разрешено");
+//     }
 
-    const user = await checkEntityExistsOrFail(
-      res,
-      User,
-      req.user._id,
-      {},
-      "Пользователь"
-    );
+//     const user = await checkEntityExistsOrFail(
+//       res,
+//       User,
+//       req.user._id,
+//       {},
+//       "Пользователь"
+//     );
 
-    if (!user) return;
+//     if (!user) return;
 
-    user.name = name || user.name;
-    if (password) {
-      user.password = password;
-    }
+//     user.name = name || user.name;
+//     if (password) {
+//       user.password = password;
+//     }
 
-    const updatedUser = await user.save();
-    sendSuccess(res, formatUserData(updatedUser));
-  } catch (error) {
-    handleControllerError(res, "обновлении профиля", error, "пользователя");
-  }
-});
+//     const updatedUser = await user.save();
+//     sendSuccess(res, formatUserData(updatedUser));
+//   } catch (error) {
+//     handleControllerError(res, "обновлении профиля", error, "пользователя");
+//   }
+// });
 
-// Получение списка всех пользователей
 const getUsers = asyncHandler(async (req, res) => {
   try {
     if (!req.user || req.user.role !== "admin") {
@@ -139,7 +130,6 @@ const getUsers = asyncHandler(async (req, res) => {
   }
 });
 
-// Получение пользователя по ID
 const getUserById = asyncHandler(async (req, res) => {
   try {
     if (!req.user || req.user.role !== "admin") {
@@ -165,7 +155,6 @@ const getUserById = asyncHandler(async (req, res) => {
   }
 });
 
-// Обновление пользователя админом
 const updateUser = asyncHandler(async (req, res) => {
   try {
     if (!req.user || req.user.role !== "admin") {
@@ -200,7 +189,6 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Удаление пользователя
 const deleteUser = asyncHandler(async (req, res) => {
   try {
     if (!req.user || req.user.role !== "admin") {

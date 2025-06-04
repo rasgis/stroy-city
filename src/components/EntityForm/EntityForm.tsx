@@ -184,7 +184,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({
               const role: "user" | "admin" =
                 userValues.role === "admin" ? "admin" : "user";
 
-              // Создаем объект с данными пользователя (без пароля)
               const userData = {
                 name: userValues.name,
                 email: userValues.email,
@@ -192,7 +191,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                 role: role,
               };
 
-              // Добавляем пароль, только если он был изменен (не пустой)
               if (userValues.password && userValues.password.trim() !== "") {
                 Object.assign(userData, { password: userValues.password });
               }
@@ -240,7 +238,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({
             try {
               const userValues = values as UserFormValues;
 
-              // Проверяем корректность значения роли пользователя
               let role: "user" | "admin";
               if (userValues.role === "admin") {
                 role = "admin";
@@ -248,7 +245,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                 role = "user";
               }
 
-              // Создаем объект с данными пользователя
               const userData = {
                 name: userValues.name,
                 email: userValues.email,
@@ -260,7 +256,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({
               const result = await userService.createUser(userData);
               onClose();
             } catch (error) {
-              // Поднимаем ошибку на уровень выше для общей обработки ошибок
               throw error;
             }
           }
@@ -270,7 +265,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({
           afterSubmit();
         }
       } catch (error) {
-        // Получаем понятное сообщение об ошибке для пользователя
         let errorMessage: string;
 
         if (error instanceof Error) {
@@ -280,10 +274,8 @@ export const EntityForm: React.FC<EntityFormProps> = ({
           error !== null &&
           "message" in error
         ) {
-          // Случай, когда ошибка - объект с полем message
           errorMessage = (error as { message: string }).message;
         } else {
-          // Общее сообщение об ошибке
           errorMessage = `Ошибка при сохранении ${entityType}`;
         }
 
@@ -294,7 +286,6 @@ export const EntityForm: React.FC<EntityFormProps> = ({
     },
   });
 
-  // Сбросить значения формы при изменении entityData
   useEffect(() => {
     if (entityData) {
       const initialValues = getInitialValues(
@@ -423,12 +414,10 @@ export const EntityForm: React.FC<EntityFormProps> = ({
               disabled={loading}
               onClick={(e) => {
                 e.preventDefault();
-                // Помечаем все поля как затронутые
                 Object.keys(formik.values).forEach((key) => {
                   formik.setFieldTouched(key, true, false);
                 });
 
-                // Вызываем отправку формы
                 formik.handleSubmit();
               }}
             >

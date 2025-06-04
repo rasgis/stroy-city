@@ -15,16 +15,16 @@ const logRequests = (req, res, next) => {
   next();
 };
 
-router.use(logRequests); // логирование запросов
+router.use(logRequests);
 
-router.route("/").get(protect, admin, getUsers); // получение всех пользователей
+router.route("/").get(protect, admin, getUsers);
 
-router.route("/").post(protect, admin, registerUser); // создание нового пользователя
+router.route("/").post(protect, admin, registerUser);
   
 router
-  .route("/:id") // получение, обновление и удаление пользователя по ID
-  .get(protect, admin, getUserById) // получение пользователя по ID
-  .put(protect, admin, updateUser) // обновление пользователя
-  .delete(protect, admin, deleteUser); // удаление пользователя
+  .route("/:id")
+  .get(protect, admin, getUserById)
+  .put(protect, admin, updateUser)
+  .delete(protect, admin, deleteUser);
 
 export default router;

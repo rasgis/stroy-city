@@ -30,12 +30,10 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Анимация появления компонента
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Определяем контент на основе типа ошибки
   const getErrorContent = () => {
     switch (type) {
       case "access-denied":
@@ -78,7 +76,6 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         ${mounted ? styles.mounted : ""}
       `}
     >
-      {/* Декоративные элементы */}
       <div
         className={styles.decorDot1}
         style={{ background: errorContent.color }}
@@ -98,10 +95,8 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
       <h2 className={styles.errorTitle}>{errorContent.title}</h2>
       <p className={styles.errorMessage}>{errorContent.message}</p>
 
-      {/* Дополнительные действия */}
       {actions && <div className={styles.actionsContainer}>{actions}</div>}
 
-      {/* Ссылка на главную */}
       {showHomeLink && (
         <Link to={ROUTES.HOME} className={styles.link}>
           <span className={styles.homeIcon}>🏠</span>

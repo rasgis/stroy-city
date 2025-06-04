@@ -22,7 +22,7 @@ import { scrollToTop } from "../../utils/scroll";
 import styles from "./CategoryPage.module.css";
 import { BsExclamationCircle } from "react-icons/bs";
 
-const ITEMS_PER_PAGE = 20; // Количество товаров на странице
+const ITEMS_PER_PAGE = 20;
 
 const CategoryPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
@@ -31,7 +31,6 @@ const CategoryPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Используем мемоизированные селекторы вместо прямого доступа к state
   const categories = useAppSelector(selectAllCategories);
   const categoriesLoading = useAppSelector(
     (state) => state.categoriesList.loading
@@ -52,7 +51,6 @@ const CategoryPage: React.FC = () => {
     }
   }, [dispatch, categoryId]);
 
-  // Сбрасываем страницу пагинации при изменении категории
   useEffect(() => {
     setCurrentPage(1);
   }, [categoryId]);
@@ -79,19 +77,16 @@ const CategoryPage: React.FC = () => {
     (category: Category) => category._id === categoryId
   );
 
-  // Получаем полный путь категории
   const categoryPath = categoryService.getCategoryPath(
     categories,
     categoryId || ""
   );
 
-  // Фильтруем только подкатегории текущей категории
   const subcategories = categories.filter(
     (category: Category) =>
       category.parentId === categoryId && category.isActive !== false
   );
 
-  // Получаем ID всех подкатегорий (включая все уровни вложенности)
   const getAllSubcategoryIds = (parentCategoryId: string): string[] => {
     const directSubcategories = categories.filter(
       (category) =>
@@ -109,10 +104,8 @@ const CategoryPage: React.FC = () => {
     return [parentCategoryId, ...allSubcategoryIds];
   };
 
-  // Получаем все ID категорий, включая текущую и все подкатегории
   const allCategoryIds = getAllSubcategoryIds(categoryId || "");
 
-  // Фильтруем продукты текущей категории и всех её подкатегорий
   const categoryProducts = products.filter((product: Product) => {
     const productCategoryId =
       typeof product.category === "object" && product.category !== null
@@ -122,7 +115,6 @@ const CategoryPage: React.FC = () => {
     return allCategoryIds.includes(productCategoryId);
   });
 
-  // Фильтруем продукты по поисковому запросу
   const filteredProducts = categoryProducts.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -138,7 +130,7 @@ const CategoryPage: React.FC = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    setCurrentPage(1); // Сбрасываем страницу при поиске
+    setCurrentPage(1);
   };
 
   return (
@@ -182,11 +174,10 @@ const CategoryPage: React.FC = () => {
                 categories={subcategories}
                 showChildren={false}
                 onCategoryClick={(category) => {
-                  // Перенаправление на страницу подкатегории при клике
                   navigate(
                     ROUTES.CATEGORY.replace(":categoryId", category._id)
                   );
-                  scrollToTop(); // Прокручиваем страницу вверх при переходе
+                  scrollToTop();
                 }}
               />
             </Box>
@@ -225,7 +216,6 @@ const CategoryPage: React.FC = () => {
               </Typography>
             )}
 
-            {/* Пагинация в выделенном блоке с более явными стилями */}
             <Box
               sx={{
                 width: "100%",

@@ -6,7 +6,7 @@ import { createSelector } from "reselect";
 
 interface ProductsListState {
   items: Product[];
-  adminItems: Product[]; // Все товары (включая неактивные) для админа
+  adminItems: Product[]; 
   loading: boolean;
   error: string | null;
   filters: {
@@ -14,7 +14,7 @@ interface ProductsListState {
     searchTerm: string;
     minPrice: number | null;
     maxPrice: number | null;
-    showInactive: boolean; // Показывать неактивные товары в админке
+    showInactive: boolean; 
   };
 }
 
@@ -74,9 +74,7 @@ export const restoreProduct = createAsyncThunk(
     try {
       const response = await productService.restoreProduct(id);
       
-      // Если сервер возвращает только сообщение об успехе, а не сам продукт
       if (!response._id) {
-        // Получаем товар из админского списка
         const product = await productService.getProductById(id);
         return product;
       }
@@ -123,7 +121,6 @@ const productsListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Products
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -136,7 +133,6 @@ const productsListSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Не удалось загрузить продукты";
       })
-      // Fetch All Products Admin
       .addCase(fetchAllProductsAdmin.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -149,13 +145,10 @@ const productsListSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Не удалось загрузить продукты";
       })
-      // Delete Product (soft delete)
       .addCase(deleteProduct.fulfilled, (state, action) => {
         
-        // Удаляем из основного списка (обычные пользователи не видят неактивные товары)
         state.items = state.items.filter((item) => item._id !== action.payload);
 
-        // Обновляем флаг активности в списке админа
         const adminIndex = state.adminItems.findIndex(
           (item) => item._id === action.payload
         );
@@ -168,18 +161,14 @@ const productsListSlice = createSlice({
       .addCase(deleteProduct.rejected, (state, action) => {
         state.error = "Ошибка при скрытии товара";
       })
-      // Permanent Delete Product
       .addCase(permanentDeleteProduct.fulfilled, (state, action) => {
-        // Удаляем из обоих списков
         state.items = state.items.filter((item) => item._id !== action.payload);
         state.adminItems = state.adminItems.filter(
           (item) => item._id !== action.payload
         );
       })
-      // Restore Product
       .addCase(restoreProduct.fulfilled, (state, action) => {
         
-        // Добавляем в обычный список
         const exists = state.items.some(
           (item) => item._id === action.payload._id
         );
@@ -189,7 +178,6 @@ const productsListSlice = createSlice({
         } else {
         }
 
-        // Обновляем в админском списке
         const adminIndex = state.adminItems.findIndex(
           (item) => item._id === action.payload._id
         );
@@ -220,12 +208,10 @@ export const selectFilteredProducts = createSelector(
   [selectProductsList, selectProductsFilters],
   (products, filters) => {
     return products.filter((product) => {
-      // Фильтрация по категории
       if (filters.category && product.category !== filters.category) {
         return false;
       }
 
-      // Фильтрация по поисковому запросу
       if (
         filters.searchTerm &&
         !product.name?.toLowerCase()
@@ -236,12 +222,10 @@ export const selectFilteredProducts = createSelector(
         return false;
       }
 
-      // Фильтрация по цене (минимальная)
       if (filters.minPrice !== null && product.price < filters.minPrice) {
         return false;
       }
 
-      // Фильтрация по цене (максимальная)
       if (filters.maxPrice !== null && product.price > filters.maxPrice) {
         return false;
       }
@@ -251,22 +235,18 @@ export const selectFilteredProducts = createSelector(
   }
 );
 
-// Селектор для административной панели со всеми товарами
 export const selectFilteredAdminProducts = createSelector(
   [selectAdminProductsList, selectProductsFilters],
   (products, filters) => {
     return products.filter((product) => {
-      // Фильтрация по активности (показывать/скрывать неактивные)
       if (!filters.showInactive && !product.isActive) {
         return false;
       }
 
-      // Фильтрация по категории
       if (filters.category && product.category !== filters.category) {
         return false;
       }
 
-      // Фильтрация по поисковому запросу
       if (
         filters.searchTerm &&
         !product.name?.toLowerCase()
@@ -277,12 +257,10 @@ export const selectFilteredAdminProducts = createSelector(
         return false;
       }
 
-      // Фильтрация по цене (минимальная)
       if (filters.minPrice !== null && product.price < filters.minPrice) {
         return false;
       }
 
-      // Фильтрация по цене (максимальная)
       if (filters.maxPrice !== null && product.price > filters.maxPrice) {
         return false;
       }

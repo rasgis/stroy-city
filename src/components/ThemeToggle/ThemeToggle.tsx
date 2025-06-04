@@ -11,7 +11,6 @@ const ThemeToggle: React.FC = () => {
     e.preventDefault();
     toggleTheme();
 
-    // Убираем фокус с кнопки после клика
     if (buttonRef.current) {
       buttonRef.current.blur();
     }

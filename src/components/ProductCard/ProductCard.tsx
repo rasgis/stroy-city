@@ -20,7 +20,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
     const categories = useAppSelector(selectFilteredCategories);
     const dispatch = useAppDispatch();
 
-    // Мемоизируем название категории
     const categoryName = useMemo(() => {
       if (!product.category) {
         return "Без категории";
@@ -46,7 +45,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
         e.stopPropagation();
 
         if (isAuthenticated) {
-          // Добавляем в корзину только если пользователь авторизован
           dispatch(addToCartWithNotification({ ...product, quantity: 1 }));
         }
       },

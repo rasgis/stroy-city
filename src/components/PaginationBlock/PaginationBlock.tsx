@@ -25,7 +25,7 @@ export const PaginationBlock: React.FC<PaginationBlockProps> = ({
   }
 
   const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     page: number
   ) => {
     if (autoScrollTop) {

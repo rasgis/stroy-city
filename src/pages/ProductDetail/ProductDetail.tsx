@@ -33,12 +33,10 @@ const ProductDetail: React.FC = () => {
   const dispatch = useAppDispatch();
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
 
-  // Используем мемоизированные селекторы для продукта
   const product = useAppSelector(selectSelectedProduct);
   const productLoading = useAppSelector(selectProductLoading);
   const productError = useAppSelector(selectProductError);
 
-  // Используем мемоизированные селекторы для категорий
   const categories = useAppSelector(selectFilteredCategories);
   const categoriesLoading = useAppSelector(
     (state) => state.categoriesList.loading
@@ -56,9 +54,7 @@ const ProductDetail: React.FC = () => {
   }, [dispatch, id]);
 
   const handleAddToCart = () => {
-    // Проверка авторизации перед добавлением в корзину
     if (!isAuthenticated) {
-      // Если пользователь не авторизован, перенаправляем на страницу входа
       navigate(ROUTES.LOGIN, { state: { from: `/products/${id}` } });
       return;
     }

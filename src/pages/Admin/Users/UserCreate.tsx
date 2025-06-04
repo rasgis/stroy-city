@@ -10,12 +10,10 @@ const UserCreate = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Обработчик отправки формы создания
   const handleSubmit = async (userData: UserCreateData | UserUpdateData) => {
     try {
       setIsLoading(true);
       setError(null);
-      // Приводим UserUpdateData к UserCreateData, убедившись что все обязательные поля присутствуют
       const createData: UserCreateData = {
         name: userData.name as string,
         email: userData.email as string,

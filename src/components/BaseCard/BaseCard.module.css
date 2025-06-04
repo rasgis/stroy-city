@@ -207,9 +207,9 @@
 }
 
 .categoryCard .cardTitle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   text-align: center;
   padding: 1rem;
   height: 60px;
@@ -217,7 +217,9 @@
   background: var(--catalog-card-bg);
   border-top: 1px solid var(--catalog-card-border);
   color: var(--catalog-card-text) !important;
-  font-weight: 600;
+  font-weight: 600 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .categoryCard:hover .cardTitle {
@@ -227,15 +229,44 @@
 /* Специальные стили для светлой темы */
 [data-theme="light"] .categoryCard .cardTitle {
   color: #2c3e50 !important;
-  font-weight: 600;
+  font-weight: 600 !important;
   background-color: white !important;
   border-top: 1px solid rgba(63, 81, 181, 0.4);
   text-shadow: 0 1px 0 #fff;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
+/* Стили через класс body для дополнительной специфичности */
 body.theme-light .categoryCard .cardTitle {
   color: #2c3e50 !important;
   background-color: white !important;
+  font-weight: 600 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Для темной темы тоже добавляем специфичные стили */
+[data-theme="dark"] .categoryCard .cardTitle {
+  color: #d4ffea !important;
+  background-color: #1d1e24 !important;
+  font-weight: 600 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.theme-dark .categoryCard .cardTitle {
+  color: #d4ffea !important;
+  background-color: #1d1e24 !important;
+  font-weight: 600 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 [data-theme="light"] .productCard .cardTitle {

@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import {
   fetchCategories,
   deleteCategory,
-  selectAllCategories,
   hideCategory,
   restoreCategory,
   setFilters,
@@ -15,7 +14,6 @@ import {
   Modal,
   Button,
   ErrorMessage,
-  ItemNotFound,
 } from "../../../components";
 import { Category } from "../../../types";
 import {
@@ -31,9 +29,7 @@ import {
   MdExpandMore as ExpandMoreIcon,
 } from "react-icons/md";
 import styles from "./CategoryList.module.css";
-import { buildCategoryTree } from "../../../utils/categoryUtils";
 
-// Временная типизация для преобразования Category в CategoryFormValues
 const categoryToFormValues = (category: Category | null) => {
   if (!category) return undefined;
 
@@ -74,7 +70,6 @@ const CategoryListContainer: React.FC = () => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  // Фильтр неактивных категорий
   const handleShowInactiveToggle = () => {
     const newValue = !showInactive;
     dispatch(setFilters({ showInactive: newValue }));
@@ -130,7 +125,6 @@ const CategoryListContainer: React.FC = () => {
     dispatch(fetchCategories());
   };
 
-  // Построение дерева категорий
   const buildCategoryTree = (categories: Category[]): Category[] => {
     const categoryMap = new Map<string, Category>();
     categories.forEach((category) => {
@@ -249,7 +243,6 @@ const CategoryListContainer: React.FC = () => {
   }
 
   const categoryTree = buildCategoryTree(categories);
-  // Преобразование Category в CategoryFormValues для EntityForm
   const categoryFormData = categoryToFormValues(selectedCategory);
 
   return (
