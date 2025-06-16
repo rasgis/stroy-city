@@ -28,7 +28,7 @@ import ErrorPage from "./pages/ErrorPage";
 import CategoryListContainer from "./pages/Admin/Categories";
 import Cart from "./pages/Cart/Cart";
 import AdminUsers from "./pages/Admin/Users/Users";
-import {Profile} from "./pages/Profile/Profile";
+import { Profile } from "./pages/Profile/Profile";
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
   children,

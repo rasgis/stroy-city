@@ -50,8 +50,7 @@ const Register: React.FC = () => {
         const { confirmPassword, ...registerData } = values;
         await dispatch(register(registerData)).unwrap();
         navigate(ROUTES.HOME);
-      } catch (error) {
-      }
+      } catch (error) {}
     },
   });
 

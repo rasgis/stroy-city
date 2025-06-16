@@ -43,17 +43,17 @@ export const PaginationBlock: React.FC<PaginationBlockProps> = ({
         width: "100%",
         margin: "30px 0",
         padding: "16px",
-        backgroundColor: "#1d1e24",
+        backgroundColor: "var(--background-card)",
         borderRadius: "10px",
-        boxShadow: "0 4px 16px rgba(0, 0, 0, 0.2)",
-        border: "1px solid rgba(11, 224, 184, 0.2)",
+        boxShadow: "var(--card-shadow)",
+        border: "1px solid var(--border-color)",
       }}
     >
       <Typography
         variant="caption"
         sx={{
           marginBottom: "12px",
-          color: "#d4ffea",
+          color: "var(--text-primary)",
           fontSize: "0.9rem",
           opacity: 0.8,
         }}
@@ -73,9 +73,9 @@ export const PaginationBlock: React.FC<PaginationBlockProps> = ({
           showLastButton
           sx={{
             "& .MuiPaginationItem-root": {
-              color: "#0be0b8",
-              borderColor: "#0be0b8",
-              backgroundColor: "#1a1a1f",
+              color: "var(--accent-primary)",
+              borderColor: "var(--accent-primary)",
+              backgroundColor: "var(--background-tertiary)",
               margin: "0 4px",
               minWidth: "36px",
               height: "36px",
@@ -83,25 +83,25 @@ export const PaginationBlock: React.FC<PaginationBlockProps> = ({
               fontSize: "1rem",
               transition: "all 0.3s ease",
               "&:hover": {
-                backgroundColor: "rgba(11, 224, 184, 0.1)",
-                borderColor: "#0be0b8",
+                backgroundColor: "var(--accent-focus)",
+                borderColor: "var(--accent-primary)",
                 transform: "translateY(-2px)",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
               },
               "&.Mui-selected": {
-                backgroundColor: "#0be0b8",
-                color: "#1a1a1f",
+                backgroundColor: "var(--button-background)",
+                color: "var(--button-text)",
                 fontWeight: 700,
                 transform: "scale(1.1)",
                 boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
                 "&:hover": {
-                  backgroundColor: "#0be0b8",
+                  backgroundColor: "var(--button-hover)",
                   opacity: 0.9,
                 },
               },
             },
             "& .MuiPaginationItem-icon": {
-              color: "#0be0b8",
+              color: "var(--accent-primary)",
               fontSize: "1.5rem",
             },
           }}

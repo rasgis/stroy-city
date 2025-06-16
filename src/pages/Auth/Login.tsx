@@ -34,9 +34,7 @@ const Login: React.FC = () => {
       try {
         await dispatch(login(values)).unwrap();
         navigate(ROUTES.HOME);
-      } catch (error) {
-
-      }
+      } catch (error) {}
     },
   });
 

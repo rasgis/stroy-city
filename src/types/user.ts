@@ -7,7 +7,7 @@ export interface BaseUser {
 
 export interface User extends BaseUser {
   _id: string;
-  id?: string; 
+  id?: string;
 }
 
 export interface UserCreateData extends BaseUser {
